@@ -1,36 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import DefaultScreen from "./components/home/DefaultScreen";
+import LoginForm from "./components/forms/Login";
 
 export default function App() {
-  const [username, setUsername] = useState(null);
-  const { getItem, setItem } = useAsyncStorage('username');
-
-  const readUsernameFromStorage = async () => {
-    const username = await getItem();
-    if (!username) {
-      setUsername('Unknown User');
-    } else {
-      setUsername(username);
-    }
-  };
-
-  useEffect(() => {readUsernameFromStorage()}, []);
-
+  const Stack = createNativeStackNavigator();
   return (
-    <View style={styles.container}>
-      <Text>{`Welcome to the GigPig ${username}`}</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="LoginScreen"
+          component={LoginForm}
+          options={{ title: 'Login screen' }}
+        />
+        <Stack.Screen
+          name="DefaultScreen"
+          component={DefaultScreen}
+          options={{ title: 'Default screen' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
