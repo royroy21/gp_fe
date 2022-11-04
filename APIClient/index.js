@@ -24,7 +24,7 @@ class APIClient {
       headers: this.getHeaders(params.jwt),
       body: JSON.stringify(params.data)
     }
-    await this.handleResponse(params, requestOptions, [200]);
+    await this.handleResponse(params, requestOptions, [200, 201]);
   }
 
   getHeaders (jwt=null) {
