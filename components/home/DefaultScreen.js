@@ -1,4 +1,4 @@
-import {Text, View} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {Button} from "@react-native-material/core";
 import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-storage";
 import client from "../../APIClient";
@@ -8,9 +8,11 @@ export default function DefaultScreen({ navigation }) {
   const [user, setUser] = useState(null);
   const { getItem, setItem } = useAsyncStorage('jwt');
 
-  useEffect(() => {getUserFromStorage()}, []);
-
   const getUserFromStorage = async () => {
+    // isMounted stops this:  Can't perform a React state update on an unmounted component.
+    // https://bobbyhadz.com/blog/react-cant-perform-react-state-update-on-unmounted-component
+    let isMounted = true;
+
     const jwt = await getItem();
     if (jwt) {
       const params = {
@@ -21,19 +23,27 @@ export default function DefaultScreen({ navigation }) {
         // Probably token is out of date so implement refresh token logic here.
         errorCallback: (json) => console.log("error @ user/me: ", JSON.stringify(json)),
       }
-      client.get(params);
+      if (isMounted) {
+        await client.get(params);
+      }
     } else {
-      navigation.navigate("LoginScreen");
+      navigation.push("LoginScreen");
     }
+    return () => {
+      isMounted = false;
+    };
   };
 
-  const logOut = () => {
-    AsyncStorage.clear();
-    navigation.navigate('LoginScreen')
+  useEffect(() => {getUserFromStorage()}, []);
+
+  const logOut = async () => {
+    setUser(null);
+    await AsyncStorage.clear();
+    navigation.navigate("LoginScreen");
   }
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.container}>
       <Text>{user ? `Welcome ${user.username}` : "waiting..."}</Text>
       <Button
         title="Login Out"
@@ -42,3 +52,11 @@ export default function DefaultScreen({ navigation }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  }
+});
