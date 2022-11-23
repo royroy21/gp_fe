@@ -5,7 +5,7 @@ export default function Errors({errorMessages}) {
     if (typeof errorMessages === "string") {
       return <Text style={styles.error}>{errorMessages}</Text>
     } else {
-      // Assume errorMessages here is a list of errors
+      // Assume errorMessages here is an array.
       return (
         <View>
           {errorMessages.map((errorMessage, counter) => (

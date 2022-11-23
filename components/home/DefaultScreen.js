@@ -1,22 +1,23 @@
 import {StyleSheet, Text, View} from "react-native";
-import {Button} from "@react-native-material/core";
-import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-storage";
+import {useAsyncStorage} from "@react-native-async-storage/async-storage";
 import client from "../../APIClient";
-import {useEffect, useState} from "react";
+import {useContext, useEffect} from "react";
+import {UserContext} from "../context/user";
+import {BACKEND_ENDPOINTS, LOGIN_REQUIRED} from "../../settings";
 
-export default function DefaultScreen({ navigation }) {
-  const [user, setUser] = useState(null);
-  const { getItem, setItem } = useAsyncStorage('jwt');
+export default function DefaultScreen(props) {
+  const { user, setUser } = useContext(UserContext);
+  const { getItem: getJWT } = useAsyncStorage("jwt");
 
-  const getUserFromStorage = async () => {
+  const getUser = async () => {
     // isMounted stops this:  Can't perform a React state update on an unmounted component.
     // https://bobbyhadz.com/blog/react-cant-perform-react-state-update-on-unmounted-component
     let isMounted = true;
 
-    const jwt = await getItem();
+    const jwt = await getJWT();
     if (jwt) {
       const params = {
-        resource: "user/me",
+        resource: BACKEND_ENDPOINTS.me,
         jwt: JSON.parse(jwt).access,
         successCallback: setUser,
         // TODO - handle error.
@@ -27,28 +28,19 @@ export default function DefaultScreen({ navigation }) {
         await client.get(params);
       }
     } else {
-      navigation.push("LoginScreen");
+      if (LOGIN_REQUIRED) {
+        props.navigation.push("LoginScreen");
+      }
     }
     return () => {
       isMounted = false;
     };
   };
 
-  useEffect(() => {getUserFromStorage()}, []);
-
-  const logOut = async () => {
-    setUser(null);
-    await AsyncStorage.clear();
-    navigation.navigate("LoginScreen");
-  }
-
+  useEffect(() => {getUser()}, []);
   return (
     <View style={styles.container}>
-      <Text>{user ? `Welcome ${user.username}` : "waiting..."}</Text>
-      <Button
-        title="Login Out"
-        onPress={logOut}
-      />
+      <Text>{user ? `Welcome ${user.username}` : "not logged in :("}</Text>
     </View>
   );
 }

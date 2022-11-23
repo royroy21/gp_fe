@@ -1,6 +1,4 @@
-// For BE ipaddress: hostname -I
-const BACKEND_URL = "http://192.168.1.5:8000/api/"
-// const BACKEND_URL = "http://192.168.0.88:8000/api/"
+import {BACKEND_URL} from "../settings";
 
 const defaultParams = {
   resource: "",
@@ -15,7 +13,7 @@ class APIClient {
       method: "GET",
       headers: this.getHeaders(params.jwt),
     }
-    await this.handleResponse(params, requestOptions, [200]);
+    await this.makeRequestHandleResponse(params, requestOptions, [200]);
   };
 
   post = async (params=defaultParams) => {
@@ -24,7 +22,7 @@ class APIClient {
       headers: this.getHeaders(params.jwt),
       body: JSON.stringify(params.data)
     }
-    await this.handleResponse(params, requestOptions, [200, 201]);
+    await this.makeRequestHandleResponse(params, requestOptions, [200, 201]);
   }
 
   getHeaders (jwt=null) {
@@ -35,7 +33,7 @@ class APIClient {
     );
   }
 
-  handleResponse = async (params, requestOptions, validStatusCodes) => {
+  makeRequestHandleResponse = async (params, requestOptions, validStatusCodes) => {
     try {
       const response = await fetch(`${BACKEND_URL}${params.resource}/`, requestOptions);
       if (!validStatusCodes.includes(response.status) ) {
