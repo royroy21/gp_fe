@@ -1,10 +1,11 @@
 import EmailPassword from "./EmailPassword";
 import {StyleSheet, View} from "react-native";
+import {BACKEND_ENDPOINTS} from "../../settings";
 
 export default function SignUpForm({ navigation }) {
   return (
     <View style={styles.container}>
-      <EmailPassword navigation={navigation} targetResource={"user"} />
+      <EmailPassword navigation={navigation} targetResource={BACKEND_ENDPOINTS.user} />
     </View>
   );
 }

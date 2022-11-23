@@ -9,7 +9,7 @@ import TextInput from "./TextInput";
 import {formContainerPadding} from "../../helpers/padding";
 
 export default function EmailPassword({ navigation, targetResource }) {
-  const { getItem, setItem } = useAsyncStorage("jwt");
+  const { setItem: setJWTToAsyncStorage } = useAsyncStorage("jwt");
   const [jwt, setJWT] = useState(null);
   const [error, setError] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +45,7 @@ export default function EmailPassword({ navigation, targetResource }) {
       return
     }
     await AsyncStorage.clear();
-    await setItem(JSON.stringify(jwt));
+    await setJWTToAsyncStorage(JSON.stringify(jwt));
     setJWT(null);
     navigation.push("DefaultScreen");
   }
