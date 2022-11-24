@@ -8,7 +8,7 @@ export default function App() {
   return (
     <UserProvider>
       <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-        <Navigation />
+       <Navigation />
       </IconComponentProvider>
     </UserProvider>
   )
