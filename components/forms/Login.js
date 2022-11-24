@@ -6,13 +6,14 @@ import {BACKEND_ENDPOINTS} from "../../settings";
 export default function LoginForm({ navigation }) {
   return (
     <View style={styles.container}>
-      <EmailPassword navigation={navigation} targetResource={BACKEND_ENDPOINTS.token} />
-      <Button
-        title={"sign up"}
-        uppercase={false}
-        variant={"text"}
-        onPress={() => navigation.navigate("SignUpScreen")}
-      />
+      <EmailPassword navigation={navigation} targetResource={BACKEND_ENDPOINTS.token}>
+        <Button
+          title={"sign up"}
+          uppercase={false}
+          variant={"text"}
+          onPress={() => navigation.navigate("SignUpScreen")}
+        />
+      </EmailPassword>
     </View>
   );
 }

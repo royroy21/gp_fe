@@ -7,11 +7,13 @@ import {useEffect, useState} from "react";
 import Errors from "./Errors";
 import TextInput from "./TextInput";
 import {formContainerPadding} from "../../helpers/padding";
+import Loading from "./Loading";
 
-export default function EmailPassword({ navigation, targetResource }) {
+export default function EmailPassword({ navigation, targetResource, children }) {
   const { setItem: setJWTToAsyncStorage } = useAsyncStorage("jwt");
   const [jwt, setJWT] = useState(null);
-  const [error, setError] = useState({});
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -25,14 +27,15 @@ export default function EmailPassword({ navigation, targetResource }) {
     // https://bobbyhadz.com/blog/react-cant-perform-react-state-update-on-unmounted-component
     let isMounted = true;
 
-    setError({})
+    setError(null)
     const params = {
       resource: targetResource,
       data: data,
       successCallback: setJWT,
-      errorCallback: setError,
+      errorCallback: onError,
     };
     if (isMounted) {
+      setLoading(true);
       await client.post(params);
     }
     return () => {
@@ -48,14 +51,22 @@ export default function EmailPassword({ navigation, targetResource }) {
     await setJWTToAsyncStorage(JSON.stringify(jwt));
     setJWT(null);
     navigation.push("DefaultScreen");
+    setLoading(false);
+  }
+
+  const onError = (error) => {
+    setLoading(false);
+    setError(error);
   }
 
   useEffect(() => {onSuccess()}, [jwt]);
 
+  const parsedError = error || {};
   return (
     <View style={styles.container}>
-      {(error.detail) && <Errors errorMessages={error.detail} />}
-      {(error.unExpectedError) && <Errors errorMessages={error.unExpectedError} />}
+      <Loading isLoading={loading} />
+      {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
+      {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       <Controller
         control={control}
         rules={{
@@ -71,7 +82,7 @@ export default function EmailPassword({ navigation, targetResource }) {
         )}
         name="email"
       />
-      {error.email && <Errors errorMessages={error.email} />}
+      {parsedError.email && <Errors errorMessages={parsedError.email} />}
       <Controller
         control={control}
         rules={{
@@ -94,8 +105,9 @@ export default function EmailPassword({ navigation, targetResource }) {
         )}
         name="password"
       />
-      {error.password && <Errors errorMessages={error.password} />}
+      {parsedError.password && <Errors errorMessages={parsedError.password} />}
       <Button title={"submit"} onPress={handleSubmit(onSubmit)} />
+      { children }
     </View>
   );
 }
