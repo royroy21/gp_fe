@@ -1,13 +1,36 @@
 import {StyleSheet, Text, View} from "react-native";
 import {useAsyncStorage} from "@react-native-async-storage/async-storage";
 import client from "../../APIClient";
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../context/user";
 import {BACKEND_ENDPOINTS, LOGIN_REQUIRED} from "../../settings";
+import * as Location from 'expo-location';
 
 export default function DefaultScreen(props) {
   const { user, setUser } = useContext(UserContext);
   const { getItem: getJWT } = useAsyncStorage("jwt");
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      console.log("@location success: ", location);
+      const locationReversed = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+      console.log("@location reversed: ", locationReversed);
+      setLocation(location);
+    })();
+  }, []);
 
   const getUser = async () => {
     // isMounted stops this:  Can't perform a React state update on an unmounted component.
