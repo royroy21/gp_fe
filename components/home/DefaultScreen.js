@@ -4,8 +4,12 @@ import client from "../../APIClient";
 import {useContext, useEffect} from "react";
 import {UserContext} from "../context/user";
 import {BACKEND_ENDPOINTS, LOGIN_REQUIRED} from "../../settings";
+import updateLocation from "../location/updateLocation";
 
 export default function DefaultScreen(props) {
+  // This is the first screen a user is directed to. It is responsible
+  // for getting user's profile and updating their location to the server.
+
   const { user, setUser } = useContext(UserContext);
   const { getItem: getJWT } = useAsyncStorage("jwt");
 
@@ -19,7 +23,10 @@ export default function DefaultScreen(props) {
       const params = {
         resource: BACKEND_ENDPOINTS.me,
         jwt: JSON.parse(jwt).access,
-        successCallback: setUser,
+        successCallback: (json) => {
+          setUser(json)
+          updateLocation(json.id, jwt);
+        },
         // TODO - handle error.
         // Probably token is out of date so implement refresh token logic here.
         errorCallback: (json) => console.log("error @ user/me: ", JSON.stringify(json)),

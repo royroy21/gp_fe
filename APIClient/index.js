@@ -25,6 +25,15 @@ class APIClient {
     await this.makeRequestHandleResponse(params, requestOptions, [200, 201]);
   }
 
+  put = async (params=defaultParams) => {
+    const requestOptions = {
+      method: "PUT",
+      headers: this.getHeaders(params.jwt),
+      body: JSON.stringify(params.data)
+    }
+    await this.makeRequestHandleResponse(params, requestOptions, [200]);
+  }
+
   getHeaders (jwt=null) {
     return jwt ? (
       { "Content-Type": "application/json", "Authorization":  `JWT ${jwt}`}
