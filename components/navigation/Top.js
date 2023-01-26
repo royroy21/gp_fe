@@ -1,13 +1,12 @@
-import DefaultScreen from "../home/DefaultScreen";
-import {Button, Icon, IconButton} from "@react-native-material/core";
 import LoginForm from "../forms/Login";
 import SignupForm from "../forms/SignUp";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useContext, useState} from "react";
 import {UserContext} from "../context/user";
 import MainMenu from "../menu/MainMenu";
+import LoginOrMenuButton from "./LoginOrMenuButton";
 
-export default function TopNavigation() {
+function TopNavigation({screenOptions, initialRouteName}) {
   const {user} = useContext(UserContext);
   const Stack = createNativeStackNavigator();
   const [mainMenu, setMainMenu] = useState(false);
@@ -17,29 +16,20 @@ export default function TopNavigation() {
         showMainMenu={mainMenu}
         setMainMenu={setMainMenu}
       />
-      <Stack.Navigator initialRouteName="DefaultScreen">
-        <Stack.Screen
-          name="DefaultScreen"
-          component={DefaultScreen}
-          options={({ navigation, route }) =>
-            ({
-              title: "",
-              headerRight: () => (
-                user ? (
-                  <IconButton
-                    icon={<Icon name="menu" size={30} />}
-                    onPress={() => setMainMenu(!mainMenu)}
-                  />
-                ) : (
-                  <Button
-                    title={"login"}
-                    onPress={() => navigation.navigate("LoginScreen")}
-                  />
-                )
-              ),
-            })
-          }
-        />
+      <Stack.Navigator initialRouteName={initialRouteName}>
+        {screenOptions.map(options => (
+          <Stack.Screen
+            key={options.key}
+            name={options.name}
+            component={options.component}
+            options={({ navigation, route }) =>
+              ({
+                title: "",
+                headerRight: () => LoginOrMenuButton(navigation, user, mainMenu, setMainMenu),
+              })
+            }
+          />
+        ))}
         <Stack.Screen
           name="LoginScreen"
           component={LoginForm}
@@ -54,3 +44,5 @@ export default function TopNavigation() {
     </>
   )
 }
+
+export default TopNavigation;

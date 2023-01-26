@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
-import TopNavigation from "./Top";
-import {StyleSheet, Text, View} from "react-native";
-import {Icon} from "@react-native-material/core";
-
-const PlaceHolder = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>{"meow"}</Text>
-    </View>
-  )
-}
+import {StyleSheet} from "react-native";
+import {Icon, useTheme} from "@react-native-material/core";
+import Home from "./Home";
+import PlaceHolder from "./Placeholder";
 
 export default function BottomNavigation() {
   const Tab = createMaterialBottomTabNavigator();
+  const theme = useTheme()
+  function iconConfig(focused) {
+    return {
+      size: 25,
+      color: focused ? theme.palette.primary.main : "lightgrey",
+    }
+  }
   return (
     <Tab.Navigator
       screenOptions={{ headerShown: false }}
@@ -21,19 +21,19 @@ export default function BottomNavigation() {
     >
       <Tab.Screen
         name="Home"
-        component={TopNavigation}
+        component={Home}
         options={{
           tabBarIcon: ({ focused, color, size }) => {
-            return <Icon name="home" size={25} />
+            return <Icon name="pig" {...iconConfig(focused)} />
           }
         }}
       />
       <Tab.Screen
-        name="placeholder"
+        name="Placeholder"
         component={PlaceHolder}
         options={{
           tabBarIcon: ({ focused, color, size }) => {
-            return <Icon name="music" size={25} />
+            return <Icon name="music" {...iconConfig(focused)} />
           }
         }}
       />
