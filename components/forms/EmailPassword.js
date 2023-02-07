@@ -1,15 +1,18 @@
 import {View, StyleSheet} from "react-native";
 import { useForm, Controller }   from "react-hook-form";
-import {Button, Text, Switch} from "@react-native-material/core";
+import {Button, Switch} from "@react-native-material/core";
 import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-storage";
 import client from "../../APIClient";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import Errors from "./Errors";
 import TextInput from "./TextInput";
 import {formContainerPadding} from "../../helpers/padding";
 import Loading from "./Loading";
+import {UserContext} from "../context/user";
+import getUserFromBackend from "../../helpers/getUserFromBackend";
 
 export default function EmailPassword({ navigation, targetResource, children }) {
+  const { setUser } = useContext(UserContext);
   const { setItem: setJWTToAsyncStorage } = useAsyncStorage("jwt");
   const [jwt, setJWT] = useState(null);
   const [error, setError] = useState(null);
@@ -47,11 +50,19 @@ export default function EmailPassword({ navigation, targetResource, children }) 
     if (!jwt) {
       return
     }
+    // isMounted stops this:  Can't perform a React state update on an unmounted component.
+    // https://bobbyhadz.com/blog/react-cant-perform-react-state-update-on-unmounted-component
+    let isMounted = true;
+
     await AsyncStorage.clear();
     await setJWTToAsyncStorage(JSON.stringify(jwt));
     setJWT(null);
-    navigation.push("DefaultScreen");
+    await getUserFromBackend(jwt, setUser);
+    navigation.navigate("DefaultScreen");
     setLoading(false);
+    return () => {
+      isMounted = false;
+    };
   }
 
   const onError = (error) => {

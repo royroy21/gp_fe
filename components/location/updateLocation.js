@@ -15,7 +15,7 @@ async function updateLocation(userId, jwt) {
   const location = await Location.getCurrentPositionAsync({});
   const params = {
     resource: `${BACKEND_ENDPOINTS.user}/${userId}`,
-    jwt: JSON.parse(jwt).access,
+    jwt: jwt.access,
     successCallback: () => console.log("Successfully updated user's location."),
     // TODO - Log this as sentry?
     errorCallback: (json) => console.log("error @updateLocation: ", JSON.stringify(json)),
