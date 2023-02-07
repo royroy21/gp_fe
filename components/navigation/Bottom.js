@@ -1,48 +1,52 @@
-import * as React from 'react';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
-import {StyleSheet} from "react-native";
+import {StyleSheet, TouchableOpacity, View} from "react-native";
 import {Icon, useTheme} from "@react-native-material/core";
-import Home from "./Home";
-import PlaceHolder from "./Placeholder";
+import {useNavigation} from "@react-navigation/native";
 
-export default function BottomNavigation() {
-  const Tab = createMaterialBottomTabNavigator();
+function BottomNavigation({currentRoute}) {
+  const navigation = useNavigation();
   const theme = useTheme()
-  function iconConfig(focused) {
+  function iconStyle(focused) {
     return {
       size: 25,
       color: focused ? theme.palette.primary.main : "lightgrey",
     }
   }
+  const navigationItems = [
+    {name: "pig", navigateTo: "DefaultScreen"},
+    {name: "music", navigateTo: "MusicScreen"},
+    {name: "message", navigateTo: "MessageScreen"},
+  ]
   return (
-    <Tab.Navigator
-      screenOptions={{ headerShown: false }}
-      barStyle={styles.navigator}
-    >
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({ focused, color, size }) => {
-            return <Icon name="pig" {...iconConfig(focused)} />
-          }
-        }}
-      />
-      <Tab.Screen
-        name="Placeholder"
-        component={PlaceHolder}
-        options={{
-          tabBarIcon: ({ focused, color, size }) => {
-            return <Icon name="music" {...iconConfig(focused)} />
-          }
-        }}
-      />
-    </Tab.Navigator>
+    <View style={styles.container}>
+      {navigationItems.map((item) => (
+        <TouchableOpacity
+          style={styles.button}
+          key={item.name}
+          onPress={() => navigation.navigate(item.navigateTo)}
+        >
+          <Icon
+            key={item.name}
+            name={item.name}
+            {...iconStyle(item.navigateTo === currentRoute)}
+          />
+        </TouchableOpacity>
+      ))}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  navigator: {
-    backgroundColor: "white",
+  container: {
+    height: 45,
+    display: "flex",
+    flexDirection: "row",
+  },
+  button: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
   }
 });
+
+export default BottomNavigation;
