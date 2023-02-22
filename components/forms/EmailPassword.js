@@ -50,18 +50,16 @@ export default function EmailPassword({ navigation, targetResource, children }) 
     if (!jwt) {
       return
     }
-    // isMounted stops this:  Can't perform a React state update on an unmounted component.
-    // https://bobbyhadz.com/blog/react-cant-perform-react-state-update-on-unmounted-component
-    let isMounted = true;
-
     await AsyncStorage.clear();
     await setJWTToAsyncStorage(JSON.stringify(jwt));
     setJWT(null);
     await getUserFromBackend(jwt, setUser);
     navigation.navigate("DefaultScreen");
-    setLoading(false);
     return () => {
-      isMounted = false;
+      setJWT(null);
+      setError(null);
+      setLoading(false);
+      setShowPassword(false);
     };
   }
 

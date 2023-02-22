@@ -1,5 +1,3 @@
-import {BACKEND_URL} from "../settings";
-
 const defaultParams = {
   resource: "",
   jwt: "",
@@ -44,7 +42,7 @@ class APIClient {
 
   makeRequestHandleResponse = async (params, requestOptions, validStatusCodes) => {
     try {
-      const response = await fetch(`${BACKEND_URL}${params.resource}/`, requestOptions);
+      const response = await fetch(params.resource, requestOptions);
       if (!validStatusCodes.includes(response.status) ) {
         const json = await response.json();
         params.errorCallback(json);

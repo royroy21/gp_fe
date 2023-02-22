@@ -4,6 +4,7 @@ import {UserContext} from "../context/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useNavigation} from "@react-navigation/native";
 import getUserFromBackend from "../../helpers/getUserFromBackend";
+import ShowGigs from "../gig/ShowGigs";
 
 export default function DefaultScreen() {
   const navigation = useNavigation();
@@ -24,7 +25,11 @@ export default function DefaultScreen() {
   useEffect(() => {getUser()}, []);
   return (
     <View style={styles.container}>
-      <Text>{user ? `Welcome ${user.username}` : "not logged in :("}</Text>
+      {user ? (
+        <ShowGigs />
+      ) : (
+        <Text>{"please log in :)"}</Text>
+      )}
     </View>
   );
 }

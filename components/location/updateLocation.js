@@ -14,7 +14,7 @@ async function updateLocation(userId, jwt) {
   }
   const location = await Location.getCurrentPositionAsync({});
   const params = {
-    resource: `${BACKEND_ENDPOINTS.user}/${userId}`,
+    resource: `${BACKEND_ENDPOINTS.user}${userId}/`,
     jwt: jwt.access,
     successCallback: () => console.log("Successfully updated user's location."),
     // TODO - Log this as sentry?
