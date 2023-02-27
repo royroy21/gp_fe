@@ -24,7 +24,7 @@ function TopNavigation({screenOptions, initialRouteName}) {
             component={options.component}
             options={({ navigation, route }) =>
               ({
-                title: "",
+                title: "GIGPIG",
                 headerRight: () => LoginOrMenuButton(navigation, user, mainMenu, setMainMenu),
               })
             }

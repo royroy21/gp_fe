@@ -1,4 +1,4 @@
-import {Text, View} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {Chip, Surface, useTheme} from "@react-native-material/core";
 import dateFormat from "dateformat";
 
@@ -15,8 +15,8 @@ function ShowGig({gig}) {
 
   return (
     <Surface elevation={2} category="medium" style={{padding: 5, margin: 5}}>
-      <Text style={{fontWeight: "bold", color: theme.palette.primary.main}}>
-        {`${gig.title} ${gig.id}`}
+      <Text style={{color: theme.palette.primary.main, fontSize: 16}}>
+        {`${gig.title}`}
       </Text>
       {gig.description ? <Text>{getDescription(gig)}</Text> : null}
       <Text>
@@ -26,25 +26,32 @@ function ShowGig({gig}) {
         <Chip
           key={"date"}
           label={dateFormat(gig.start_date, "fullDate")}
-          style={{marginTop: 5, marginRight: 5}}
+          style={styles.chip}
         />
         {gig.has_spare_ticket ? (
           <Chip
             key={"has_spare_ticket"}
             label={"Spare ticket"}
-            style={{marginTop: 5, marginRight: 5}}
+            style={styles.chip}
           />
         ) : null}
         {gig.genres.map((genre, key) => (
           <Chip
             key={key}
             label={genre.genre}
-            style={{marginTop: 5, marginRight: 5}}
+            style={styles.chip}
           />
         ))}
       </View>
     </Surface>
   )
 }
+
+
+const styles = StyleSheet.create({
+  chip: {
+    margin: 2,
+  }
+});
 
 export default ShowGig;

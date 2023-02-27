@@ -116,7 +116,9 @@ export default function EmailPassword({ navigation, targetResource, children }) 
       />
       {parsedError.password && <Errors errorMessages={parsedError.password} />}
       <Button title={"submit"} onPress={handleSubmit(onSubmit)} />
-      { children }
+      <View style={styles.children} >
+        { children }
+      </View>
     </View>
   );
 }
@@ -125,5 +127,8 @@ const styles = StyleSheet.create({
   container: {
     paddingLeft: formContainerPadding,
     paddingRight: formContainerPadding,
-  }
+  },
+  children: {
+    marginTop: 40,
+  },
 });
