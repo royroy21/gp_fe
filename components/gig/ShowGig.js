@@ -20,7 +20,7 @@ function ShowGig({gig}) {
       </Text>
       {gig.description ? <Text>{getDescription(gig)}</Text> : null}
       <Text>
-        {`${gig.venue} ${gig.location} (${gig.country.country})`}
+        {`${gig.location} (${gig.country.country})`}
       </Text>
       <View style={{flexDirection: "row", flexWrap: "wrap"}}>
         <Chip
