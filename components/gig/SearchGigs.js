@@ -1,4 +1,4 @@
-import {Button, IconButton, ListItem, Switch, TextInput, useTheme} from "@react-native-material/core";
+import {Button, IconButton, ListItem, Switch, TextInput} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {StyleSheet, Text, View} from "react-native";
 import {useState} from "react";
@@ -7,10 +7,9 @@ import dateFormat from "dateformat";
 import CalendarModal from "../calendar";
 
 function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
-  const theme = useTheme()
-
   const [searchString, setSearchString] = useState("");
   const [advancedSearch, setAdvancedSearch] = useState(false);
+  const [showMyGigs, setShowMyGigs] = useState(false);
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -21,9 +20,13 @@ function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
     const getAllQuery = "*:*";
     let search = (searchString.trim() === "") ? getAllQuery : searchString;
     if (search === getAllQuery) {
-      searchFeedBack += `everything `;
+      searchFeedBack += `everything, `;
     } else {
       searchFeedBack += `${search}, `;
+    }
+    if (showMyGigs) {
+      search += "&my_gigs=true"
+      searchFeedBack += "my gigs, "
     }
     if (hasSpareTicket) {
       search += "&has_spare_ticket=true"
@@ -66,13 +69,15 @@ function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
         <View style={styles.advancedSearch}>
           <View>
             <ListItem
+              title={<Text>{"Show my gigs only?"}</Text>}
+              trailing={
+                <Switch value={showMyGigs} onValueChange={() => setShowMyGigs(!showMyGigs)}/>
+              }
+            />
+            <ListItem
               title={<Text>{"Has spare ticket?"}</Text>}
               trailing={
-                <Switch
-                  style={{color: theme.palette.primary.main}}
-                  value={hasSpareTicket}
-                  onValueChange={() => setHasSpareTicket(!hasSpareTicket)}
-                />
+                <Switch value={hasSpareTicket} onValueChange={() => setHasSpareTicket(!hasSpareTicket)}/>
               }
             />
             <ListItem
@@ -80,12 +85,7 @@ function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
               trailing={
                 <IconButton
                   onPress={() => setShowDatePicker(!showDatePicker)}
-                  icon={
-                    <Icon
-                      name="calendar"
-                      size={25}
-                    />
-                  }
+                  icon={<Icon name="calendar" size={25}/>}
                 />
               }
             />
