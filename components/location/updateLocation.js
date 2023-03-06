@@ -13,6 +13,8 @@ async function updateLocation(userId, jwt) {
     return;
   }
   const location = await Location.getCurrentPositionAsync({});
+  const reversed = await Location.reverseGeocodeAsync(location.coords)
+
   const params = {
     resource: `${BACKEND_ENDPOINTS.user}${userId}/`,
     jwt: jwt.access,
@@ -24,6 +26,9 @@ async function updateLocation(userId, jwt) {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       },
+      country: {
+        code: reversed[0].isoCountryCode,
+      }
     },
   }
   await client.put(params);
