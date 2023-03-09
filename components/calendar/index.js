@@ -21,7 +21,7 @@ function CalendarModal({visible, date, setDate, onRequestClose}) {
           borderWidth: 1,
           borderColor: "gray",
           borderStyle: "solid",
-          marginTop: Math.round(windowHeight*0.25 ),
+          marginTop: Math.round(windowHeight * 0.2),
           ...styles.container,
         }}
       >

@@ -1,6 +1,6 @@
 import {Image, Modal, StyleSheet, View} from "react-native";
 
-export default function Loading({isLoading}) {
+function LoadingModal({isLoading}) {
   return (
     <Modal
       animationType={"none"}
@@ -28,3 +28,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
+
+export default LoadingModal;

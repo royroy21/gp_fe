@@ -7,9 +7,9 @@ import {useContext, useEffect, useState} from "react";
 import Errors from "./Errors";
 import TextInput from "./TextInput";
 import {formContainerPadding} from "../../helpers/padding";
-import Loading from "./Loading";
 import {UserContext} from "../context/user";
 import getUserFromBackend from "../../helpers/getUserFromBackend";
+import LoadingModal from "../loading/LoadingModal";
 
 export default function EmailPassword({ navigation, targetResource, children }) {
   const { setUser } = useContext(UserContext);
@@ -26,10 +26,6 @@ export default function EmailPassword({ navigation, targetResource, children }) 
   });
 
   const onSubmit = async (data) => {
-    // isMounted stops this:  Can't perform a React state update on an unmounted component.
-    // https://bobbyhadz.com/blog/react-cant-perform-react-state-update-on-unmounted-component
-    let isMounted = true;
-
     setError(null)
     const params = {
       resource: targetResource,
@@ -37,13 +33,8 @@ export default function EmailPassword({ navigation, targetResource, children }) 
       successCallback: setJWT,
       errorCallback: onError,
     };
-    if (isMounted) {
-      setLoading(true);
-      await client.post(params);
-    }
-    return () => {
-      isMounted = false;
-    };
+    setLoading(true);
+    await client.post(params);
   }
 
   const onSuccess = async () => {
@@ -73,7 +64,7 @@ export default function EmailPassword({ navigation, targetResource, children }) 
   const parsedError = error || {};
   return (
     <View style={styles.container}>
-      <Loading isLoading={loading} />
+      <LoadingModal isLoading={loading} />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       <Controller

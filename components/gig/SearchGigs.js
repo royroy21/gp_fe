@@ -1,10 +1,104 @@
-import {Button, IconButton, ListItem, Switch, TextInput} from "@react-native-material/core";
+import {Button, IconButton, ListItem, TextInput, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {StyleSheet, Text, View} from "react-native";
+import {Dimensions, Modal, StyleSheet, Text, View} from "react-native";
 import {useState} from "react";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import dateFormat from "dateformat";
 import CalendarModal from "../calendar";
+
+function AdvancedSearchModel(props) {
+  const {
+    setSearchString,
+    advancedSearch,
+    setAdvancedSearch,
+    showMyGigs,
+    setShowMyGigs,
+    hasSpareTicket,
+    setHasSpareTicket,
+    startDate,
+    setStartDate,
+    setShowDatePicker,
+    showDatePicker,
+    submitSearchRequest,
+  } = props
+
+  const theme = useTheme()
+  const windowHeight = Dimensions.get('window').height;
+  const windowWidth = Dimensions.get('window').width;
+
+  return (
+    <Modal
+      animationType={"slide"}
+      transparent={true}
+      visible={advancedSearch}
+      onRequestClose={() => setAdvancedSearch(false)}
+    >
+      <View style={{
+        backgroundColor: theme.palette.background.main,
+        borderWidth: 1,
+        borderColor: "gray",
+        borderStyle: "solid",
+        marginTop: Math.round(windowHeight * 0.2),
+        width: Math.round(windowWidth * 0.9),
+        ...styles.modelContainer,
+      }}>
+        <View style={styles.advancedSearch}>
+          <Text style={styles.title}>{"Advanced Search"}</Text>
+          <TextInput
+            variant={"outlined"}
+            trailing={
+              <IconButton
+                icon={<Icon name="magnify" size={25} />}
+                onPress={submitSearchRequest}
+              />
+            }
+            onChangeText={setSearchString}
+          />
+          <View>
+            <ListItem
+              title={<Text>{"Show my gigs only?"}</Text>}
+              onPress={() => setShowMyGigs(!showMyGigs)}
+              trailing={showMyGigs ? <Icon name="thumb-up-outline" size={20}/> : null}
+            />
+            <ListItem
+              title={<Text>{"Has spare ticket?"}</Text>}
+              onPress={() => setHasSpareTicket(!hasSpareTicket)}
+              trailing={hasSpareTicket ? <Icon name="thumb-up-outline" size={20}/> : null}
+            />
+            <ListItem
+              title={<Text>{startDate ? dateFormat(startDate, "fullDate") : "Gig start date?"}</Text>}
+              onPress={() => setShowDatePicker(!showDatePicker)}
+              trailing={
+                <IconButton
+                  onPress={() => setShowDatePicker(!showDatePicker)}
+                  icon={<Icon name="calendar" size={25}/>}
+                />
+              }
+            />
+          </View>
+        </View>
+        <CalendarModal
+          visible={showDatePicker}
+          date={startDate}
+          setDate={setStartDate}
+          onRequestClose={() => setShowDatePicker(false)}
+        />
+        <View style={styles.searchButtonContainer}>
+          <Button
+            title={"close"}
+            onPress={() => setAdvancedSearch(false)}
+            style={styles.closeButton}
+          />
+          <Button
+            style={styles.searchButton}
+            title={"Search"}
+            onPress={submitSearchRequest}
+          />
+        </View>
+      </View>
+    </Modal>
+  )
+}
 
 function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
   const [searchString, setSearchString] = useState("");
@@ -65,48 +159,20 @@ function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
           onPress={() => setAdvancedSearch(!advancedSearch)}
         />
       </View>
-      {advancedSearch ? (
-        <View style={styles.advancedSearch}>
-          <View>
-            <ListItem
-              title={<Text>{"Show my gigs only?"}</Text>}
-              trailing={
-                <Switch value={showMyGigs} onValueChange={() => setShowMyGigs(!showMyGigs)}/>
-              }
-            />
-            <ListItem
-              title={<Text>{"Has spare ticket?"}</Text>}
-              trailing={
-                <Switch value={hasSpareTicket} onValueChange={() => setHasSpareTicket(!hasSpareTicket)}/>
-              }
-            />
-            <ListItem
-              title={<Text>{startDate ? dateFormat(startDate, "fullDate") : "Gig start date?"}</Text>}
-              trailing={
-                <IconButton
-                  onPress={() => setShowDatePicker(!showDatePicker)}
-                  icon={<Icon name="calendar" size={25}/>}
-                />
-              }
-            />
-          </View>
-        </View>
-      ) : null }
-      <CalendarModal
-        visible={showDatePicker}
-        date={startDate}
-        setDate={setStartDate}
-        onRequestClose={() => setShowDatePicker(false)}
+      <AdvancedSearchModel
+        setSearchString={setSearchString}
+        advancedSearch={advancedSearch}
+        setAdvancedSearch={setAdvancedSearch}
+        showMyGigs={showMyGigs}
+        setShowMyGigs={setShowMyGigs}
+        hasSpareTicket={hasSpareTicket}
+        setHasSpareTicket={setHasSpareTicket}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        setShowDatePicker={setShowDatePicker}
+        showDatePicker={showDatePicker}
+        submitSearchRequest={submitSearchRequest}
       />
-      {advancedSearch ? (
-        <View style={styles.searchButtonContainer}>
-          <Button
-            style={styles.searchButton}
-            title={"Search"}
-            onPress={submitSearchRequest}
-          />
-        </View>
-      ) : null}
     </View>
   )
 }
@@ -117,22 +183,45 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
+  modelContainer: {
+    padding: 15,
+    alignSelf: "center",
+    justifyContent: "center",
+    marginRight: 50,
+    marginLeft: 50,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 10,
+  },
   advancedSearch: {
     marginTop: 15,
     marginBottom: 40,
     marginLeft: 10,
     marginRight: 10,
   },
-  listItem: {
-    marginBottom: 10,
-  },
   searchButtonContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "70%",
+    marginTop: 10,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  closeButton: {
+    width: 100,
   },
   searchButton: {
-    width: "40%",
-    marginBottom: 25,
+    width: 100,
   },
   feedback: {
     marginTop: 15,

@@ -35,7 +35,7 @@ export default function MainMenu({showMainMenu, setMainMenu}) {
         borderWidth: 1,
         borderColor: "gray",
         borderStyle: "solid",
-        marginTop: Math.round(windowHeight * 0.50),
+        marginTop: Math.round(windowHeight * 0.5),
         width: Math.round(windowWidth * 0.75),
         ...styles.container,
       }}>

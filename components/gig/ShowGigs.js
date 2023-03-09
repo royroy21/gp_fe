@@ -2,9 +2,10 @@ import {FlatList, SafeAreaView, StyleSheet, Text} from "react-native";
 import React, {useEffect, useRef, useState} from "react";
 import getGigs from "./getGigs";
 import ShowGig from "./ShowGig";
-import Loading from "../forms/Loading";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import SearchGigs from "./SearchGigs";
+import AddGigButton from "./AddGigButton";
+import LoadingModal from "../loading/LoadingModal";
 
 function ShowGigs() {
   const resultsListViewRef = useRef();
@@ -37,7 +38,7 @@ function ShowGigs() {
 
   return (
     <>
-      <Loading isLoading={loading}/>
+      <LoadingModal isLoading={loading}/>
       {!loading ? (
         <SearchGigs
           getGigsFromAPI={getGigsFromAPI}
@@ -49,6 +50,8 @@ function ShowGigs() {
         <SafeAreaView style={styles.container}>
           <FlatList
             ref={resultsListViewRef}
+            // https://reactnative.dev/docs/optimizing-flatlist-configuration
+            removeClippedSubviews={true}
             data={gigs.results}
             renderItem={({item}) => <ShowGig gig={item}/>}
             keyExtractor={item => item.id}
@@ -58,6 +61,7 @@ function ShowGigs() {
       ) : (
         <Text>{!loading ? "Sorry no gigs found :(" : null}</Text>
       )}
+      {!loading ? <AddGigButton buttonStyle={styles.addGigButton}/> : null}
     </>
   )
 }
