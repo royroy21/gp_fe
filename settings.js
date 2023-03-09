@@ -1,10 +1,11 @@
+// Add a local_settings.js file to import settings used locally not saved to GIT.
+import {BACKEND_URL as LOCAL_BACKEND_URL} from "./local_settings";
 
 // GENERAL
 export const LOGIN_REQUIRED = false;
 
 // BACKEND RELATED
-export const BACKEND_URL = "http://192.168.196.206:8000"   // for mobile
-// export const BACKEND_URL = "http://localhost:8000"   // for web
+export const BACKEND_URL = LOCAL_BACKEND_URL;
 export const BACKEND_ENDPOINTS = {
   token: BACKEND_URL + "/api/token/",
   me: BACKEND_URL + "/api/user/me/",
