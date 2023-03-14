@@ -1,40 +1,56 @@
+import {useAsyncStorage} from "@react-native-async-storage/async-storage";
+
 const defaultParams = {
   resource: "",
-  jwt: "",
   successCallback: () => {},
   errorCallback: () => {},
 }
 
 class APIClient {
   get = async (params=defaultParams) => {
+    const headers = await this.getHeaders();
     const requestOptions = {
       method: "GET",
-      headers: this.getHeaders(params.jwt),
+      headers: headers,
     }
     await this.makeRequestHandleResponse(params, requestOptions, [200]);
   };
 
   post = async (params=defaultParams) => {
+    const headers = await this.getHeaders();
     const requestOptions = {
       method: "POST",
-      headers: this.getHeaders(params.jwt),
+      headers: headers,
       body: JSON.stringify(params.data)
     }
     await this.makeRequestHandleResponse(params, requestOptions, [200, 201]);
   }
 
   put = async (params=defaultParams) => {
+    const headers = await this.getHeaders();
     const requestOptions = {
       method: "PUT",
-      headers: this.getHeaders(params.jwt),
+      headers: headers,
       body: JSON.stringify(params.data)
     }
     await this.makeRequestHandleResponse(params, requestOptions, [200]);
   }
 
-  getHeaders (jwt=null) {
+  patch = async (params=defaultParams) => {
+    const headers = await this.getHeaders();
+    const requestOptions = {
+      method: "PATCH",
+      headers: headers,
+      body: JSON.stringify(params.data)
+    }
+    await this.makeRequestHandleResponse(params, requestOptions, [200]);
+  }
+
+  getHeaders = async () => {
+    const { getItem: getJWT } = useAsyncStorage("jwt");
+    const jwt = await getJWT();
     return jwt ? (
-      { "Content-Type": "application/json", "Authorization":  `JWT ${jwt}`}
+      { "Content-Type": "application/json", "Authorization":  `JWT ${JSON.parse(jwt).access}`}
     ) : (
       { "Content-Type": "application/json"}
     );
@@ -52,7 +68,7 @@ class APIClient {
       params.successCallback(json);
     } catch (error) {
       // TODO - Sentry logging here
-      console.error("unknown error @ APIClient.handleResponse: ", error);
+      console.error("unknown error @ APIClient.handleResponse: ", error, params);
       params.errorCallback({"unExpectedError": "Sorry an unexpected error has occurred."});
     }
   }

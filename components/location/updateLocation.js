@@ -2,7 +2,7 @@ import * as Location from 'expo-location';
 import {BACKEND_ENDPOINTS} from "../../settings";
 import client from "../../APIClient";
 
-async function updateLocation(userId, jwt) {
+async function updateLocation(userId) {
   // Sends a user's location to be saved at the backend.
   // Note: Location.reverseGeocodeAsync can be used to get location
   // data based upon latitude and longitude.
@@ -17,7 +17,6 @@ async function updateLocation(userId, jwt) {
 
   const params = {
     resource: `${BACKEND_ENDPOINTS.user}${userId}/`,
-    jwt: jwt.access,
     successCallback: () => console.log("Successfully updated user's location."),
     // TODO - Log this as sentry?
     errorCallback: (json) => console.log("error @updateLocation: ", JSON.stringify(json)),

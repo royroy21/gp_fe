@@ -1,75 +1,47 @@
 import {Dimensions, ScrollView, StyleSheet, Text, View} from "react-native";
-import {Button, IconButton, ListItem, useTheme} from "@react-native-material/core";
-import {Controller, useForm} from "react-hook-form";
-import {useEffect, useState} from "react";
-import TextInput from "../forms/TextInput";
-import SelectDropdown from 'react-native-select-dropdown';
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import searchCountries from "../location/searchCountries";
 import LoadingModal from "../loading/LoadingModal";
-import searchGenres from "../genre/searchGenres";
+import Errors from "../forms/Errors";
+import {Controller} from "react-hook-form";
+import TextInput from "../forms/TextInput";
+import SelectDropdown from "react-native-select-dropdown";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import DisplayGenres from "./DisplayGenres";
+import {Button, IconButton, ListItem} from "@react-native-material/core";
 import dateFormat from "dateformat";
 import CalendarModal from "../calendar";
-import postGigs from "./postGig";
-import Errors from "../forms/Errors";
+import useCountriesStore from "../../store/countries";
+import useGenresStore from "../../store/genres";
 
-function AddGigModal(props) {
+function BaseGigForm(props) {
   const {
-    defaultCountry,
-    countries,
-    setCountries,
-    setShowAddGig,
+    navigation,
+    control,
+    handleSubmit,
+    getValues,
+    setValue,
+    loading,
+    error,
+    numberOfGenres,
+    setNumberOfGenres,
+    showDatePicker,
+    setShowDatePicker,
+    hasSpareTicket,
+    setHasSpareTicket,
+    onSubmit,
+    loadingCountry=false,
   } = props;
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [response, setResponse] = useState(null);
-  const [genres, setGenres] = useState([]);
-  // Hacky way to trigger rerender when a new genre is added or removed
-  const [numberOfGenres, setNumberOfGenres] = useState(0);
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [hasSpareTicket, setHasSpareTicket] = useState(false);
+  const windowHeight = Dimensions.get("window").height;
 
-  const onError = (error) => {
-    setLoading(false);
-    setError(error);
-  }
+  const {
+    object: genres,
+    search: searchGenres,
+  } = useGenresStore();
 
-  const onSubmit = async (data) => {
-    setError(null);
-    setLoading(true);
-    await postGigs(data, setResponse, onError);
-    setLoading(false);
-  }
-
-  useEffect(() => {onSuccess()}, [response]);
-  const onSuccess = () => {
-
-    console.log("response: ", response);
-
-    // Redirect to newly created gig page
-    return () => {
-      setLoading(false);
-      setError(null);
-      setResponse(null);
-      setGenres([]);
-      setNumberOfGenres(0);
-      setShowDatePicker(false);
-      setHasSpareTicket(false);
-    };
-  }
-
-  const { control, handleSubmit, getValues, setValue } = useForm({
-    defaultValues: {
-      "title": "",
-      "location": "",
-      "country": defaultCountry,
-      "genres": [],
-      "start_date": null,
-      "has_spare_ticket": false,
-    },
-  });
+  const {
+    object: countries,
+    search: searchCountries,
+  } = useCountriesStore();
 
   const removeGenre = (genres, genreIDToRemove) => {
     const updatedGenres = genres.filter(genre => {return genre.id !== genreIDToRemove});
@@ -81,23 +53,18 @@ function AddGigModal(props) {
     setValue("start_date", date)
   }
 
-  const theme = useTheme()
-  const windowHeight = Dimensions.get('window').height;
-  const windowWidth = Dimensions.get('window').width;
-
   const parsedError = error || {};
   return (
-    <>
-      <LoadingModal isLoading={loading} />
-      <View style={{
-        backgroundColor: theme.palette.background.main,
-        marginTop: Math.round(windowHeight * 0.1),
-        width: Math.round(windowWidth * 0.9),
-        maxHeight: Math.round(windowHeight * 0.8),
-        ...styles.modalContainer,
-      }}>
+    <View style={styles.container}>
+      <View style={{height: Math.round(windowHeight * 0.8), ...styles.dataContainer}}>
+        <LoadingModal isLoading={loading || loadingCountry} />
+        <CalendarModal
+          visible={showDatePicker}
+          date={getValues("start_date")}
+          setDate={setDate}
+          onRequestClose={() => setShowDatePicker(false)}
+        />
         <ScrollView>
-          <Text style={styles.title}>{"Add Gig"}</Text>
           {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
           {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
           <View style={styles.formContainer}>
@@ -161,7 +128,7 @@ function AddGigModal(props) {
               render={({ field: { onChange, onBlur, value } }) => (
                 <SelectDropdown
                   data={countries}
-                  defaultValue={defaultCountry}
+                  defaultValue={value}
                   onSelect={(selectedItem) => {
                     onChange(selectedItem);
                   }}
@@ -171,7 +138,7 @@ function AddGigModal(props) {
                   rowTextForSelection={(item, index) => {
                     return `${item.country} (${item.code})`
                   }}
-                  defaultButtonText={"Select country"}
+                  defaultButtonText={`country: ${value ? value.country : ""}`}
                   buttonStyle={styles.dropdownButton}
                   buttonTextStyle={styles.dropdownButtonText}
                   rowTextStyle={styles.dropdownRowTextStyle}
@@ -181,7 +148,7 @@ function AddGigModal(props) {
                   renderSearchInputLeftIcon={() => {
                     return <Icon name="magnify" size={25} />;
                   }}
-                  onChangeSearchInputText={(query) => searchCountries(query, setCountries)}
+                  onChangeSearchInputText={(query) => searchCountries(query)}
                 />
               )}
               name="country"
@@ -201,7 +168,7 @@ function AddGigModal(props) {
               render={({ field: { onChange, onBlur, value } }) => (
                 <SelectDropdown
                   data={genres}
-                  defaultValue={defaultCountry}
+                  defaultValue={value}
                   onSelect={(selectedItem) => {
                     const selectedGenres = getValues("genres");
                     if (selectedGenres.map(genre => genre.id).includes(selectedItem.id)) {
@@ -230,7 +197,7 @@ function AddGigModal(props) {
                   renderSearchInputLeftIcon={() => {
                     return <Icon name="magnify" size={25} />;
                   }}
-                  onChangeSearchInputText={(query) => searchGenres(query, setGenres)}
+                  onChangeSearchInputText={(query) => searchGenres(query)}
                 />
               )}
               name="genres"
@@ -241,7 +208,7 @@ function AddGigModal(props) {
                 <Text>{
                   getValues("start_date")
                   ? dateFormat(getValues("start_date"), "fullDate")
-                  : "Gig start date?"
+                  : "gig start date?"
                 }
                 </Text>
               }
@@ -254,28 +221,26 @@ function AddGigModal(props) {
               }
             />
             {parsedError.start_date && <Errors errorMessages={parsedError.start_date} />}
-            <CalendarModal
-              visible={showDatePicker}
-              date={getValues("start_date")}
-              setDate={setDate}
-              onRequestClose={() => setShowDatePicker(false)}
-            />
             <ListItem
-              title={<Text>{"I have a spare ticket"}</Text>}
+              title={
+                <Text>
+                  {"I have a spare ticket"}
+                </Text>
+              }
               onPress={() => {
                 const newValue = !hasSpareTicket;
                 setHasSpareTicket(newValue);
                 setValue("has_spare_ticket", newValue);
               }}
-              trailing={hasSpareTicket ? <Icon name="thumb-up-outline" size={20}/> : null}
+              trailing={getValues("has_spare_ticket") ? <Icon name="thumb-up-outline" size={25}/> : null}
             />
             {parsedError.has_spare_ticket && <Errors errorMessages={parsedError.has_spare_ticket} />}
           </View>
         </ScrollView>
         <View style={styles.buttonsContainer}>
           <Button
-            title={"close"}
-            onPress={() => setShowAddGig(false)}
+            title={"cancel"}
+            onPress={() => navigation.goBack()}
             style={styles.closeButton}
           />
           <Button
@@ -285,36 +250,20 @@ function AddGigModal(props) {
           />
         </View>
       </View>
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    padding: 15,
-    alignSelf: "center",
-    justifyContent: "center",
-    marginRight: 50,
-    marginLeft: 50,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderStyle: "solid",
-    borderRadius: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    elevation: 5,
+  container: {
+    height: "100%",
   },
-  title: {
-    fontSize: 16,
-    textAlign: "center",
+  dataContainer: {
+    margin: 15,
   },
   formContainer: {
     marginTop: 20,
-    overflow: "scroll",
+    marginBottom: 20,
   },
   buttonsContainer: {
     flexDirection: "row",
@@ -349,7 +298,7 @@ const styles = StyleSheet.create({
   },
   dropdownRowTextStyle: {
     fontSize: 16,
-  },
+  }
 });
 
-export default AddGigModal;
+export default BaseGigForm;

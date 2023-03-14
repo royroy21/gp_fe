@@ -1,11 +1,15 @@
 import EmailPassword from "./EmailPassword";
 import {StyleSheet, View} from "react-native";
-import {BACKEND_ENDPOINTS} from "../../settings";
+import useJWTStore from "../../store/jwt";
 
 export default function SignUpForm({ navigation }) {
+  const { create } = useJWTStore();
   return (
     <View style={styles.container}>
-      <EmailPassword navigation={navigation} targetResource={BACKEND_ENDPOINTS.user} />
+      <EmailPassword
+        action={create}
+        navigation={navigation}
+      />
     </View>
   );
 }
@@ -13,6 +17,6 @@ export default function SignUpForm({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",  // Center content vertically.
+    justifyContent: "center",
   }
 });

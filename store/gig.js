@@ -1,0 +1,46 @@
+import { create } from 'zustand'
+import client from "../APIClient";
+import {BACKEND_ENDPOINTS} from "../settings";
+
+const useGigStore = create((set) => ({
+  object: null,
+  loading: false,
+  error: null,
+  get: async (id) => {
+    set({ loading: true });
+    const params = {
+      resource: BACKEND_ENDPOINTS.gigs + id.toString(),
+      successCallback: (json) => set({ object: json, loading: false, error: null }),
+      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+    }
+    await client.get(params);
+  },
+  post: async (data, onSuccess) => {
+    set({ loading: true });
+    const params = {
+      resource: BACKEND_ENDPOINTS.gigs,
+      data: data,
+      successCallback: (json) => {
+        set({object: json, loading: false, error: null})
+        onSuccess(json.id);
+      },
+      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+    }
+    await client.post(params);
+  },
+  patch: async (id, data, onSuccess) => {
+    set({ loading: true });
+    const params = {
+      resource: BACKEND_ENDPOINTS.gigs + id.toString() + "/",
+      data: data,
+      successCallback: (json) => {
+        set({object: json, loading: false, error: null});
+        onSuccess(json.id);
+      },
+      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+    }
+    await client.patch(params);
+  },
+}));
+
+export default useGigStore;

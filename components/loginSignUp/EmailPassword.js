@@ -1,24 +1,28 @@
 import {View, StyleSheet} from "react-native";
 import { useForm, Controller }   from "react-hook-form";
 import {Button, Switch} from "@react-native-material/core";
-import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-storage";
-import client from "../../APIClient";
-import {useContext, useEffect, useState} from "react";
-import Errors from "./Errors";
-import TextInput from "./TextInput";
+import {useState} from "react";
+import Errors from "../forms/Errors";
+import TextInput from "../forms/TextInput";
 import {formContainerPadding} from "../../helpers/padding";
-import {UserContext} from "../context/user";
-import getUserFromBackend from "../../helpers/getUserFromBackend";
 import LoadingModal from "../loading/LoadingModal";
+import useUserStore from "../../store/user";
+import useJWTStore from "../../store/jwt";
 
-export default function EmailPassword({ navigation, targetResource, children }) {
-  const { setUser } = useContext(UserContext);
-  const { setItem: setJWTToAsyncStorage } = useAsyncStorage("jwt");
-  const [jwt, setJWT] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+export default function EmailPassword({ action, navigation, children }) {
+  const {
+    loading,
+    error,
+  } = useJWTStore();
+
+  const {
+    me,
+    loading: loadingUser,
+    error: errorUser,
+  } = useUserStore();
+
   const [showPassword, setShowPassword] = useState(false);
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
@@ -26,47 +30,26 @@ export default function EmailPassword({ navigation, targetResource, children }) 
   });
 
   const onSubmit = async (data) => {
-    setError(null)
-    const params = {
-      resource: targetResource,
-      data: data,
-      successCallback: setJWT,
-      errorCallback: onError,
-    };
-    setLoading(true);
-    await client.post(params);
+    await action(data, onSuccess);
   }
 
   const onSuccess = async () => {
-    if (!jwt) {
-      return
-    }
-    await AsyncStorage.clear();
-    await setJWTToAsyncStorage(JSON.stringify(jwt));
-    setJWT(null);
-    await getUserFromBackend(jwt, setUser);
+    await me();
     navigation.navigate("DefaultScreen");
     return () => {
-      setJWT(null);
-      setError(null);
-      setLoading(false);
       setShowPassword(false);
     };
   }
 
-  const onError = (error) => {
-    setLoading(false);
-    setError(error);
-  }
-
-  useEffect(() => {onSuccess()}, [jwt]);
-
   const parsedError = error || {};
+  const parsedGetUserError = errorUser || {};
   return (
     <View style={styles.container}>
-      <LoadingModal isLoading={loading} />
+      <LoadingModal isLoading={loading || loadingUser} />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
+      {(parsedGetUserError.detail) && <Errors errorMessages={parsedGetUserError.detail} />}
+      {(parsedGetUserError.unExpectedError) && <Errors errorMessages={parsedGetUserError.unExpectedError} />}
       <Controller
         control={control}
         rules={{

@@ -1,12 +1,13 @@
 import EmailPassword from "./EmailPassword";
 import {Button} from "@react-native-material/core";
 import {StyleSheet, View} from "react-native";
-import {BACKEND_ENDPOINTS} from "../../settings";
+import useJWTStore from "../../store/jwt";
 
 export default function LoginForm({ navigation }) {
+  const { login } = useJWTStore();
   return (
     <View style={styles.container}>
-      <EmailPassword navigation={navigation} targetResource={BACKEND_ENDPOINTS.token}>
+      <EmailPassword action={login} navigation={navigation}>
         <Button
           title={"sign up"}
           uppercase={false}
@@ -21,6 +22,6 @@ export default function LoginForm({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",  // Center content vertically.
+    justifyContent: "center",
   }
 });
