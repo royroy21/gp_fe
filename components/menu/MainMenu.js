@@ -3,8 +3,8 @@ import {Button, IconButton, ListItem, useTheme} from "@react-native-material/cor
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useNavigation} from "@react-navigation/native";
-import {UserContext} from "../context/user";
 import {useContext} from "react";
+import useUserStore from "../../store/user";
 
 export default function MainMenu({showMainMenu, setMainMenu}) {
   const theme = useTheme()
@@ -13,10 +13,10 @@ export default function MainMenu({showMainMenu, setMainMenu}) {
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
 
-  const { setUser } = useContext(UserContext);
+  const { clear: clearUser } = useUserStore();
   const logOut = async () => {
     await AsyncStorage.clear();
-    setUser(null);
+    clearUser();
     setMainMenu(false);
     navigation.navigate("DefaultScreen");
   }

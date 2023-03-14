@@ -1,6 +1,9 @@
 import TopNavigation from "./Top";
 import DefaultScreen from "../home/DefaultScreen";
 import {Text, View} from "react-native";
+import GigDetail from "../gig/GigDetail";
+import EditGig from "../gig/EditGig";
+import AddGig from "../gig/AddGig";
 
 function PlaceHolderMusic() {
   return (
@@ -25,6 +28,23 @@ function Routes({setCurrentRoute}) {
       key: initialRouteName,
       name: initialRouteName,
       component: DefaultScreen,
+    },
+    {
+      key: "GigDetail",
+      name: "GigDetail",
+      component: GigDetail,
+    },
+    {
+      key: "AddGig",
+      name: "AddGig",
+      title: "Add Gig",
+      component: AddGig,
+    },
+    {
+      key: "EditGig",
+      name: "EditGig",
+      title: "Edit Gig",
+      component: EditGig,
     },
     {
       key: "MusicScreen",

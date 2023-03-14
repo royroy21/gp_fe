@@ -1,13 +1,13 @@
-import LoginForm from "../forms/Login";
-import SignupForm from "../forms/SignUp";
+import LoginForm from "../loginSignUp/Login";
+import SignupForm from "../loginSignUp/SignUp";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import {useContext, useState} from "react";
-import {UserContext} from "../context/user";
+import {useState} from "react";
 import MainMenu from "../menu/MainMenu";
 import LoginOrMenuButton from "./LoginOrMenuButton";
+import useUserStore from "../../store/user";
 
 function TopNavigation({screenOptions, initialRouteName}) {
-  const {user} = useContext(UserContext);
+  const { object: user } = useUserStore();
   const Stack = createNativeStackNavigator();
   const [mainMenu, setMainMenu] = useState(false);
   return (
@@ -24,7 +24,7 @@ function TopNavigation({screenOptions, initialRouteName}) {
             component={options.component}
             options={({ navigation, route }) =>
               ({
-                title: "GIGPIG",
+                title: options.title || "GIGPIG",
                 headerRight: () => LoginOrMenuButton(navigation, user, mainMenu, setMainMenu),
               })
             }

@@ -1,14 +1,11 @@
 import {StyleSheet, Text, View} from "react-native";
-import {useContext, useEffect} from "react";
-import {UserContext} from "../context/user";
+import {useEffect} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {useNavigation} from "@react-navigation/native";
-import getUserFromBackend from "../../helpers/getUserFromBackend";
 import ShowGigs from "../gig/ShowGigs";
+import useUserStore from "../../store/user";
 
-export default function DefaultScreen() {
-  const navigation = useNavigation();
-  const { user, setUser } = useContext(UserContext);
+export default function DefaultScreen({navigation}) {
+  const { object: user, me } = useUserStore();
 
   const getUser = async () => {
     if (!user) {
@@ -17,8 +14,7 @@ export default function DefaultScreen() {
         navigation.navigate("LoginScreen");
         return null;
       }
-      const jwt = JSON.parse(unparsedJWT);
-      await getUserFromBackend(jwt, setUser);
+      await me();
     }
   }
 
@@ -26,7 +22,7 @@ export default function DefaultScreen() {
   return (
     <View style={styles.container}>
       {user ? (
-        <ShowGigs />
+        <ShowGigs navigation={navigation} />
       ) : (
         <Text>{"please log in :)"}</Text>
       )}
