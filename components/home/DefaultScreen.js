@@ -3,9 +3,11 @@ import {useEffect} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ShowGigs from "../gig/ShowGigs";
 import useUserStore from "../../store/user";
+import useJWTStore from "../../store/jwt";
 
 export default function DefaultScreen({navigation}) {
-  const { object: user, me } = useUserStore();
+  const { object: user, me, loading: loadingUser } = useUserStore();
+  const { loading: loadingJWT } = useJWTStore()
 
   const getUser = async () => {
     if (!user) {
@@ -24,7 +26,9 @@ export default function DefaultScreen({navigation}) {
       {user ? (
         <ShowGigs navigation={navigation} />
       ) : (
-        <Text>{"please log in :)"}</Text>
+        !loadingUser && !loadingJWT ? (
+          <Text>{"please log in :)"}</Text>
+          ) : null
       )}
     </View>
   );
