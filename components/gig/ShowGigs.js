@@ -65,10 +65,12 @@ function ShowGigs({ navigation }) {
           />
         </SafeAreaView>
       ) : (
-        <View style={styles.noGigsFoundContainer}>
-          <Text>{!loading ? "Sorry no gigs found " : null}</Text>
-          <Icon name="emoticon-sad" size={25}/>
-        </View>
+        !loading ? (
+          <View style={styles.noGigsFoundContainer}>
+            <Text>{!loading ? "Sorry no gigs found " : null}</Text>
+            <Icon name="emoticon-sad" size={25}/>
+          </View>
+        ) : null
       )}
       <Loading isLoading={loading}/>
       {!loading ? <AddGigButton buttonStyle={styles.addGigButton} navigation={navigation} /> : null}
