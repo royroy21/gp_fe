@@ -15,6 +15,7 @@ const useGenresStore = create((set) => ({
     }
     await client.get(params);
   },
+  clear: () => set({object: null, loading: false, error: null}),
 }));
 
 export default useGenresStore;

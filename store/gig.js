@@ -41,6 +41,7 @@ const useGigStore = create((set) => ({
     }
     await client.patch(params);
   },
+  clear: () => set({object: null, loading: false, error: null}),
 }));
 
 export default useGigStore;

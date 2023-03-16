@@ -32,6 +32,7 @@ const useJWTStore = create((set) => ({
   create: async (data, onSuccess) => {
     await getJWT(set, BACKEND_ENDPOINTS.user, data, onSuccess);
   },
+  clear: () => set({object: null, loading: false, error: null}),
 }));
 
 export default useJWTStore;

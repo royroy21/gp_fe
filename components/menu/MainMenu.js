@@ -1,25 +1,15 @@
 import {Dimensions, Modal, StyleSheet, Text, View} from "react-native";
 import {Button, IconButton, ListItem, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useNavigation} from "@react-navigation/native";
-import {useContext} from "react";
-import useUserStore from "../../store/user";
+import LogOut from "../loginSignUp/LogOut";
 
-export default function MainMenu({showMainMenu, setMainMenu}) {
+function MainMenu({showMainMenu, setMainMenu}) {
   const theme = useTheme()
   const navigation = useNavigation();
 
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
-
-  const { clear: clearUser } = useUserStore();
-  const logOut = async () => {
-    await AsyncStorage.clear();
-    clearUser();
-    setMainMenu(false);
-    navigation.navigate("DefaultScreen");
-  }
 
   return (
     <Modal
@@ -86,14 +76,9 @@ export default function MainMenu({showMainMenu, setMainMenu}) {
             <ListItem
               title={<Text>{"Log out"}</Text>}
               trailing={
-                <IconButton
-                  onPress={logOut}
-                  icon={
-                    <Icon
-                      name={"logout"}
-                      size={25}
-                    />
-                  }
+                <LogOut
+                  navigation={navigation}
+                  setMainMenu={setMainMenu}
                 />
               }
             />
@@ -139,3 +124,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
+
+export default MainMenu;
