@@ -4,11 +4,11 @@ import ShowGig from "./ShowGig";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import SearchGigs from "./SearchGigs";
 import AddGigButton from "./AddGigButton";
-import LoadingModal from "../loading/LoadingModal";
 import {useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useGigsStore from "../../store/gigs";
 import Errors from "../forms/Errors";
+import Loading from "../loading/Loading";
 
 function ShowGigs({ navigation }) {
   const theme = useTheme()
@@ -43,7 +43,6 @@ function ShowGigs({ navigation }) {
   const parsedError = error || {};
   return (
     <>
-      <LoadingModal isLoading={loading}/>
       {!loading ? (
         <SearchGigs
           getGigsFromAPI={getGigsFromAPI}
@@ -71,6 +70,7 @@ function ShowGigs({ navigation }) {
           <Icon name="emoticon-sad" size={25}/>
         </View>
       )}
+      <Loading isLoading={loading}/>
       {!loading ? <AddGigButton buttonStyle={styles.addGigButton} navigation={navigation} /> : null}
     </>
   )
