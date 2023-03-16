@@ -10,7 +10,7 @@ import useCountriesStore from "../../store/countries";
 import LoadingModal from "../loading/LoadingModal";
 import {useState} from "react";
 
-function LogOut({navigation, setMainMenu}) {
+function LogOut({navigation, setMainMenu, theme}) {
   const [loading, setLoading] = useState(false);
 
   // TODO - remember to add extra clear stores here.
@@ -43,6 +43,7 @@ function LogOut({navigation, setMainMenu}) {
         onPress={logOut}
         icon={
           <Icon
+            color={theme.palette.secondary.main}
             name={"logout"}
             size={25}
           />

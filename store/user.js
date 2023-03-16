@@ -21,6 +21,16 @@ const useUserStore = create((set) => ({
     }
     await client.get(params);
   },
+  patch: async (id, data) => {
+    set({ loading: true });
+    const params = {
+      resource: `${BACKEND_ENDPOINTS.user}${id}/`,
+      data: data,
+      successCallback: (json) => set({ object: json, loading: false, error: null }),
+      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+    }
+    await client.patch(params);
+  },
   clear: () => set({object: null, loading: false, error: null}),
 }));
 

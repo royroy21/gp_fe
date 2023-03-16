@@ -1,13 +1,13 @@
 import {Dimensions, Modal, StyleSheet, View} from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
-import {Button, useTheme} from "@react-native-material/core";
+import {Button, darkTheme, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 function CalendarModal({visible, date, setDate, onRequestClose}) {
   const theme = useTheme()
   const now = new Date()
-  const windowHeight = Dimensions.get('window').height;
-  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get("window").height;
+  const windowWidth = Dimensions.get("window").width;
   return (
     <Modal
       animationType={"slide"}
@@ -31,6 +31,9 @@ function CalendarModal({visible, date, setDate, onRequestClose}) {
             selectedDate={date ? new Date(date) : undefined}
             minDate={now}
             width={Math.round(windowWidth*0.9)}  // 90% of screen
+            textStyle={{
+              color: theme.palette.secondary.main,
+            }}
             todayBackgroundColor={theme.palette.primary.main}
             todayTextStyle={{color: theme.palette.background.main}}
             selectedDayStyle={{
@@ -40,8 +43,20 @@ function CalendarModal({visible, date, setDate, onRequestClose}) {
             restrictMonthNavigation={true}
             headerWrapperStyle={{marginTop: 10}}
             style={styles.calendar}
-            nextComponent={<Icon name="chevron-right" size={25} />}
-            previousComponent={<Icon name="chevron-left" size={25} />}
+            nextComponent={
+              <Icon
+                name="chevron-right"
+                size={25}
+                color={theme.palette.secondary.main}
+              />
+            }
+            previousComponent={
+              <Icon
+                name="chevron-left"
+                size={25}
+                color={theme.palette.secondary.main}
+              />
+            }
             onDateChange={(date) => {
               setDate(date)
               onRequestClose()

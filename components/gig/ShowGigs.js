@@ -1,19 +1,21 @@
-import {FlatList, SafeAreaView, StyleSheet, Text, View} from "react-native";
+import {FlatList, SafeAreaView, StyleSheet, View} from "react-native";
 import React, {useEffect, useRef, useState} from "react";
 import ShowGig from "./ShowGig";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import SearchGigs from "./SearchGigs";
 import AddGigButton from "./AddGigButton";
-import {useTheme} from "@react-native-material/core";
+import {Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useGigsStore from "../../store/gigs";
 import Errors from "../forms/Errors";
 import Loading from "../loading/Loading";
+import LoadingModal from "../loading/LoadingModal";
 
 function ShowGigs({ navigation }) {
   const theme = useTheme()
   const resultsListViewRef = useRef();
   const [searchFeedback, setSearchFeedback] = useState(null);
+  const [loadingNext, setLoadingNext] = useState(false);
   const {object: gigs, error, loading, get} = useGigsStore();
 
   async function getGigsFromAPI(url=BACKEND_ENDPOINTS.gigs, doNotMergeResults=false) {
@@ -36,7 +38,9 @@ function ShowGigs({ navigation }) {
 
   async function getNextPage() {
     if (gigs.next) {
-      await getGigsFromAPI(gigs.next)
+      setLoadingNext(true);
+      await getGigsFromAPI(gigs.next);
+      setLoadingNext(false);
     }
   }
 
@@ -67,12 +71,13 @@ function ShowGigs({ navigation }) {
       ) : (
         !loading ? (
           <View style={styles.noGigsFoundContainer}>
-            <Text>{!loading ? "Sorry no gigs found " : null}</Text>
-            <Icon name="emoticon-sad" size={25}/>
+            <Text>{"Sorry no gigs found "}</Text>
+            <Icon name="emoticon-sad" size={25} color={theme.palette.secondary.main}/>
           </View>
         ) : null
       )}
-      <Loading isLoading={loading}/>
+      <LoadingModal isLoading={loading && !loadingNext} />
+      <Loading isLoading={loading && loadingNext} />
       {!loading ? <AddGigButton buttonStyle={styles.addGigButton} navigation={navigation} /> : null}
     </>
   )

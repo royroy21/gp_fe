@@ -3,14 +3,14 @@ import LoadingModal from "../loading/LoadingModal";
 import Errors from "../forms/Errors";
 import {Controller} from "react-hook-form";
 import TextInput from "../forms/TextInput";
-import SelectDropdown from "react-native-select-dropdown";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import DisplayGenres from "./DisplayGenres";
-import {Button, IconButton, ListItem} from "@react-native-material/core";
+import {Button, IconButton, ListItem, useTheme} from "@react-native-material/core";
 import dateFormat from "dateformat";
 import CalendarModal from "../calendar";
 import useCountriesStore from "../../store/countries";
 import useGenresStore from "../../store/genres";
+import SelectDropdown from "../SelectDropdown";
 
 function BaseGigForm(props) {
   const {
@@ -21,6 +21,7 @@ function BaseGigForm(props) {
     setValue,
     loading,
     error,
+    clearErrors,
     numberOfGenres,
     setNumberOfGenres,
     showDatePicker,
@@ -31,6 +32,7 @@ function BaseGigForm(props) {
     loadingCountry=false,
   } = props;
 
+  const theme = useTheme();
   const windowHeight = Dimensions.get("window").height;
 
   const {
@@ -136,18 +138,10 @@ function BaseGigForm(props) {
                     return `country: ${selectedItem.country}`;
                   }}
                   rowTextForSelection={(item, index) => {
-                    return `${item.country} (${item.code})`
+                    return `${item.country} (${item.code})`;
                   }}
                   defaultButtonText={`country: ${value ? value.country : ""}`}
-                  buttonStyle={styles.dropdownButton}
-                  buttonTextStyle={styles.dropdownButtonText}
-                  rowTextStyle={styles.dropdownRowTextStyle}
-                  search={true}
-                  searchInputStyle={styles.dropdownSearchInputStyleStyle}
                   searchPlaceHolder={"Search Country"}
-                  renderSearchInputLeftIcon={() => {
-                    return <Icon name="magnify" size={25} />;
-                  }}
                   onChangeSearchInputText={(query) => searchCountries(query)}
                 />
               )}
@@ -179,30 +173,20 @@ function BaseGigForm(props) {
                     setNumberOfGenres(selectedGenres.length)
                   }}
                   buttonTextAfterSelection={(selectedItem, index) => {
-                    return "Select more genres?"
+                    return "select more genres?"
                   }}
                   rowTextForSelection={(item, index) => {
                     return item.genre
                   }}
                   defaultButtonText={"select genres"}
-                  buttonStyle={{
-                    ...styles.dropdownButton,
-                    marginTop: 5,
-                  }}
-                  buttonTextStyle={styles.dropdownButtonText}
-                  rowTextStyle={styles.dropdownRowTextStyle}
-                  search={true}
-                  searchInputStyle={styles.dropdownSearchInputStyleStyle}
                   searchPlaceHolder={"Search Genres"}
-                  renderSearchInputLeftIcon={() => {
-                    return <Icon name="magnify" size={25} />;
-                  }}
                   onChangeSearchInputText={(query) => searchGenres(query)}
                 />
               )}
               name="genres"
             />
             {parsedError.genres && <Errors errorMessages={parsedError.genres} />}
+            <View style={{marginTop: 2}}/>
             <ListItem
               title={
                 <Text>{
@@ -216,15 +200,22 @@ function BaseGigForm(props) {
               trailing={
                 <IconButton
                   onPress={() => setShowDatePicker(!showDatePicker)}
-                  icon={<Icon name="calendar" size={25}/>}
+                  icon={
+                    <Icon
+                      name="calendar"
+                      size={25}
+                      color={theme.palette.secondary.main}
+                    />
+                  }
                 />
               }
             />
             {parsedError.start_date && <Errors errorMessages={parsedError.start_date} />}
+            <View style={{marginTop: 2}}/>
             <ListItem
               title={
                 <Text>
-                  {"I have a spare ticket"}
+                  {"have a spare ticket?"}
                 </Text>
               }
               onPress={() => {
@@ -232,7 +223,21 @@ function BaseGigForm(props) {
                 setHasSpareTicket(newValue);
                 setValue("has_spare_ticket", newValue);
               }}
-              trailing={getValues("has_spare_ticket") ? <Icon name="thumb-up-outline" size={25}/> : null}
+              trailing={
+                getValues("has_spare_ticket") ? (
+                  <Icon
+                    name="thumb-up-outline"
+                    size={25}
+                    color={theme.palette.secondary.main}
+                  />
+                ) : (
+                  <Icon
+                    name="thumb-down-outline"
+                    size={25}
+                    color={"grey"}
+                  />
+                )
+              }
             />
             {parsedError.has_spare_ticket && <Errors errorMessages={parsedError.has_spare_ticket} />}
           </View>
@@ -240,7 +245,10 @@ function BaseGigForm(props) {
         <View style={styles.buttonsContainer}>
           <Button
             title={"cancel"}
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              clearErrors();
+              navigation.goBack()
+            }}
             style={styles.closeButton}
           />
           <Button
@@ -279,26 +287,6 @@ const styles = StyleSheet.create({
   submitButton: {
     width: 100,
   },
-  dropdownButton: {
-    marginTop: 1,
-    width: "100%",
-    backgroundColor: "#F5F5F5",
-    borderBottomWidth: 1,
-    borderBottomColor: "#949494",
-    minHeight: 56,
-  },
-  dropdownButtonText: {
-    fontSize: 16,
-    textAlign: "left",
-  },
-  dropdownSearchInputStyleStyle: {
-    backgroundColor: '#EFEFEF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#444',
-  },
-  dropdownRowTextStyle: {
-    fontSize: 16,
-  }
 });
 
 export default BaseGigForm;

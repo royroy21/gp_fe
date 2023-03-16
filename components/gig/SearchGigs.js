@@ -1,6 +1,6 @@
-import {Button, IconButton, ListItem, TextInput, useTheme} from "@react-native-material/core";
+import {Button, IconButton, ListItem, TextInput, useTheme, Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {Dimensions, Modal, StyleSheet, Text, View} from "react-native";
+import {Dimensions, Modal, StyleSheet, View} from "react-native";
 import {useState} from "react";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import dateFormat from "dateformat";
@@ -20,9 +20,8 @@ function AdvancedSearchModel(props) {
     setShowDatePicker,
     showDatePicker,
     submitSearchRequest,
+    theme,
   } = props
-
-  const theme = useTheme()
   const windowHeight = Dimensions.get('window').height;
   const windowWidth = Dimensions.get('window').width;
 
@@ -48,7 +47,7 @@ function AdvancedSearchModel(props) {
             variant={"outlined"}
             trailing={
               <IconButton
-                icon={<Icon name="magnify" size={25} />}
+                icon={<Icon name="magnify" size={25} color={theme.palette.secondary.main}/>}
                 onPress={submitSearchRequest}
               />
             }
@@ -58,12 +57,20 @@ function AdvancedSearchModel(props) {
             <ListItem
               title={<Text>{"Show my gigs only?"}</Text>}
               onPress={() => setShowMyGigs(!showMyGigs)}
-              trailing={showMyGigs ? <Icon name="thumb-up-outline" size={20}/> : null}
+              trailing={
+                showMyGigs ? (
+                  <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+                ) : null
+              }
             />
             <ListItem
               title={<Text>{"Has spare ticket?"}</Text>}
               onPress={() => setHasSpareTicket(!hasSpareTicket)}
-              trailing={hasSpareTicket ? <Icon name="thumb-up-outline" size={20}/> : null}
+              trailing={
+                hasSpareTicket ? (
+                  <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+                ) : null
+              }
             />
             <ListItem
               title={<Text>{startDate ? dateFormat(startDate, "fullDate") : "Gig start date?"}</Text>}
@@ -71,7 +78,7 @@ function AdvancedSearchModel(props) {
               trailing={
                 <IconButton
                   onPress={() => setShowDatePicker(!showDatePicker)}
-                  icon={<Icon name="calendar" size={25}/>}
+                  icon={<Icon name="calendar" size={25} color={theme.palette.secondary.main}/>}
                 />
               }
             />
@@ -107,6 +114,8 @@ function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const theme = useTheme()
 
   function submitSearchRequest() {
     // If searchString is empty send query to return all results
@@ -146,16 +155,18 @@ function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
         variant={"outlined"}
         trailing={
           <IconButton
-            icon={<Icon name="magnify" size={25} />}
+            icon={<Icon name="magnify" size={25} color={theme.palette.secondary.main}/>}
             onPress={submitSearchRequest}
           />
         }
         onChangeText={setSearchString}
       />
       <View style={{flexDirection: "row"}}>
-        <Text style={styles.feedback}>{searchFeedback || ""}</Text>
+        <Text style={{color: theme.palette.secondary.main, ...styles.feedback}}>
+          {searchFeedback || ""}
+        </Text>
         <IconButton
-          icon={<Icon name="chevron-down" size={25} />}
+          icon={<Icon name="chevron-down" size={25} color={theme.palette.primary.main}/>}
           onPress={() => setAdvancedSearch(!advancedSearch)}
         />
       </View>
@@ -172,6 +183,7 @@ function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
         setShowDatePicker={setShowDatePicker}
         showDatePicker={showDatePicker}
         submitSearchRequest={submitSearchRequest}
+        theme={theme}
       />
     </View>
   )
@@ -224,6 +236,7 @@ const styles = StyleSheet.create({
     width: 100,
   },
   feedback: {
+    fontSize: 14,
     marginTop: 15,
     marginLeft: 5,
     marginBottom: 5,

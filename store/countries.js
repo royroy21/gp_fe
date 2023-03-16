@@ -9,7 +9,7 @@ const useCountriesStore = create((set) => ({
   search: async (query) => {
     set({ loading: true });
     const params = {
-      resource: BACKEND_ENDPOINTS.searchGenres + query,
+      resource: BACKEND_ENDPOINTS.searchCountries + query,
       successCallback: (json) => set({ object: json, loading: false, error: null }),
       errorCallback: (json) => set({ object: null, loading: false, error: json }),
     }

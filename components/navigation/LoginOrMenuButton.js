@@ -2,7 +2,7 @@ import {Button, Icon, IconButton} from "@react-native-material/core";
 
 function LoginOrMenuButton(navigation, user, mainMenu, setMainMenu) {
   return (
-    user ? (
+    user.id ? (
       <IconButton
         icon={<Icon name="menu" size={30} />}
         onPress={() => setMainMenu(!mainMenu)}

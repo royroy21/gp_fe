@@ -1,5 +1,5 @@
-import {Pressable, StyleSheet, Text, View} from "react-native";
-import {Chip, Surface, useTheme} from "@react-native-material/core";
+import {Pressable, StyleSheet, View} from "react-native";
+import {Chip, Surface, Text} from "@react-native-material/core";
 import dateFormat from "dateformat";
 
 function ShowGig({ gig, theme, navigation }) {
@@ -18,11 +18,11 @@ function ShowGig({ gig, theme, navigation }) {
           navigation.navigate("GigDetail", {id: gig.id});
         }}
       >
-        <Text style={{color: theme.palette.primary.main, fontSize: 16}}>
+        <Text style={{color: theme.palette.primary.main}}>
           {`${gig.title}`}
         </Text>
-        {gig.description ? <Text>{getDescription(gig)}</Text> : null}
-        <Text>
+        {gig.description ? <Text style={styles.description}>{getDescription(gig)}</Text> : null}
+        <Text style={styles.location}>
           {`${gig.location} (${gig.country.country})`}
         </Text>
         <View style={{flexDirection: "row", flexWrap: "wrap"}}>
@@ -55,7 +55,14 @@ function ShowGig({ gig, theme, navigation }) {
 const styles = StyleSheet.create({
   chip: {
     margin: 2,
-  }
+  },
+  description: {
+    fontSize: 14,
+  },
+  location: {
+    marginTop: 5,
+    fontSize: 14,
+  },
 });
 
 export default ShowGig;

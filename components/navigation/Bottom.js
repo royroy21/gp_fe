@@ -2,7 +2,7 @@ import {StyleSheet, TouchableOpacity, View} from "react-native";
 import {Icon, useTheme} from "@react-native-material/core";
 import {useNavigation} from "@react-navigation/native";
 
-function BottomNavigation({currentRoute}) {
+function BottomNavigation({currentRoute, navigationTheme}) {
   const navigation = useNavigation();
   const theme = useTheme()
   function iconStyle(focused) {
@@ -17,7 +17,7 @@ function BottomNavigation({currentRoute}) {
     {name: "message", navigateTo: "MessageScreen"},
   ]
   return (
-    <View style={styles.container}>
+    <View style={{backgroundColor: navigationTheme.colors.card, ...styles.container}}>
       {navigationItems.map((item) => (
         <TouchableOpacity
           style={styles.button}

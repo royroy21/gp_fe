@@ -5,7 +5,7 @@ import BaseGigForm from "./BaseGigForm";
 
 function EditGig({ route, navigation }) {
   const { gig } = route.params;
-  const { control, handleSubmit, getValues, setValue } = useForm({
+  const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
     defaultValues: {
       "title": gig.title,
       "location": gig.location,
@@ -17,7 +17,7 @@ function EditGig({ route, navigation }) {
     },
   });
 
-  const {loading, error, patch} = useGigStore();
+  const {get, loading, error, patch, clear} = useGigStore();
   const onSubmit = async (data) => {
     await patch(gig.id, data, onSuccess)
   }
@@ -44,6 +44,11 @@ function EditGig({ route, navigation }) {
       setValue={setValue}
       loading={loading}
       error={error}
+      clearErrors={() => {
+        clear();
+        clearErrors();
+        get(gig.id);
+      }}
       numberOfGenres={numberOfGenres}
       setNumberOfGenres={setNumberOfGenres}
       showDatePicker={showDatePicker}

@@ -1,14 +1,14 @@
 import BaseGigForm from "./BaseGigForm";
 import {useForm} from "react-hook-form";
 import useCountryStore from "../../store/country";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import useGigStore from "../../store/gig";
 import useUserStore from "../../store/user";
 
 function AddGig({ navigation }) {
   const {object: defaultCountry, loading: loadingCountry, get: getCountry} = useCountryStore();
   const { object: user } = useUserStore();
-  const { control, handleSubmit, getValues, setValue, resetField } = useForm({
+  const { control, handleSubmit, getValues, setValue, resetField, clearErrors } = useForm({
     defaultValues: {
       "title": "",
       "location": "",
@@ -21,7 +21,7 @@ function AddGig({ navigation }) {
   });
   useEffect(() => {getCountry(user, resetField)}, [])
 
-  const { loading, error, post } = useGigStore();
+  const { loading, error, post, clear } = useGigStore();
   const onSubmit = async (data) => {
     await post(data, onSuccess)
   }
@@ -48,6 +48,10 @@ function AddGig({ navigation }) {
       setValue={setValue}
       loading={loading}
       error={error}
+      clearErrors={() => {
+        clear();
+        clearErrors();
+      }}
       numberOfGenres={numberOfGenres}
       setNumberOfGenres={setNumberOfGenres}
       showDatePicker={showDatePicker}

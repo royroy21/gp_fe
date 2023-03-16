@@ -18,4 +18,5 @@ export const BACKEND_ENDPOINTS = {
 };
 
 // Used if country cannot be obtained from User object.
+// TODO - currently not being used :/
 export const DEFAULT_COUNTRY_CODE = "GB";

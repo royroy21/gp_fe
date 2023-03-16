@@ -4,10 +4,9 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useState} from "react";
 import MainMenu from "../menu/MainMenu";
 import LoginOrMenuButton from "./LoginOrMenuButton";
-import useUserStore from "../../store/user";
+import {StatusBar} from "react-native";
 
-function TopNavigation({screenOptions, initialRouteName}) {
-  const { object: user } = useUserStore();
+function TopNavigation({user, screens, initialRouteName}) {
   const Stack = createNativeStackNavigator();
   const [mainMenu, setMainMenu] = useState(false);
   return (
@@ -16,8 +15,12 @@ function TopNavigation({screenOptions, initialRouteName}) {
         showMainMenu={mainMenu}
         setMainMenu={setMainMenu}
       />
-      <Stack.Navigator initialRouteName={initialRouteName}>
-        {screenOptions.map(options => (
+      {user.theme === "dark" ? (<StatusBar barStyle="light-content" />) : null}
+      <Stack.Navigator
+        initialRouteName={initialRouteName}
+        screenOptions={{animation: "none"}}
+      >
+        {screens.map(options => (
           <Stack.Screen
             key={options.key}
             name={options.name}
@@ -33,12 +36,12 @@ function TopNavigation({screenOptions, initialRouteName}) {
         <Stack.Screen
           name="LoginScreen"
           component={LoginForm}
-          options={{ title: "Login" }}
+          options={{ title: "Login"}}
         />
         <Stack.Screen
           name="SignUpScreen"
           component={SignupForm}
-          options={{ title: "Sign up" }}
+          options={{ title: "Sign up"}}
         />
       </Stack.Navigator>
     </>

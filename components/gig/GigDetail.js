@@ -1,7 +1,7 @@
-import {Dimensions, ScrollView, StyleSheet, Text, View} from "react-native";
-import {useContext, useEffect} from "react";
+import {Dimensions, ScrollView, StyleSheet, View} from "react-native";
+import {useEffect} from "react";
 import LoadingModal from "../loading/LoadingModal";
-import {Button, ListItem, useTheme} from "@react-native-material/core";
+import {Button, ListItem, Text, useTheme} from "@react-native-material/core";
 import DisplayGenres from "./DisplayGenres";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import dateFormat from "dateformat";
@@ -17,7 +17,7 @@ function Detail({ gig, user, navigation, theme, windowHeight }) {
         <ScrollView>
           <ListItem
             title={
-              <Text style={{color: theme.palette.primary.main, ...detailStyles.title}}>
+              <Text style={{color: theme.palette.primary.main}}>
                 {gig.title}
               </Text>
             }
@@ -26,25 +26,25 @@ function Detail({ gig, user, navigation, theme, windowHeight }) {
           <DisplayGenres genres={gig.genres} containerStyle={{marginBottom: 5}} />
           <ListItem
             title={<Text>{`location: ${gig.location}`}</Text>}
-            trailing={<Icon name="warehouse" size={25}/>}
+            trailing={<Icon name="warehouse" size={25} color={theme.palette.secondary.main}/>}
           />
           <ListItem
             title={<Text>{`country: ${gig.country.country} (${gig.country.code})`}</Text>}
-            trailing={<Icon name="island" size={25}/>}
+            trailing={<Icon name="island" size={25} color={theme.palette.secondary.main}/>}
           />
           {gig.has_spare_ticket ? (
             <ListItem
               title={<Text>{"Has spare ticket"}</Text>}
-              trailing={gig.has_spare_ticket ? <Icon name="thumb-up-outline" size={25}/> : null}
+              trailing={gig.has_spare_ticket ? <Icon name="thumb-up-outline" size={25} color={theme.palette.secondary.main}/> : null}
             />
           ) : null}
           <ListItem
             title={<Text>{`start date: ${dateFormat(gig.start_date, "fullDate")}`}</Text>}
-            trailing={<Icon name="calendar" size={25}/>}
+            trailing={<Icon name="calendar" size={25} color={theme.palette.secondary.main}/>}
           />
           <ListItem
             title={<Text>{`posted by: ${gig.user.username}`}</Text>}
-            trailing={<Icon name="account" size={25}/>}
+            trailing={<Icon name="account" size={25} color={theme.palette.secondary.main}/>}
           />
         </ScrollView>
       </View>
@@ -80,11 +80,9 @@ const detailStyles = StyleSheet.create({
     marginRight: 15,
     alignSelf: "flex-end",
   },
-  title: {
-    fontSize: 16,
-  },
   description: {
     margin: 10,
+    fontSize: 14,
   },
   buttonsContainer: {
     width: "100%",

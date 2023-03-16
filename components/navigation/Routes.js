@@ -1,9 +1,11 @@
 import TopNavigation from "./Top";
 import DefaultScreen from "../home/DefaultScreen";
-import {Text, View} from "react-native";
+import {View} from "react-native";
 import GigDetail from "../gig/GigDetail";
 import EditGig from "../gig/EditGig";
 import AddGig from "../gig/AddGig";
+import {Text} from "@react-native-material/core";
+import Settings from "../settings";
 
 function PlaceHolderMusic() {
   return (
@@ -21,9 +23,9 @@ function PlaceHolderMessage() {
   )
 }
 
-function Routes({setCurrentRoute}) {
+function Routes({user, setCurrentRoute}) {
   const initialRouteName = "DefaultScreen";
-  const screenOptions = [
+  const screens = [
     {
       key: initialRouteName,
       name: initialRouteName,
@@ -56,10 +58,16 @@ function Routes({setCurrentRoute}) {
       name: "MessageScreen",
       component: PlaceHolderMessage,
     },
+    {
+      key: "Settings",
+      name: "Settings",
+      component: Settings,
+    },
   ]
   return (
     <TopNavigation
-      screenOptions={screenOptions}
+      user={user}
+      screens={screens}
       initialRouteName={initialRouteName}
       setCurrentRoute={setCurrentRoute}
     />

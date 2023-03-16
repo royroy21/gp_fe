@@ -38,6 +38,7 @@ function MainMenu({showMainMenu, setMainMenu}) {
                   onPress={() => {}}
                   icon={
                     <Icon
+                      color={theme.palette.secondary.main}
                       name={"headphones"}
                       size={25}
                     />
@@ -52,6 +53,7 @@ function MainMenu({showMainMenu, setMainMenu}) {
                   onPress={() => {}}
                   icon={
                     <Icon
+                      color={theme.palette.secondary.main}
                       name={"radio"}
                       size={25}
                     />
@@ -63,9 +65,13 @@ function MainMenu({showMainMenu, setMainMenu}) {
               title={<Text>{"Settings"}</Text>}
               trailing={
                 <IconButton
-                  onPress={() => {}}
+                  onPress={() => {
+                    navigation.navigate("Settings");
+                    setMainMenu(!showMainMenu);
+                  }}
                   icon={
                     <Icon
+                      color={theme.palette.secondary.main}
                       name={"application-cog"}
                       size={25}
                     />
@@ -79,6 +85,7 @@ function MainMenu({showMainMenu, setMainMenu}) {
                 <LogOut
                   navigation={navigation}
                   setMainMenu={setMainMenu}
+                  theme={theme}
                 />
               }
             />
