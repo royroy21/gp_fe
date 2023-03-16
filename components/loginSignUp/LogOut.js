@@ -7,8 +7,12 @@ import useGenresStore from "../../store/genres";
 import useGigStore from "../../store/gig";
 import useJWTStore from "../../store/jwt";
 import useCountriesStore from "../../store/countries";
+import LoadingModal from "../loading/LoadingModal";
+import {useState} from "react";
 
 function LogOut({navigation, setMainMenu}) {
+  const [loading, setLoading] = useState(false);
+
   // TODO - remember to add extra clear stores here.
   // maybe find a better way to do this?
   const { clear: clearCountries } = useCountriesStore();
@@ -18,6 +22,7 @@ function LogOut({navigation, setMainMenu}) {
   const { clear: clearJWT } = useJWTStore();
   const { clear: clearUser } = useUserStore();
   const logOut = async () => {
+    setLoading(true);
     await AsyncStorage.clear();
     clearCountries();
     clearCountry();
@@ -27,17 +32,23 @@ function LogOut({navigation, setMainMenu}) {
     clearUser();
     setMainMenu(false);
     navigation.navigate("DefaultScreen");
+    return () => {
+      setLoading(false);
+    }
   }
   return (
-    <IconButton
-      onPress={logOut}
-      icon={
-        <Icon
-          name={"logout"}
-          size={25}
-        />
-      }
-    />
+    <>
+      <LoadingModal isLoading={loading}/>
+      <IconButton
+        onPress={logOut}
+        icon={
+          <Icon
+            name={"logout"}
+            size={25}
+          />
+        }
+      />
+    </>
   )
 }
 
