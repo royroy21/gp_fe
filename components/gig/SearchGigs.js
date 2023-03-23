@@ -60,7 +60,9 @@ function AdvancedSearchModel(props) {
               trailing={
                 showMyGigs ? (
                   <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
-                ) : null
+                ) : (
+                  <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+                )
               }
             />
             <ListItem
@@ -69,7 +71,9 @@ function AdvancedSearchModel(props) {
               trailing={
                 hasSpareTicket ? (
                   <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
-                ) : null
+                ) : (
+                  <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+                )
               }
             />
             <ListItem

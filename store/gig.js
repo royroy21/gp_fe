@@ -11,7 +11,7 @@ const useGigStore = create((set) => ({
     const params = {
       resource: BACKEND_ENDPOINTS.gigs + id.toString(),
       successCallback: (json) => set({ object: json, loading: false, error: null }),
-      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+      errorCallback: (json) => set({ loading: false, error: json }),
     }
     await client.get(params);
   },
@@ -24,7 +24,7 @@ const useGigStore = create((set) => ({
         set({object: json, loading: false, error: null})
         onSuccess(json.id);
       },
-      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+      errorCallback: (json) => set({ loading: false, error: json }),
     }
     await client.post(params);
   },
@@ -37,7 +37,7 @@ const useGigStore = create((set) => ({
         set({object: json, loading: false, error: null});
         onSuccess(json.id);
       },
-      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+      errorCallback: (json) => set({ loading: false, error: json }),
     }
     await client.patch(params);
   },

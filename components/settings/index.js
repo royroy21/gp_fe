@@ -1,74 +1,103 @@
 import useUserStore from "../../store/user";
-import {Button, ListItem, Text, useTheme} from "@react-native-material/core";
+import {ListItem, Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {useEffect} from "react";
 import LoadingModal from "../loading/LoadingModal";
-import {StyleSheet, View} from "react-native";
 import Errors from "../forms/Errors";
+import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function Settings({ navigation }) {
   const theme = useTheme();
-  const { me, object, patch, loading, error } = useUserStore();
+  const { object, patch, loading, error } = useUserStore();
 
-  useEffect(() => {
-    me();
-  }, [])
+  const themeOnPress = () => {
+    const data = {
+      theme: object.theme === "dark" ? "light" : "dark",
+    }
+    patch(object.id, data);
+  }
+
+  const getPreferredUnits = () => {
+    if (object.preferred_units) {
+      return object.preferred_units;
+    } else {
+      return object.units;
+    }
+  }
+
+  const MILES = "miles";
+  const KM = "kilometers";
+  const setPreferredUnits = () => {
+    if (object.units && !object.preferred_units) {
+      return object.units === MILES ? KM : MILES;
+    } else if (object.preferred_units) {
+      return object.preferred_units === MILES ? KM : MILES;
+    }
+  }
+
+  const preferredUnitsOnPress = () => {
+    const data = {
+      preferred_units: setPreferredUnits(object),
+    }
+    patch(object.id, data);
+  }
+
+  const subscribeToEmailOnPress = () => {
+    const data = {
+      subscribed_to_emails: !object.subscribed_to_emails,
+    }
+    patch(object.id, data);
+  }
 
   const parsedError = error || {};
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <LoadingModal isLoading={loading} />
-        {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
-        {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
-        <ListItem
-          title={<Text>{`theme: ${object.theme}`}</Text>}
-          trailing={
-            <Icon
-              name="theme-light-dark"
-              size={25}
-              color={theme.palette.secondary.main}
-              onPress={() => {
-                const data = {
-                  theme: object.theme === "dark" ? "light" : "dark",
-                }
-                patch(object.id, data);
-              }}
-            />
-          }
-        />
-        {parsedError.theme && <Errors errorMessages={parsedError.theme} />}
-      </View>
-      <View style={styles.buttonsContainer}>
-        <Button
-          title={"back"}
-          onPress={() => {
-            navigation.goBack()
-          }}
-          style={styles.closeButton}
-        />
-      </View>
-    </View>
+    <CustomScrollViewWithOneButton
+      buttonTitle={"go back"}
+      buttonOnPress={navigation.goBack}
+    >
+      <LoadingModal isLoading={loading} />
+      {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
+      {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
+      <ListItem
+        title={<Text>{`theme: ${object.theme}`}</Text>}
+        onPress={themeOnPress}
+        trailing={
+          <Icon
+            name="theme-light-dark"
+            size={25}
+            color={object.theme === "light" ? theme.palette.secondary.main : "grey"}
+            onPress={themeOnPress}
+          />
+        }
+      />
+      {parsedError.theme && <Errors errorMessages={parsedError.theme} />}
+      <ListItem
+        title={<Text>{`your preferred units are ${getPreferredUnits()}`}</Text>}
+        onPress={preferredUnitsOnPress}
+        trailing={
+          <Icon
+            name="road"
+            size={25}
+            color={getPreferredUnits() === MILES ? theme.palette.secondary.main : "grey"}
+            onPress={preferredUnitsOnPress}
+          />
+        }
+      />
+      {parsedError.preferred_units && <Errors errorMessages={parsedError.preferred_units} />}
+      <ListItem
+        title={<Text>{"subscribe to email?"}</Text>}
+        onPress={subscribeToEmailOnPress}
+        trailing={
+          <Icon
+            name={"email"}
+            size={25}
+            color={object.subscribed_to_emails ? theme.palette.secondary.main : "grey"}
+            onPress={subscribeToEmailOnPress}
+          />
+        }
+      />
+      {parsedError.subscribed_to_emails && <Errors errorMessages={parsedError.subscribed_to_emails} />}
+    </CustomScrollViewWithOneButton>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 15,
-    height: "100%",
-  },
-  content: {
-    marginTop: 10,
-    height: "80%",
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    width: "100%",
-    marginTop: 40,
-    marginLeft: "auto",
-    marginRight: "auto",
-  },
-})
 
 export default Settings;

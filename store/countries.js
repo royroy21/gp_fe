@@ -11,7 +11,7 @@ const useCountriesStore = create((set) => ({
     const params = {
       resource: BACKEND_ENDPOINTS.searchCountries + query,
       successCallback: (json) => set({ object: json, loading: false, error: null }),
-      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+      errorCallback: (json) => set({ loading: false, error: json }),
     }
     await client.get(params);
   },

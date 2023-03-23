@@ -6,6 +6,10 @@ import EditGig from "../gig/EditGig";
 import AddGig from "../gig/AddGig";
 import {Text} from "@react-native-material/core";
 import Settings from "../settings";
+import OtherUser from "../otherUser";
+import Profile from "../profile";
+import ProfilePage from "../profile/ProfilePage";
+import EditProfile from "../profile/EditProfile";
 
 function PlaceHolderMusic() {
   return (
@@ -57,6 +61,21 @@ function Routes({user, setCurrentRoute}) {
       key: "MessageScreen",
       name: "MessageScreen",
       component: PlaceHolderMessage,
+    },
+    {
+      key: "OtherUser",
+      name: "OtherUser",
+      component: OtherUser,
+    },
+    {
+      key: "ProfilePage",
+      name: "ProfilePage",
+      component: ProfilePage,
+    },
+    {
+      key: "EditProfile",
+      name: "EditProfile",
+      component: EditProfile,
     },
     {
       key: "Settings",

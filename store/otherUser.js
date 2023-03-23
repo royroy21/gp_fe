@@ -2,21 +2,15 @@ import { create } from 'zustand'
 import client from "../APIClient";
 import {BACKEND_ENDPOINTS} from "../settings";
 
-const useCountryStore = create((set) => ({
+const useOtherUserStore = create((set) => ({
   object: null,
   loading: false,
   error: null,
-  get: async (user, onSuccess) => {
-    if (!(user && user.country)) {
-      return
-    }
+  get: async (id) => {
     set({ loading: true });
     const params = {
-      resource: BACKEND_ENDPOINTS.country + user.country.code,
-      successCallback: (json) => {
-        set({object: json, loading: false, error: null});
-        onSuccess("country", {defaultValue: json});
-      },
+      resource: `${BACKEND_ENDPOINTS.user}${id}/`,
+      successCallback: (json) => set({ object: json, loading: false, error: null }),
       errorCallback: (json) => set({ loading: false, error: json }),
     }
     await client.get(params);
@@ -24,4 +18,4 @@ const useCountryStore = create((set) => ({
   clear: () => set({object: null, loading: false, error: null}),
 }));
 
-export default useCountryStore;
+export default useOtherUserStore;

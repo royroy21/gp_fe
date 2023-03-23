@@ -23,6 +23,7 @@ function LogOut({navigation, setMainMenu, theme}) {
   const { clear: clearUser } = useUserStore();
   const logOut = async () => {
     setLoading(true);
+    navigation.navigate("DefaultScreen");
     await AsyncStorage.clear();
     clearCountries();
     clearCountry();
@@ -31,7 +32,6 @@ function LogOut({navigation, setMainMenu, theme}) {
     clearJWT();
     clearUser();
     setMainMenu(false);
-    navigation.navigate("DefaultScreen");
     return () => {
       setLoading(false);
     }

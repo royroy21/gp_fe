@@ -35,11 +35,14 @@ function MainMenu({showMainMenu, setMainMenu}) {
               title={<Text>{"Profile"}</Text>}
               trailing={
                 <IconButton
-                  onPress={() => {}}
+                  onPress={() => {
+                    navigation.navigate("ProfilePage");
+                    setMainMenu(!showMainMenu);
+                  }}
                   icon={
                     <Icon
                       color={theme.palette.secondary.main}
-                      name={"headphones"}
+                      name={"account"}
                       size={25}
                     />
                   }

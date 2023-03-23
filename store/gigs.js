@@ -20,7 +20,7 @@ const useGigsStore = create((set) => ({
     const params = {
       resource: url,
       successCallback: (json) => onSuccess(set, json, previousGigs, doNotMergeResults),
-      errorCallback: (json) => set({ object: null, loading: false, error: json }),
+      errorCallback: (json) => set({ loading: false, error: json }),
     }
     await client.get(params);
   },
