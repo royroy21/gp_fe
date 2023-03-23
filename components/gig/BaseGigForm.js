@@ -84,7 +84,7 @@ function BaseGigForm(props) {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              label={"title, artist, band or festival"}
+              label={"title, artist, band, festival .."}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -100,7 +100,7 @@ function BaseGigForm(props) {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              label={"venue, pub, warehouse or location"}
+              label={"location, venue, pub, warehouse .."}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -142,12 +142,12 @@ function BaseGigForm(props) {
                 onChange(selectedItem);
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
-                return `country: ${selectedItem.country}`;
+                return selectedItem.country;
               }}
               rowTextForSelection={(item, index) => {
                 return `${item.country} (${item.code})`;
               }}
-              defaultButtonText={`country: ${value ? value.country : ""}`}
+              defaultButtonText={value ? value.country : ""}
               searchPlaceHolder={"Search Country"}
               onChangeSearchInputText={(query) => searchCountries(query)}
             />

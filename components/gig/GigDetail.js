@@ -39,11 +39,11 @@ function GigDetail({route, navigation}) {
       {gig.description ? <Text style={styles.description}>{gig.description}</Text> : null}
       <DisplayGenres genres={gig.genres} containerStyle={{marginBottom: 5}} />
       <ListItem
-        title={<Text>{`location: ${gig.location}`}</Text>}
+        title={<Text>{gig.location}</Text>}
         trailing={<Icon name="warehouse" size={25} color={theme.palette.secondary.main}/>}
       />
       <ListItem
-        title={<Text>{`country: ${gig.country.country} (${gig.country.code})`}</Text>}
+        title={<Text>{`${gig.country.country} (${gig.country.code})`}</Text>}
         trailing={<Icon name="island" size={25} color={theme.palette.secondary.main}/>}
       />
       {gig.has_spare_ticket ? (
@@ -53,7 +53,7 @@ function GigDetail({route, navigation}) {
         />
       ) : null}
       <ListItem
-        title={<Text>{`start date: ${dateFormat(gig.start_date, "fullDate")}`}</Text>}
+        title={<Text>{`${dateFormat(gig.start_date, "fullDate")}`}</Text>}
         trailing={<Icon name="calendar" size={25} color={theme.palette.secondary.main}/>}
       />
       <ListItem
