@@ -30,8 +30,8 @@ function AddGig({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
 
-  const onSuccess = (id) => {
-    navigation.navigate("GigDetail", {id: id});
+  const onSuccess = (gig) => {
+    navigation.navigate("GigDetail", {gig: gig});
     return () => {
       setNumberOfGenres(0);
       setShowDatePicker(false);

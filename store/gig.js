@@ -22,7 +22,7 @@ const useGigStore = create((set) => ({
       data: data,
       successCallback: (json) => {
         set({object: json, loading: false, error: null})
-        onSuccess(json.id);
+        onSuccess(json);
       },
       errorCallback: (json) => set({ loading: false, error: json }),
     }
@@ -35,7 +35,7 @@ const useGigStore = create((set) => ({
       data: data,
       successCallback: (json) => {
         set({object: json, loading: false, error: null});
-        onSuccess(json.id);
+        onSuccess(json);
       },
       errorCallback: (json) => set({ loading: false, error: json }),
     }

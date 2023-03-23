@@ -1,18 +1,18 @@
 import {StyleSheet} from "react-native";
-import {useEffect} from "react";
-import LoadingModal from "../loading/LoadingModal";
 import {ListItem, Text, useTheme} from "@react-native-material/core";
 import DisplayGenres from "./DisplayGenres";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import dateFormat from "dateformat";
-import useGigStore from "../../store/gig";
-import Errors from "../forms/Errors";
 import useUserStore from "../../store/user";
 import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
 
-function Detail({ gig, user, navigation, theme }) {
+function GigDetail({route, navigation}) {
+  const { gig } = route.params;
+  const { object: user } = useUserStore();
+  const theme = useTheme();
+
   const navigateToOwner = () => {
-    navigation.navigate("OtherUser", {id: gig.user.id});
+    navigation.navigate("OtherUser", {user: gig.user});
   }
   const edit = () => {
     navigation.navigate("EditGig", {gig: gig});
@@ -21,6 +21,7 @@ function Detail({ gig, user, navigation, theme }) {
     console.log("RESPOND TO GIG BUTTON ACTIVATED");
   }
   const isGigOwner = user && user.id === gig.user.id;
+
   return (
     <CustomScrollViewWithTwoButtons
       actionButtonTitle={isGigOwner ? "edit" : "respond"}
@@ -77,29 +78,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 })
-
-function GigDetail({route, navigation}) {
-  const { id } = route.params;
-  const { object: user } = useUserStore();
-  const theme = useTheme();
-  const { object, loading, error, get } = useGigStore();
-  useEffect(() => {get(id)}, [])
-  const parsedError = error || {};
-  return (
-    <>
-      <LoadingModal isLoading={loading} />
-      {!loading && object ? (
-        <Detail
-          user={user}
-          gig={object}
-          navigation={navigation}
-          theme={theme}
-        />
-      ) : null}
-      {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
-      {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
-    </>
-  )
-}
 
 export default GigDetail;
