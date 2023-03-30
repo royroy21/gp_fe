@@ -1,4 +1,5 @@
-import {Image, Modal, StyleSheet, View} from "react-native";
+import {Modal, StyleSheet, View} from "react-native";
+import LoadingContent from "./LoadingContent";
 
 function LoadingModal({isLoading}) {
   return (
@@ -8,7 +9,7 @@ function LoadingModal({isLoading}) {
       visible={isLoading}
     >
       <View style={styles.container}>
-        <Image style={styles.image} source={require("../../assets/squaresWave.gif")} />
+        <LoadingContent />
       </View>
     </Modal>
   )
@@ -18,14 +19,9 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#000000",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    opacity: 0.7,
-  },
-  image: {
-    borderRadius: 5,
   },
 });
 

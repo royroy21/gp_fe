@@ -1,10 +1,11 @@
-import {Image, StyleSheet, View} from "react-native";
+import {StyleSheet, View} from "react-native";
+import LoadingContent from "./LoadingContent";
 
 function Loading({isLoading}) {
   return (
     isLoading ? (
       <View style={styles.container}>
-        <Image style={styles.image} source={require("../../assets/squaresWave.gif")} />
+        <LoadingContent />
       </View>
     ) : null
   )
@@ -14,9 +15,8 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-  },
-  image: {
-    borderRadius: 5,
+    position: "absolute",
+    bottom: 0,
   },
 });
 
