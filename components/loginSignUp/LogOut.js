@@ -9,6 +9,11 @@ import useJWTStore from "../../store/jwt";
 import useCountriesStore from "../../store/countries";
 import LoadingModal from "../loading/LoadingModal";
 import {useState} from "react";
+import useRoomsStore from "../../store/rooms";
+import useGigsStore from "../../store/gigs";
+import useOtherUserStore from "../../store/otherUser";
+import usePreviousMessagesStore from "../../store/previousMessages";
+import {closeAndDeleteOtherWebSockets} from "../message";
 
 function LogOut({navigation, setMainMenu, theme}) {
   const [loading, setLoading] = useState(false);
@@ -18,8 +23,12 @@ function LogOut({navigation, setMainMenu, theme}) {
   const { clear: clearCountries } = useCountriesStore();
   const { clear: clearCountry } = useCountryStore();
   const { clear: clearGenres } = useGenresStore();
-  const { clear: clearGigs } = useGigStore();
+  const { clear: clearGig } = useGigStore();
+  const { clear: clearGigs } = useGigsStore();
   const { clear: clearJWT } = useJWTStore();
+  const { clear: clearOtherUser } = useOtherUserStore();
+  const { clear: clearPreviousMessages } = usePreviousMessagesStore();
+  const { clear: clearRooms } = useRoomsStore();
   const { clear: clearUser } = useUserStore();
   const logOut = async () => {
     setLoading(true);
@@ -28,9 +37,14 @@ function LogOut({navigation, setMainMenu, theme}) {
     clearCountries();
     clearCountry();
     clearGenres();
+    clearGig();
     clearGigs();
     clearJWT();
+    clearOtherUser();
+    clearPreviousMessages();
+    clearRooms();
     clearUser();
+    closeAndDeleteOtherWebSockets();
     setMainMenu(false);
     return () => {
       setLoading(false);

@@ -11,20 +11,25 @@ export default function DefaultScreen({navigation}) {
   const theme = useTheme();
 
   const { object: user, me, loading: loadingUser } = useUserStore();
-  const { loading: loadingJWT } = useJWTStore()
+  const { object: jwt, loading: loadingJWT, setExisting } = useJWTStore()
 
-  const getUser = async () => {
+  const getUserAndSetJWT = async () => {
     if (!user) {
       const unparsedJWT  = await AsyncStorage.getItem("jwt");
       if (!unparsedJWT) {
         navigation.navigate("LoginScreen");
         return null;
       }
+      setExisting(unparsedJWT);
       await me();
+    }
+    if (!jwt) {
+      const unparsedJWT  = await AsyncStorage.getItem("jwt");
+      setExisting(unparsedJWT);
     }
   }
 
-  useEffect(() => {getUser()}, []);
+  useEffect(() => {getUserAndSetJWT()}, []);
   return (
     <View style={styles.container}>
       {user ? (

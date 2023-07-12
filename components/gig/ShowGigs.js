@@ -16,7 +16,7 @@ function ShowGigs({ navigation }) {
   const resultsListViewRef = useRef();
   const [searchFeedback, setSearchFeedback] = useState(null);
   const [loadingNext, setLoadingNext] = useState(false);
-  const {object: gigs, error, loading, get} = useGigsStore();
+  const {object: gigs, error, loading, get, clear} = useGigsStore();
 
   async function getGigsFromAPI(url=BACKEND_ENDPOINTS.gigs, doNotMergeResults=false) {
     if (url.includes("/api/")) {
@@ -44,6 +44,12 @@ function ShowGigs({ navigation }) {
     }
   }
 
+  async function resetResults() {
+    setSearchFeedback(null);
+    clear();
+    await get(BACKEND_ENDPOINTS.gigs, [], true);
+  }
+
   const parsedError = error || {};
   return (
     <>
@@ -61,8 +67,10 @@ function ShowGigs({ navigation }) {
           <FlatList
             ref={resultsListViewRef}
             // https://reactnative.dev/docs/optimizing-flatlist-configuration
-            removeClippedSubviews={true}
+            // removeClippedSubviews={true}
             data={gigs.results}
+            refreshing={loading}
+            onRefresh={resetResults}
             renderItem={({item}) => <ShowGig gig={item} theme={theme} navigation={navigation} />}
             keyExtractor={item => item.id}
             onEndReached={() => getNextPage()}
@@ -99,7 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-  }
+  },
 });
 
 export default ShowGigs;

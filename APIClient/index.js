@@ -1,4 +1,5 @@
 import {useAsyncStorage} from "@react-native-async-storage/async-storage";
+import {DEFAULT_ERROR_MESSAGE} from "../settings";
 
 const defaultParams = {
   resource: "",
@@ -69,7 +70,7 @@ class APIClient {
     } catch (error) {
       // TODO - Sentry logging here
       console.error("unknown error @ APIClient.handleResponse: ", error, params);
-      params.errorCallback({"unExpectedError": "Sorry an unexpected error has occurred."});
+      params.errorCallback({"unExpectedError": DEFAULT_ERROR_MESSAGE});
     }
   }
 }

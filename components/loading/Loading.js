@@ -1,10 +1,11 @@
 import {StyleSheet, View} from "react-native";
 import LoadingContent from "./LoadingContent";
 
-function Loading({isLoading}) {
+function Loading({isLoading, positionTop=false}) {
+  const style = positionTop ? styles.containerTop : styles.containerBottom;
   return (
     isLoading ? (
-      <View style={styles.container}>
+      <View style={style}>
         <LoadingContent />
       </View>
     ) : null
@@ -12,7 +13,13 @@ function Loading({isLoading}) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerTop: {
+    width: "100%",
+    alignItems: "center",
+    position: "absolute",
+    top: 0,
+  },
+  containerBottom: {
     width: "100%",
     alignItems: "center",
     position: "absolute",

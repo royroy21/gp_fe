@@ -7,22 +7,15 @@ import AddGig from "../gig/AddGig";
 import {Text} from "@react-native-material/core";
 import Settings from "../settings";
 import OtherUser from "../otherUser";
-import Profile from "../profile";
 import ProfilePage from "../profile/ProfilePage";
 import EditProfile from "../profile/EditProfile";
+import Room from "../message/Room";
+import Rooms from "../message/Rooms";
 
 function PlaceHolderMusic() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>{"meow!! meow!! Music!"}</Text>
-    </View>
-  )
-}
-
-function PlaceHolderMessage() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>{"meow!! meow!! Message"}</Text>
     </View>
   )
 }
@@ -58,9 +51,14 @@ function Routes({user, setCurrentRoute}) {
       component: PlaceHolderMusic,
     },
     {
-      key: "MessageScreen",
-      name: "MessageScreen",
-      component: PlaceHolderMessage,
+      key: "Room",
+      name: "Room",
+      component: Room,
+    },
+    {
+      key: "RoomsScreen",
+      name: "RoomsScreen",
+      component: Rooms,
     },
     {
       key: "OtherUser",

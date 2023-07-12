@@ -14,7 +14,7 @@ function BottomNavigation({currentRoute, navigationTheme}) {
   const navigationItems = [
     {name: "pig", navigateTo: "DefaultScreen"},
     {name: "music", navigateTo: "MusicScreen"},
-    {name: "message", navigateTo: "MessageScreen"},
+    {name: "message", navigateTo: "RoomsScreen"},
   ]
   return (
     <View style={{backgroundColor: navigationTheme.colors.card, ...styles.container}}>
