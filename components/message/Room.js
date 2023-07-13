@@ -114,8 +114,10 @@ function Room(props) {
         {messages.length ? (
           <SafeAreaView style={styles.messagesContainer}>
             <FlatList
+              contentContainerStyle={{
+                marginTop: "auto",
+              }}
               ref={messagesRef}
-              // onScroll={handleScroll}
               data={messages}
               onContentSizeChange={handleMessagesContentChange}
               renderItem={({item}) => (
