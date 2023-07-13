@@ -134,17 +134,9 @@ function Room(props) {
         )}
         <View style={styles.inputContainer}>
           <TextInput
-            inputContainerStyle={{
-              // borderWidth: 1,
-              // borderColor: "pink",
-            }}
             inputStyle={{
-              // borderWidth: 1,
-              // borderColor: "pink",
-              // paddingBottom: 10,
-            }}
-            trailingContainerStyle={{
-              // paddingBottom: 5,
+              paddingTop: 10,
+              paddingBottom: 10,
             }}
             multiline={true}
             onChangeText={(text) => setMessage(text)}
