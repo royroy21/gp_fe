@@ -28,17 +28,19 @@ class RoomDetail extends Component {
     return (
       <Surface elevation={2} category="medium" style={{padding: 5, margin: 5}}>
         <Pressable onPress={navigateToRoom}>
-          <View>
-            <Text style={{color: theme.palette.primary.main}}>
-              {`${room.title} (${room.id}) `}
+          <View style={styles.container}>
+            <View style={styles.data}>
+              <Text style={{color: theme.palette.primary.main}}>
+                {`${room.title} (${room.id}) `}
+              </Text>
+              <Text>
+                {this.formatLastMessage(room.last_message)}
+              </Text>
+            </View>
+            <Text style={styles.timestamp}>
+              {dateFormat(room.timestamp, "mediumDate")}
             </Text>
           </View>
-          <Text>
-            {this.formatLastMessage(room.last_message)}
-          </Text>
-          <Text style={styles.timestamp}>
-            {dateFormat(room.timestamp, "mediumDate")}
-          </Text>
         </Pressable>
       </Surface>
     )
@@ -46,6 +48,13 @@ class RoomDetail extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+  },
+  data: {
+    alignSelf: "flex-start",
+    width: "78%",
+  },
   timestamp: {
     color: "grey",
     fontSize: 13,
