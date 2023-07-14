@@ -67,7 +67,6 @@ function Room(props) {
   useFocusEffect(
     useCallback(() => {
       setUpWebSocket();
-      getPreviousMessages();
       return () => {
         setMessage("");
         setMessages([]);
@@ -76,6 +75,12 @@ function Room(props) {
       };
     }, [room])
   );
+
+  useFocusEffect(
+    useCallback(() => {
+      getPreviousMessages();
+    }, [webSocket])
+  )
 
   const send = () => {
     webSocket.send(JSON.stringify({message: message}));
