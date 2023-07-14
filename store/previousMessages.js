@@ -3,9 +3,8 @@ import client from "../APIClient";
 import mergeListsOfObjects from "../helpers/mergeLists";
 
 const onSuccess = (set, json, previousMessages, onSuccessExtra) => {
-  json.results = json.results.reverse()
   if (previousMessages.length > 0) {
-    json.results = mergeListsOfObjects(json.results, previousMessages);
+    json.results = mergeListsOfObjects(previousMessages, json.results);
   }
   set({ object: json, loading: false, error: null });
   if (onSuccessExtra) {

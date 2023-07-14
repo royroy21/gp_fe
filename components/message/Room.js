@@ -26,6 +26,7 @@ function Room(props) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
+
   const {object: jwt} = useJWTStore();
   if (!jwt) {
     navigation.navigate("DefaultScreen");
@@ -57,15 +58,16 @@ function Room(props) {
     }
     ws.onmessage = (e) => {
       const newMessage = JSON.parse(e.data);
-      setMessages(prevState => [...prevState, newMessage])
+      setMessages(prevState => [newMessage, ...prevState]);
+      messagesRef.current.scrollToIndex({index: 0, animated: true});
     }
     setWebSocket(ws);
   }
 
   useFocusEffect(
     useCallback(() => {
-      getPreviousMessages();
       setUpWebSocket();
+      getPreviousMessages();
       return () => {
         setMessage("");
         setMessages([]);
@@ -81,24 +83,11 @@ function Room(props) {
     Keyboard.dismiss();
   }
 
-  const handleMessagesContentChange = () => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollToEnd({ animated: true });
-    }
-  };
-
   async function getPreviousPage() {
     if (previousMessages.next) {
       setLoadingPreviousPage(true);
       await get(previousMessages.next, messages, setMessages);
       setLoadingPreviousPage(false);
-    }
-  }
-
-  async function handleScroll (event) {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    if (offsetY === 0) {
-      await getPreviousPage();
     }
   }
 
@@ -114,12 +103,11 @@ function Room(props) {
         {messages.length ? (
           <SafeAreaView style={styles.messagesContainer}>
             <FlatList
-              contentContainerStyle={{
-                marginTop: "auto",
-              }}
+              inverted={true}
+              onEndReached={getPreviousPage}
               ref={messagesRef}
               data={messages}
-              onContentSizeChange={handleMessagesContentChange}
+              keyExtractor={(item) => String(item.id)}
               renderItem={({item}) => (
                 <MessageDetail
                   message={item}
