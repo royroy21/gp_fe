@@ -26,6 +26,7 @@ function Room(props) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
+  const [newMessageAlert, setNewMessageAlert] = useState(false);
 
   const {object: jwt} = useJWTStore();
   if (!jwt) {
@@ -57,11 +58,20 @@ function Room(props) {
       ws.close();
     }
     ws.onmessage = (e) => {
-      const newMessage = JSON.parse(e.data);
-      setMessages(prevState => [newMessage, ...prevState]);
-      messagesRef.current.scrollToIndex({index: 0, animated: true});
+      executeMessageReceivedBehavior(e);
     }
     setWebSocket(ws);
+  }
+
+  function executeMessageReceivedBehavior(event) {
+    const newMessage = JSON.parse(event.data);
+    setMessages(prevState => [newMessage, ...prevState]);
+    if (newMessage.user.id === user.id) {
+      messagesRef.current.scrollToIndex({index: 0, animated: true});
+    } else {
+      setNewMessageAlert(true);
+      setTimeout(() => setNewMessageAlert(false), 1500);
+    }
   }
 
   useFocusEffect(
@@ -101,9 +111,35 @@ function Room(props) {
     <>
       <Loading isLoading={loadingPreviousPage} positionTop={true} />
       <View style={styles.container}>
-        <Text>
-          {`room: ${room} connection status: ${webSocket ? readyStates[webSocket.readyState] : "null"}`}
-        </Text>
+        {/*<Text>*/}
+        {/*  {`room: ${room} connection status: ${webSocket ? readyStates[webSocket.readyState] : "null"}`}*/}
+        {/*</Text>*/}
+        <IconButton
+          style={{
+            ...styles.menuButton,
+            backgroundColor: theme.palette.background.main,
+          }}
+          onPress={() => {console.log("menu button pressed")}}
+          icon={
+            <Icon
+              name={"message-cog"}
+              size={30}
+              color={theme.palette.secondary.main}
+            />
+          }
+        />
+        {newMessageAlert ? (
+          <View
+            style={{
+              ...styles.newMessageAlert,
+              backgroundColor: theme.palette.background.main,
+            }}
+          >
+            <Text style={{color: theme.palette.primary.main}}>
+              {"new message received"}
+            </Text>
+          </View>
+        ) : null}
         {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
         {messages.length ? (
           <SafeAreaView style={styles.messagesContainer}>
@@ -161,7 +197,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   messagesContainer: {
-    height: "85%",
+    height: "90%",
   },
   inputContainer: {
     padding: 5,
@@ -173,6 +209,23 @@ const styles = StyleSheet.create({
     height: "85%",
     flex: 1,
     flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  menuButton: {
+    position: "absolute",
+    top: 5,
+    right: 15,
+    zIndex: 2,
+  },
+  newMessageAlert: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 2,
+    height: 30,
     justifyContent: "center",
     alignItems: "center",
   },
