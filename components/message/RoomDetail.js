@@ -23,7 +23,7 @@ class RoomDetail extends Component {
   render() {
     const { room, theme, navigation } = this.props;
     const navigateToRoom = () => {
-      navigation.navigate("Room", {room: room.id});
+      navigation.navigate("Room", {room: room});
     }
     return (
       <Surface elevation={2} category="medium" style={{padding: 5, margin: 5}}>

@@ -13,6 +13,7 @@ import Errors from "../forms/Errors";
 import {useFocusEffect} from "@react-navigation/native";
 import getWebSocket, {readyStates} from "./index";
 import Loading from "../loading/Loading";
+import RoomOptionsModal from "./RoomOptionsModal";
 
 function Room(props) {
   const theme = useTheme();
@@ -27,6 +28,7 @@ function Room(props) {
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
   const [newMessageAlert, setNewMessageAlert] = useState(false);
+  const [showOptions, setOptions] = useState(false);
 
   const {object: jwt} = useJWTStore();
   if (!jwt) {
@@ -37,7 +39,7 @@ function Room(props) {
   const {object: previousMessages, loading, get, clear} = usePreviousMessagesStore();
   const getPreviousMessages = async () => {
     clear();
-    await get(BACKEND_ENDPOINTS.message + "?room_id=" + room, [], setMessages);
+    await get(BACKEND_ENDPOINTS.message + "?room_id=" + room.id, [], setMessages);
   }
 
   const setUpWebSocket = () => {
@@ -46,7 +48,7 @@ function Room(props) {
       setWebSocket(null)
     }
     const webSocketParams = {
-      room: room,
+      room: room.id,
       accessToken: accessToken,
       closeOtherWebSockets: true,
     }
@@ -82,6 +84,8 @@ function Room(props) {
         setMessages([]);
         setError(null);
         setWebSocket(null);
+        setNewMessageAlert(false);
+        setOptions(false);
       };
     }, [room])
   );
@@ -110,6 +114,12 @@ function Room(props) {
   return (
     <>
       <Loading isLoading={loadingPreviousPage} positionTop={true} />
+      <RoomOptionsModal
+        room={room}
+        showOptions={showOptions}
+        setOptions={setOptions}
+        theme={theme}
+      />
       <View style={styles.container}>
         {/*<Text>*/}
         {/*  {`room: ${room} connection status: ${webSocket ? readyStates[webSocket.readyState] : "null"}`}*/}
@@ -119,7 +129,7 @@ function Room(props) {
             ...styles.menuButton,
             backgroundColor: theme.palette.background.main,
           }}
-          onPress={() => {console.log("menu button pressed")}}
+          onPress={() => setOptions(!showOptions)}
           icon={
             <Icon
               name={"message-cog"}
