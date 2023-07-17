@@ -1,77 +1,52 @@
-import {Dimensions, Modal, StyleSheet, View} from "react-native";
+import {Dimensions, StyleSheet} from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
-import {Button, darkTheme, useTheme} from "@react-native-material/core";
+import {useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import CenteredModalWithOneButton from "../centeredModal/CenteredModalWithOneButton";
 
 function CalendarModal({visible, date, setDate, onRequestClose}) {
   const theme = useTheme()
   const now = new Date()
-  const windowHeight = Dimensions.get("window").height;
   const windowWidth = Dimensions.get("window").width;
   return (
-    <Modal
-      animationType={"slide"}
-      transparent={true}
-      visible={visible}
-      onRequestClose={onRequestClose}
-    >
-      <View
-        style={{
-          backgroundColor: theme.palette.background.main,
-          borderWidth: 1,
-          borderColor: "gray",
-          borderStyle: "solid",
-          marginTop: Math.round(windowHeight * 0.2),
-          ...styles.container,
+    <CenteredModalWithOneButton showModal={visible} setModal={onRequestClose}>
+      <CalendarPicker
+        initialDate={now}
+        selectedDate={date ? new Date(date) : undefined}
+        minDate={now}
+        width={Math.round(windowWidth*0.9)}  // 90% of screen
+        textStyle={{
+          color: theme.palette.primary.main,
         }}
-      >
-        <View style={{height: Math.round(windowHeight*0.4), marginBottom: 20}}>
-          <CalendarPicker
-            initialDate={now}
-            selectedDate={date ? new Date(date) : undefined}
-            minDate={now}
-            width={Math.round(windowWidth*0.9)}  // 90% of screen
-            textStyle={{
-              color: theme.palette.secondary.main,
-            }}
-            todayBackgroundColor={theme.palette.primary.main}
-            todayTextStyle={{color: theme.palette.background.main}}
-            selectedDayStyle={{
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.background.main,
-            }}
-            restrictMonthNavigation={true}
-            headerWrapperStyle={{marginTop: 10}}
-            style={styles.calendar}
-            nextComponent={
-              <Icon
-                name="chevron-right"
-                size={25}
-                color={theme.palette.secondary.main}
-              />
-            }
-            previousComponent={
-              <Icon
-                name="chevron-left"
-                size={25}
-                color={theme.palette.secondary.main}
-              />
-            }
-            onDateChange={(date) => {
-              setDate(date)
-              onRequestClose()
-            }}
+        todayBackgroundColor={theme.palette.primary.main}
+        todayTextStyle={{color: theme.palette.background.main}}
+        selectedDayStyle={{
+          backgroundColor: theme.palette.primary.main,
+          color: theme.palette.background.main,
+        }}
+        restrictMonthNavigation={true}
+        headerWrapperStyle={{marginTop: 10}}
+        style={styles.calendar}
+        nextComponent={
+          <Icon
+            name="chevron-right"
+            size={25}
+            color={theme.palette.secondary.main}
           />
-        </View>
-        <View style={styles.closeButtonContainer}>
-          <Button
-            style={styles.closeButton}
-            title={"Close"}
-            onPress={() => onRequestClose(false)}
+        }
+        previousComponent={
+          <Icon
+            name="chevron-left"
+            size={25}
+            color={theme.palette.secondary.main}
           />
-        </View>
-      </View>
-    </Modal>
+        }
+        onDateChange={(date) => {
+          setDate(date)
+          onRequestClose()
+        }}
+      />
+    </CenteredModalWithOneButton>
   )
 }
 

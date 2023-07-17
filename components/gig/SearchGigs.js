@@ -1,10 +1,11 @@
 import {Button, IconButton, ListItem, TextInput, useTheme, Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {Dimensions, Modal, StyleSheet, View} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {useState} from "react";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import dateFormat from "dateformat";
 import CalendarModal from "../calendar";
+import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
 
 function AdvancedSearchModel(props) {
   const {
@@ -22,92 +23,72 @@ function AdvancedSearchModel(props) {
     submitSearchRequest,
     theme,
   } = props
-  const windowHeight = Dimensions.get('window').height;
-  const windowWidth = Dimensions.get('window').width;
 
   return (
-    <Modal
-      animationType={"slide"}
-      transparent={true}
-      visible={advancedSearch}
-      onRequestClose={() => setAdvancedSearch(false)}
+    <CenteredModalWithTwoButton
+      showModal={advancedSearch}
+      setModal={setAdvancedSearch}
+      actionButton={
+        <Button
+          title={"Search"}
+          onPress={submitSearchRequest}
+        />
+      }
     >
-      <View style={{
-        backgroundColor: theme.palette.background.main,
-        borderWidth: 1,
-        borderColor: "gray",
-        borderStyle: "solid",
-        marginTop: Math.round(windowHeight * 0.2),
-        width: Math.round(windowWidth * 0.9),
-        ...styles.modelContainer,
-      }}>
-        <View style={styles.advancedSearch}>
-          <Text style={styles.title}>{"Advanced Search"}</Text>
-          <TextInput
-            variant={"outlined"}
+      <CalendarModal
+        visible={showDatePicker}
+        date={startDate}
+        setDate={setStartDate}
+        onRequestClose={() => setShowDatePicker(false)}
+      />
+      <View style={styles.advancedSearch}>
+        <Text style={styles.title}>{"Advanced Search"}</Text>
+        <TextInput
+          variant={"outlined"}
+          trailing={
+            <IconButton
+              icon={<Icon name="magnify" size={25} color={theme.palette.secondary.main}/>}
+              onPress={submitSearchRequest}
+            />
+          }
+          onChangeText={setSearchString}
+        />
+        <View>
+          <ListItem
+            title={<Text>{"Show my gigs only?"}</Text>}
+            onPress={() => setShowMyGigs(!showMyGigs)}
+            trailing={
+              showMyGigs ? (
+                <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+              ) : (
+                <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+              )
+            }
+          />
+          <ListItem
+            title={<Text>{"Has spare ticket?"}</Text>}
+            onPress={() => setHasSpareTicket(!hasSpareTicket)}
+            trailing={
+              hasSpareTicket ? (
+                <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+              ) : (
+                <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+              )
+            }
+          />
+          <ListItem
+            title={<Text>{startDate ? dateFormat(startDate, "fullDate") : "Gig start date?"}</Text>}
+            onPress={() => setShowDatePicker(!showDatePicker)}
             trailing={
               <IconButton
-                icon={<Icon name="magnify" size={25} color={theme.palette.secondary.main}/>}
-                onPress={submitSearchRequest}
+                onPress={() => setShowDatePicker(!showDatePicker)}
+                icon={<Icon name="calendar" size={25} color={theme.palette.secondary.main}/>}
               />
             }
-            onChangeText={setSearchString}
-          />
-          <View>
-            <ListItem
-              title={<Text>{"Show my gigs only?"}</Text>}
-              onPress={() => setShowMyGigs(!showMyGigs)}
-              trailing={
-                showMyGigs ? (
-                  <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
-                ) : (
-                  <Icon name="thumb-down-outline" size={20} color={"grey"}/>
-                )
-              }
-            />
-            <ListItem
-              title={<Text>{"Has spare ticket?"}</Text>}
-              onPress={() => setHasSpareTicket(!hasSpareTicket)}
-              trailing={
-                hasSpareTicket ? (
-                  <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
-                ) : (
-                  <Icon name="thumb-down-outline" size={20} color={"grey"}/>
-                )
-              }
-            />
-            <ListItem
-              title={<Text>{startDate ? dateFormat(startDate, "fullDate") : "Gig start date?"}</Text>}
-              onPress={() => setShowDatePicker(!showDatePicker)}
-              trailing={
-                <IconButton
-                  onPress={() => setShowDatePicker(!showDatePicker)}
-                  icon={<Icon name="calendar" size={25} color={theme.palette.secondary.main}/>}
-                />
-              }
-            />
-          </View>
-        </View>
-        <CalendarModal
-          visible={showDatePicker}
-          date={startDate}
-          setDate={setStartDate}
-          onRequestClose={() => setShowDatePicker(false)}
-        />
-        <View style={styles.searchButtonContainer}>
-          <Button
-            title={"close"}
-            onPress={() => setAdvancedSearch(false)}
-            style={styles.closeButton}
-          />
-          <Button
-            style={styles.searchButton}
-            title={"Search"}
-            onPress={submitSearchRequest}
           />
         </View>
       </View>
-    </Modal>
+    </CenteredModalWithTwoButton>
   )
 }
 
@@ -199,21 +180,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  modelContainer: {
-    padding: 15,
-    alignSelf: "center",
-    justifyContent: "center",
-    marginRight: 50,
-    marginLeft: 50,
-    borderRadius: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    elevation: 5,
-  },
   title: {
     fontSize: 16,
     textAlign: "center",
@@ -224,20 +190,6 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     marginLeft: 10,
     marginRight: 10,
-  },
-  searchButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "70%",
-    marginTop: 10,
-    marginLeft: "auto",
-    marginRight: "auto",
-  },
-  closeButton: {
-    width: 100,
-  },
-  searchButton: {
-    width: 100,
   },
   feedback: {
     fontSize: 14,
