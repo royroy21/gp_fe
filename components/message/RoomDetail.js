@@ -26,7 +26,7 @@ class RoomDetail extends Component {
       navigation.navigate("Room", {room: room});
     }
     return (
-      <Surface elevation={2} category="medium" style={{padding: 5, margin: 5}}>
+      <Surface elevation={2} category="medium" style={styles.surface}>
         <Pressable onPress={navigateToRoom}>
           <View style={styles.container}>
             <View style={styles.data}>
@@ -48,6 +48,13 @@ class RoomDetail extends Component {
 }
 
 const styles = StyleSheet.create({
+  surface: {
+    paddingTop: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingBottom: 8,
+    margin: 5,
+  },
   container: {
     flexDirection: "row",
   },
