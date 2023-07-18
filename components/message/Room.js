@@ -42,7 +42,7 @@ function Room(props) {
     await get(BACKEND_ENDPOINTS.message + "?room_id=" + room.id, [], setMessages);
   }
 
-  const setUpWebSocket = () => {
+  const setUpWebSocket = (callback) => {
     if (webSocket) {
       webSocket.close();
       setWebSocket(null)
@@ -63,6 +63,7 @@ function Room(props) {
       executeMessageReceivedBehavior(e);
     }
     setWebSocket(ws);
+    callback();
   }
 
   function executeMessageReceivedBehavior(event) {
@@ -78,7 +79,7 @@ function Room(props) {
 
   useFocusEffect(
     useCallback(() => {
-      setUpWebSocket();
+      setUpWebSocket(getPreviousMessages);
       return () => {
         setMessage("");
         setMessages([]);
@@ -89,12 +90,6 @@ function Room(props) {
       };
     }, [room])
   );
-
-  useFocusEffect(
-    useCallback(() => {
-      getPreviousMessages();
-    }, [webSocket])
-  )
 
   const send = () => {
     webSocket.send(JSON.stringify({message: message}));
@@ -122,7 +117,7 @@ function Room(props) {
       />
       <View style={styles.container}>
         {/*<Text>*/}
-        {/*  {`room: ${room} connection status: ${webSocket ? readyStates[webSocket.readyState] : "null"}`}*/}
+        {/*  {`room: ${room.id} connection status: ${webSocket ? readyStates[webSocket.readyState] : "null"}`}*/}
         {/*</Text>*/}
         <IconButton
           style={{
