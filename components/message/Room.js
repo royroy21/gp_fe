@@ -27,7 +27,7 @@ function Room(props) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
-  const [newMessageAlert, setNewMessageAlert] = useState(false);
+  const [alert, setAlert] = useState(null);
   const [showOptions, setOptions] = useState(false);
 
   const {object: jwt} = useJWTStore();
@@ -43,6 +43,7 @@ function Room(props) {
   }
 
   const setUpWebSocket = (callback) => {
+    setAlert("connecting");
     if (webSocket) {
       webSocket.close();
       setWebSocket(null)
@@ -64,6 +65,7 @@ function Room(props) {
     }
     setWebSocket(ws);
     callback();
+    setAlert(null);
   }
 
   function executeMessageReceivedBehavior(event) {
@@ -72,8 +74,8 @@ function Room(props) {
     if (newMessage.user.id === user.id) {
       messagesRef.current.scrollToIndex({index: 0, animated: true});
     } else {
-      setNewMessageAlert(true);
-      setTimeout(() => setNewMessageAlert(false), 1500);
+      setAlert("new message received");
+      setTimeout(() => setAlert(null), 1500);
     }
   }
 
@@ -85,7 +87,7 @@ function Room(props) {
         setMessages([]);
         setError(null);
         setWebSocket(null);
-        setNewMessageAlert(false);
+        setAlert(null);
         setOptions(false);
       };
     }, [room])
@@ -133,15 +135,15 @@ function Room(props) {
             />
           }
         />
-        {newMessageAlert ? (
+        {alert !== null ? (
           <View
             style={{
-              ...styles.newMessageAlert,
+              ...styles.alert,
               backgroundColor: theme.palette.background.main,
             }}
           >
             <Text style={{color: theme.palette.primary.main}}>
-              {"new message received"}
+              {alert}
             </Text>
           </View>
         ) : null}
@@ -223,7 +225,7 @@ const styles = StyleSheet.create({
     right: 15,
     zIndex: 2,
   },
-  newMessageAlert: {
+  alert: {
     position: "absolute",
     top: 0,
     left: 0,
