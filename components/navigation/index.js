@@ -12,6 +12,7 @@ export default function Navigation() {
   function onStateChange(state) {
     setCurrentRoute(state.routes[state.routes.length - 1].name);
   }
+
   return (
     <NavigationContainer
       onStateChange={onStateChange}

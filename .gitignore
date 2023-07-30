@@ -13,5 +13,6 @@ web-build/
 # macOS
 .DS_Store
 
-# local settings
+# Other local files
 local_settings.js
+google-services.json

@@ -2,10 +2,12 @@ import { create } from 'zustand'
 import client from "../APIClient";
 import {BACKEND_ENDPOINTS} from "../settings";
 import updateLocation from "../components/location/updateLocation";
+import {registerForPushNotifications} from "../components/notifications";
 
 const onSuccess = async (set, json) => {
   set({ object: json, loading: false, error: null })
   updateLocation(json.id);
+  registerForPushNotifications(json.id);
 }
 
 const useUserStore = create((set) => ({

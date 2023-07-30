@@ -6,6 +6,7 @@ import useUserStore from "../../store/user";
 import useJWTStore from "../../store/jwt";
 import {Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import RegisterNotifications from "../notifications";
 
 export default function DefaultScreen({navigation}) {
   const theme = useTheme();
@@ -32,6 +33,7 @@ export default function DefaultScreen({navigation}) {
   useEffect(() => {getUserAndSetJWT()}, []);
   return (
     <View style={styles.container}>
+      <RegisterNotifications navigation={navigation} />
       {user ? (
         <ShowGigs navigation={navigation} />
       ) : (
