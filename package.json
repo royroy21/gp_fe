@@ -34,7 +34,9 @@
     "react-native-screens": "~3.20.0",
     "react-native-select-dropdown": "^3.3.0",
     "react-native-web": "~0.18.11",
-    "zustand": "^4.3.6"
+    "zustand": "^4.3.6",
+    "expo-notifications": "~0.18.1",
+    "expo-device": "~5.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

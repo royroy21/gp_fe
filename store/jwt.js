@@ -5,7 +5,7 @@ import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-s
 
 const setJWT = async (set, json, onSuccess) => {
   const { setItem: setJWTToAsyncStorage } = useAsyncStorage("jwt");
-  await AsyncStorage.clear();
+  await AsyncStorage.removeItem("jwt");
   const jwtAsString = JSON.stringify(json);
   await setJWTToAsyncStorage(jwtAsString);
   set({ object: jwtAsString, loading: false, error: null });
