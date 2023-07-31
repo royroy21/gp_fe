@@ -14,6 +14,7 @@ import useGigsStore from "../../store/gigs";
 import useOtherUserStore from "../../store/otherUser";
 import usePreviousMessagesStore from "../../store/previousMessages";
 import {closeAndDeleteOtherWebSockets} from "../message";
+import unreadMessagesStore from "../../store/unreadMessages";
 
 function LogOut({navigation, setMainMenu, theme}) {
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,7 @@ function LogOut({navigation, setMainMenu, theme}) {
   const { clear: clearOtherUser } = useOtherUserStore();
   const { clear: clearPreviousMessages } = usePreviousMessagesStore();
   const { clear: clearRooms } = useRoomsStore();
+  const { clear: clearUnreadMessages } = unreadMessagesStore();
   const { clear: clearUser } = useUserStore();
   const logOut = async () => {
     setLoading(true);
@@ -43,6 +45,7 @@ function LogOut({navigation, setMainMenu, theme}) {
     clearOtherUser();
     clearPreviousMessages();
     clearRooms();
+    clearUnreadMessages();
     clearUser();
     closeAndDeleteOtherWebSockets();
     setMainMenu(false);

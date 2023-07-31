@@ -9,9 +9,21 @@ import Loading from "../loading/Loading";
 import RoomDetail from "./RoomDetail";
 import {useFocusEffect} from "@react-navigation/native";
 import {BACKEND_ENDPOINTS} from "../../settings";
+import unreadMessagesStore from "../../store/unreadMessages";
+
+const countUnreadMessages = (roomId, unreadMessages) => {
+  let count = 0;
+  unreadMessages.forEach(item => {
+    if (item === roomId) {
+      count += 1;
+    }
+  })
+  return count;
+}
 
 function Rooms({ navigation }) {
   const theme = useTheme()
+  const {unreadMessages} = unreadMessagesStore();
   const [loadingNext, setLoadingNext] = useState(false);
   const {object: rooms, error, loading, get, clear} = useRoomsStore();
 
@@ -56,7 +68,16 @@ function Rooms({ navigation }) {
             data={rooms.results}
             refreshing={loading}
             onRefresh={resetResults}
-            renderItem={({item}) => <RoomDetail room={item} theme={theme} navigation={navigation}/>}
+            renderItem={({item}) => {
+              const unreadMessagesCount = countUnreadMessages(item.id, unreadMessages);
+              return (
+                <RoomDetail
+                  room={item}
+                  theme={theme}
+                  navigation={navigation}
+                  unReadMessagesCount={unreadMessagesCount}
+              />)
+            }}
             keyExtractor={item => item.id}
             onEndReached={() => getNextPage()}
           />

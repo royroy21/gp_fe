@@ -6,6 +6,7 @@ import {BACKEND_ENDPOINTS, EXPO_PROJECT_ID} from "../../settings";
 import client from "../../APIClient";
 import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-storage";
 import {useNavigationState} from "@react-navigation/native";
+import unreadMessagesStore from "../../store/unreadMessages";
 
 export const registerForPushNotifications = async (userId) => {
   if (!Device.isDevice) {
@@ -77,6 +78,8 @@ const NotificationClickedOnBehaviour = {
 }
 
 function RegisterNotifications({ navigation }) {
+  const {add: addUnReadMessage} = unreadMessagesStore();
+
   useNavigationState(state => {
     const {name, params} = state.routes[state.index];
     Notifications.setNotificationHandler({
@@ -88,6 +91,7 @@ function RegisterNotifications({ navigation }) {
         if (name === "Room" && getRoomIdFromRouteParams(params) === roomID) {
           return null;
         }
+        addUnReadMessage(roomID);
         return {
           shouldShowAlert: true,
           shouldPlaySound: true,

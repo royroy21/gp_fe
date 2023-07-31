@@ -1,11 +1,28 @@
 import {StyleSheet, TouchableOpacity, View} from "react-native";
 import {Icon, useTheme} from "@react-native-material/core";
 import {useNavigation} from "@react-navigation/native";
+import {useEffect, useState} from "react";
+import unreadMessagesStore from "../../store/unreadMessages";
 
 function BottomNavigation({currentRoute, navigationTheme}) {
+  const {unreadMessages} = unreadMessagesStore();
+  const noNewMessagesIcon = "message";
+  const unReadMessagesIcon = "message-badge";
+  const [messageIcon, setMessageIcon] = useState(noNewMessagesIcon);
+
+  useEffect(() => {
+    unreadMessages.length ? setMessageIcon(unReadMessagesIcon) : setMessageIcon(noNewMessagesIcon);
+  }, [unreadMessages.length])
+
   const navigation = useNavigation();
   const theme = useTheme()
-  function iconStyle(focused) {
+  function iconStyle(navigateTo, focused) {
+    if (navigateTo === "RoomsScreen" && unreadMessages.length) {
+      return {
+        size: 25,
+        color: focused ? theme.palette.primary.main : theme.palette.secondary.main,
+      }
+    }
     return {
       size: 25,
       color: focused ? theme.palette.primary.main : "lightgrey",
@@ -14,7 +31,7 @@ function BottomNavigation({currentRoute, navigationTheme}) {
   const navigationItems = [
     {name: "pig", navigateTo: "DefaultScreen"},
     {name: "music", navigateTo: "MusicScreen"},
-    {name: "message", navigateTo: "RoomsScreen"},
+    {name: messageIcon, navigateTo: "RoomsScreen"},
   ]
   return (
     <View style={{backgroundColor: navigationTheme.colors.card, ...styles.container}}>
@@ -27,7 +44,7 @@ function BottomNavigation({currentRoute, navigationTheme}) {
           <Icon
             key={item.name}
             name={item.name}
-            {...iconStyle(item.navigateTo === currentRoute)}
+            {...iconStyle(item.navigateTo, item.navigateTo === currentRoute)}
           />
         </TouchableOpacity>
       ))}

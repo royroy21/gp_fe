@@ -16,12 +16,8 @@ class RoomDetail extends Component {
     }
   }
 
-  shouldComponentUpdate() {
-     return false;
-  }
-
   render() {
-    const { room, theme, navigation } = this.props;
+    const { room, theme, navigation, unReadMessagesCount } = this.props;
     const navigateToRoom = () => {
       navigation.navigate("Room", {room: room});
     }
@@ -29,7 +25,7 @@ class RoomDetail extends Component {
       <Surface elevation={2} category="medium" style={styles.surface}>
         <Pressable onPress={navigateToRoom}>
           <View style={styles.container}>
-            <View style={styles.data}>
+            <View style={styles.message}>
               <Text style={{color: theme.palette.primary.main}}>
                 {`${room.title} (${room.id}) `}
               </Text>
@@ -37,9 +33,18 @@ class RoomDetail extends Component {
                 {this.formatLastMessage(room.last_message)}
               </Text>
             </View>
-            <Text style={styles.timestamp}>
-              {dateFormat(room.timestamp, "mediumDate")}
-            </Text>
+            <View style={styles.metaData}>
+              {unReadMessagesCount ? (
+                <View style={{...styles.unreadMessages, borderRadius: 25}}>
+                  <Text style={{color: theme.palette.secondary.main}}>
+                    {`${unReadMessagesCount} unread`}
+                  </Text>
+                </View>
+              ) : null}
+              <Text style={styles.timestamp}>
+                {dateFormat(room.timestamp, "mediumDate")}
+              </Text>
+            </View>
           </View>
         </Pressable>
       </Surface>
@@ -58,14 +63,21 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
   },
-  data: {
+  message: {
     alignSelf: "flex-start",
     width: "78%",
+  },
+  metaData: {
+    alignSelf: "flex-end",
+    flexDirection: "column",
   },
   timestamp: {
     color: "grey",
     fontSize: 13,
-    alignSelf: "flex-end",
+  },
+  unreadMessages: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

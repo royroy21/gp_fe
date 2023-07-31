@@ -14,8 +14,10 @@ import {useFocusEffect} from "@react-navigation/native";
 import getWebSocket, {readyStates} from "./index";
 import Loading from "../loading/Loading";
 import RoomOptionsModal from "./RoomOptionsModal";
+import unreadMessagesStore from "../../store/unreadMessages";
 
 function Room(props) {
+  const {remove: removeRoomFromUnReadMessages} = unreadMessagesStore();
   const theme = useTheme();
   const { navigation, route } = props;
   const room = route.params.room;
@@ -64,6 +66,7 @@ function Room(props) {
       executeMessageReceivedBehavior(e);
     }
     setWebSocket(ws);
+    removeRoomFromUnReadMessages(room.id);
     callback();
     setAlert(null);
   }
@@ -105,6 +108,14 @@ function Room(props) {
       await get(previousMessages.next, messages, setMessages);
       setLoadingPreviousPage(false);
     }
+  }
+
+  const waitingForSocket = () => {
+    if (!WebSocket) {
+      return true
+    }
+    // readyState 0 means websocket is connecting
+    return webSocket.readyState === 0;
   }
 
   const parsedError = error || {};
@@ -192,8 +203,9 @@ function Room(props) {
               />
             }
           />
-        </View>
-        <LoadingModal isLoading={loading || webSocket ? webSocket.readyState === 0 : true} />
+        </View>{webSocket ? (
+          <LoadingModal isLoading={loading || waitingForSocket()} />
+        ) : null}
       </View>
     </>
   )
