@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 10,
   },
   closeButton: {
     width: 100,
