@@ -105,7 +105,7 @@ function ShowGigs({ navigation }) {
       )}
       <LoadingModal isLoading={loading && !loadingNext} />
       <Loading isLoading={loading && loadingNext} />
-      {!loading ? <AddGigButton buttonStyle={styles.addGigButton} navigation={navigation} /> : null}
+      {!loading ? <AddGigButton navigation={navigation} theme={theme} /> : null}
     </>
   )
 }
