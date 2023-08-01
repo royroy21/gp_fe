@@ -142,7 +142,7 @@ function SearchGigs(props) {
   }
 
   return (
-    <View style={styles.container}>
+    <View>
       {showDefaultSearchBar ? (
         <TextInput
           variant={"outlined"}
@@ -180,11 +180,6 @@ function SearchGigs(props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "98%",
-    marginTop: 10,
-    marginBottom: 10,
-  },
   title: {
     fontSize: 16,
     textAlign: "center",
