@@ -4,7 +4,7 @@ import ShowGig from "./ShowGig";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import SearchGigs from "./SearchGigs";
 import AddGigButton from "./AddGigButton";
-import {Text, useTheme} from "@react-native-material/core";
+import {IconButton, Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useGigsStore from "../../store/gigs";
 import Errors from "../forms/Errors";
@@ -15,6 +15,7 @@ function ShowGigs({ navigation }) {
   const theme = useTheme()
   const resultsListViewRef = useRef();
   const [searchFeedback, setSearchFeedback] = useState(null);
+  const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
   const {object: gigs, error, loading, get, clear} = useGigsStore();
 
@@ -33,6 +34,7 @@ function ShowGigs({ navigation }) {
         resultsListViewRef.current.scrollToOffset({ offset: 0, animated: true });
       }
     }
+    setAdvancedSearch(false);
   }
   useEffect(() => {getGigsFromAPI()}, []);
 
@@ -55,11 +57,28 @@ function ShowGigs({ navigation }) {
     <>
       {!loading ? (
         <SearchGigs
+          showDefaultSearchBar={false}
+          advancedSearch={advancedSearch}
+          setAdvancedSearch={setAdvancedSearch}
           getGigsFromAPI={getGigsFromAPI}
           searchFeedback={searchFeedback}
           setSearchFeedback={setSearchFeedback}
         />
       ) : null}
+      <IconButton
+        style={{
+          ...styles.advancedSearchButton,
+          backgroundColor: theme.palette.background.main,
+        }}
+        onPress={() => setAdvancedSearch(!advancedSearch)}
+        icon={
+          <Icon
+            name={"magnify"}
+            size={30}
+            color={theme.palette.secondary.main}
+          />
+        }
+      />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {gigs && gigs.results.length ? (
@@ -98,8 +117,11 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     justifyContent: "flex-start",
   },
-  searchFeedback: {
-    width: "95%",
+  advancedSearchButton: {
+    position: "absolute",
+    top: 5,
+    right: 15,
+    zIndex: 2,
   },
   noGigsFoundContainer: {
     height: "80%",

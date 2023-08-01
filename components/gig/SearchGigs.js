@@ -42,7 +42,6 @@ function AdvancedSearchModel(props) {
         onRequestClose={() => setShowDatePicker(false)}
       />
       <View style={styles.advancedSearch}>
-        <Text style={styles.title}>{"Advanced Search"}</Text>
         <TextInput
           variant={"outlined"}
           trailing={
@@ -92,9 +91,17 @@ function AdvancedSearchModel(props) {
   )
 }
 
-function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
+function SearchGigs(props) {
+  const {
+    showDefaultSearchBar,
+    advancedSearch,
+    setAdvancedSearch,
+    getGigsFromAPI,
+    searchFeedback,
+    setSearchFeedback,
+  } = props;
+
   const [searchString, setSearchString] = useState("");
-  const [advancedSearch, setAdvancedSearch] = useState(false);
   const [showMyGigs, setShowMyGigs] = useState(false);
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -136,25 +143,23 @@ function SearchGigs({getGigsFromAPI, searchFeedback, setSearchFeedback}) {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        variant={"outlined"}
-        trailing={
-          <IconButton
-            icon={<Icon name="magnify" size={25} color={theme.palette.secondary.main}/>}
-            onPress={submitSearchRequest}
-          />
-        }
-        onChangeText={setSearchString}
-      />
-      <View style={{flexDirection: "row"}}>
-        <Text style={{color: theme.palette.secondary.main, ...styles.feedback}}>
-          {searchFeedback || ""}
-        </Text>
-        <IconButton
-          icon={<Icon name="chevron-down" size={25} color={theme.palette.primary.main}/>}
-          onPress={() => setAdvancedSearch(!advancedSearch)}
+      {showDefaultSearchBar ? (
+        <TextInput
+          variant={"outlined"}
+          trailing={
+            <IconButton
+              icon={<Icon name="magnify" size={25} color={theme.palette.secondary.main}/>}
+              onPress={submitSearchRequest}
+            />
+          }
+          onChangeText={setSearchString}
         />
-      </View>
+      ) : null}
+      {searchFeedback ? (
+        <Text style={{color: theme.palette.secondary.main, ...styles.feedback}}>
+          {searchFeedback}
+        </Text>
+      ) : null}
       <AdvancedSearchModel
         setSearchString={setSearchString}
         advancedSearch={advancedSearch}
@@ -187,7 +192,7 @@ const styles = StyleSheet.create({
   },
   advancedSearch: {
     marginTop: 15,
-    marginBottom: 40,
+    marginBottom: 10,
     marginLeft: 10,
     marginRight: 10,
   },
