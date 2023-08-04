@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
   },
   advancedSearchButton: {
     position: "absolute",
-    top: 5,
-    right: 15,
+    top: 20,
+    right: 20,
     zIndex: 2,
   },
   noGigsFoundContainer: {

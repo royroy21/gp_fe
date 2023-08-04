@@ -1,9 +1,15 @@
-import {Image, StyleSheet, View} from "react-native";
+import {Image, Platform, StyleSheet, View} from "react-native";
+import {Text} from "@react-native-material/core";
 
 function LoadingContent() {
+  const isWeb = Boolean(Platform.OS === "web");
   return (
     <View style={styles.content}>
-      <Image source={require("../../assets/squaresWave.gif")}/>
+      {isWeb ? (
+        <Text style={styles.webText}>{"LOADING..."}</Text>
+      ) : (
+        <Image source={require("../../assets/squaresWave.gif")}/>
+      )}
     </View>
   )
 }
@@ -14,6 +20,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  webText: {
+    fontSize: 20,
+  }
 });
 
 export default LoadingContent;

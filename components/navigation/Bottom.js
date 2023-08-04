@@ -4,12 +4,14 @@ import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import unreadMessagesStore from "../../store/unreadMessages";
 
-function BottomNavigation({currentRoute, navigationTheme}) {
+function BottomNavigation({currentRoute, navigationTheme, isWeb}) {
+  /*
+  NOTE: For web this navigation is located inside the top navigation bar.
+   */
   const {unreadMessages} = unreadMessagesStore();
   const noNewMessagesIcon = "message";
   const unReadMessagesIcon = "message-badge";
   const [messageIcon, setMessageIcon] = useState(noNewMessagesIcon);
-
   useEffect(() => {
     unreadMessages.length ? setMessageIcon(unReadMessagesIcon) : setMessageIcon(noNewMessagesIcon);
   }, [unreadMessages.length])
@@ -33,11 +35,14 @@ function BottomNavigation({currentRoute, navigationTheme}) {
     {name: "music", navigateTo: "MusicScreen"},
     {name: messageIcon, navigateTo: "RoomsScreen"},
   ]
+
+  const containerStyle = isWeb ? styles.containerWeb : styles.container;
+  const buttonStyle = isWeb ? {paddingLeft: 50, ...styles.button} : styles.button;
   return (
-    <View style={{backgroundColor: navigationTheme.colors.card, ...styles.container}}>
+    <View style={{backgroundColor: navigationTheme.colors.card, ...containerStyle}}>
       {navigationItems.map((item) => (
         <TouchableOpacity
-          style={styles.button}
+          style={buttonStyle}
           key={item.name}
           onPress={() => navigation.navigate(item.navigateTo)}
         >
@@ -57,6 +62,11 @@ const styles = StyleSheet.create({
     height: 45,
     display: "flex",
     flexDirection: "row",
+  },
+  containerWeb: {
+    display: "flex",
+    flexDirection: "row",
+    width: 200,
   },
   button: {
     flexGrow: 1,

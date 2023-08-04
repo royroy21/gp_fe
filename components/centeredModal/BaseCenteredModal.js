@@ -1,10 +1,23 @@
 import React from 'react';
-import {Modal, StyleSheet, View, Pressable} from "react-native";
+import {Modal, StyleSheet, View, Pressable, Dimensions, Platform} from "react-native";
 import {useTheme} from "@react-native-material/core";
 
 const BaseCenteredModal = ({showModal, setModal, children, buttons}) => {
   const theme = useTheme();
+  const windowWidth = Dimensions.get('window').width;
+  const isWeb = Boolean(Platform.OS === "web");
   const backgroundColor = theme.palette.background.main;
+
+  const contentStyle = !(isWeb && windowWidth > 1000) ? (
+    styles.modalContent
+  ) : (
+    {
+      ...styles.modalContent,
+      width: "50%",
+      marginLeft: "auto",
+      marginRight: "auto",
+    }
+  )
 
   return (
     <Modal visible={showModal} animationType={"slide"} transparent={true}>
@@ -12,7 +25,7 @@ const BaseCenteredModal = ({showModal, setModal, children, buttons}) => {
         style={{...styles.modalContainer, backgroundColor: backgroundColor}}
         onPress={() => setModal(!showModal)}
       >
-        <View style={{...styles.modalContent, backgroundColor: backgroundColor}}>
+        <View style={{...contentStyle, backgroundColor: backgroundColor}}>
           {children}
           {buttons}
         </View>

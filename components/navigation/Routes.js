@@ -20,7 +20,7 @@ function PlaceHolderMusic() {
   )
 }
 
-function Routes({user, setCurrentRoute}) {
+function Routes({user, setCurrentRoute, BottomNavigationProps, theme, isWeb}) {
   const initialRouteName = "DefaultScreen";
   const screens = [
     {
@@ -87,6 +87,9 @@ function Routes({user, setCurrentRoute}) {
       screens={screens}
       initialRouteName={initialRouteName}
       setCurrentRoute={setCurrentRoute}
+      BottomNavigationProps={BottomNavigationProps}
+      theme={theme}
+      isWeb={isWeb}
     />
   )
 }

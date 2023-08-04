@@ -203,9 +203,12 @@ function Room(props) {
               />
             }
           />
-        </View>{webSocket ? (
-          <LoadingModal isLoading={loading || waitingForSocket()} />
-        ) : null}
+        </View>
+        {
+          webSocket ? (
+            <LoadingModal isLoading={(loading || waitingForSocket()) && !loadingPreviousPage} />
+          ) : null
+        }
       </View>
     </>
   )
@@ -233,8 +236,8 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     position: "absolute",
-    top: 5,
-    right: 15,
+    top: 20,
+    right: 20,
     zIndex: 2,
   },
   alert: {

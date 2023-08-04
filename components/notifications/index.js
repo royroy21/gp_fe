@@ -89,7 +89,11 @@ function RegisterNotifications({ navigation }) {
         // If the user is already on the received message
         // room screen do not display a push notification.
         if (name === "Room" && getRoomIdFromRouteParams(params) === roomID) {
-          return null;
+          return {
+            shouldShowAlert: false,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+          }
         }
         addUnReadMessage(roomID);
         return {
