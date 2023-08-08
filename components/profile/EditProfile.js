@@ -5,7 +5,7 @@ import {Controller, useForm} from "react-hook-form";
 import TextInput from "../forms/TextInput";
 import SelectDropdown from "../SelectDropdown";
 import useGenresStore from "../../store/genres";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import DisplayGenres from "../gig/DisplayGenres";
 import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
 
@@ -18,7 +18,7 @@ function EditProfile({ navigation }) {
     search: searchGenres,
   } = useGenresStore();
 
-  const { control, handleSubmit, getValues, setValue } = useForm({
+  const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
     defaultValues: {
       username: object.username,
       email: object.email,
@@ -26,6 +26,12 @@ function EditProfile({ navigation }) {
       genres: object.genres,
     },
   });
+
+  useEffect(() => {
+    return () => {
+      clearErrors();
+    }
+  }, []);
 
   const removeGenre = (genres, genreIDToRemove) => {
     const updatedGenres = genres.filter(genre => {return genre.id !== genreIDToRemove});

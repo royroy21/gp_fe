@@ -1,4 +1,4 @@
-import {StyleSheet} from "react-native";
+import {StyleSheet, View} from "react-native";
 import {ListItem, Text, useTheme} from "@react-native-material/core";
 import DisplayGenres from "./DisplayGenres";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
@@ -10,6 +10,8 @@ import LoadingModal from "../loading/LoadingModal";
 import React, {useState} from "react";
 import newMessage from "../message/newMessage";
 import useJWTStore from "../../store/jwt";
+import Image from "../Image/Image";
+import TextFieldWithTitle from "../data/TextFieldWithTitle";
 
 function GigDetail({route, navigation}) {
   const { gig } = route.params;
@@ -52,32 +54,57 @@ function GigDetail({route, navigation}) {
         backButtonTitle={"go back"}
         backButtonOnPress={navigation.goBack}
       >
-        <ListItem
-          title={
-            <Text style={{color: theme.palette.primary.main}}>
-              {gig.title}
-            </Text>
-          }
+        <View style={styles.imageAndGenresContainer}>
+          <Image
+            imageUri={gig.image}
+            thumbnailUri={gig.thumbnail}
+            containerStyle={styles.image}
+          />
+          <DisplayGenres
+            genres={gig.genres}
+            containerStyle={styles.genres}
+          />
+        </View>
+        <TextFieldWithTitle
+          title={"title"}
+          text={gig.title}
+          theme={theme}
+          trailingIconName={"music"}
         />
-        {gig.description ? <Text style={styles.description}>{gig.description}</Text> : null}
-        <DisplayGenres genres={gig.genres} containerStyle={{marginBottom: 5}} />
-        <ListItem
-          title={<Text>{gig.location}</Text>}
-          trailing={<Icon name="warehouse" size={25} color={theme.palette.secondary.main}/>}
-        />
-        <ListItem
-          title={<Text>{`${gig.country.country} (${gig.country.code})`}</Text>}
-          trailing={<Icon name="island" size={25} color={theme.palette.secondary.main}/>}
-        />
-        {gig.has_spare_ticket ? (
-          <ListItem
-            title={<Text>{"Has spare ticket"}</Text>}
-            trailing={gig.has_spare_ticket ? <Icon name="thumb-up-outline" size={25} color={theme.palette.secondary.main}/> : null}
+        {gig.description ? (
+          <TextFieldWithTitle
+            title={"description"}
+            text={gig.description}
+            theme={theme}
+            trailingIconName={"file"}
           />
         ) : null}
-        <ListItem
-          title={<Text>{`${dateFormat(gig.start_date, "fullDate")}`}</Text>}
-          trailing={<Icon name="calendar" size={25} color={theme.palette.secondary.main}/>}
+        <TextFieldWithTitle
+          title={"location"}
+          text={gig.location}
+          theme={theme}
+          trailingIconName={"warehouse"}
+        />
+        <TextFieldWithTitle
+          title={"country"}
+          text={`${gig.country.country} (${gig.country.code})`}
+          theme={theme}
+          trailingIconName={"island"}
+        />
+        {gig.has_spare_ticket ? (
+          <TextFieldWithTitle
+            title={"has spare ticket"}
+            text={"yes"}
+            theme={theme}
+            trailingIconName={"thumb-up-outline"}
+          />
+        ) : null}
+        <TextFieldWithTitle
+          title={"gig date"}
+          text={`${dateFormat(gig.start_date, "fullDate")}`}
+          theme={theme}
+          trailingIconName={"calendar"}
+          style={styles.startDate}
         />
         <ListItem
           title={<Text>{`posted by: ${gig.user.username}`}</Text>}
@@ -97,9 +124,18 @@ function GigDetail({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
-  description: {
+  imageAndGenresContainer: {
+    flexDirection: "row"
+  },
+  image: {
     margin: 10,
-    fontSize: 14,
+  },
+  genres: {
+    width: "65%",
+    alignItems: "flex-end",
+  },
+  startDate: {
+    marginBottom: 15,
   },
 })
 

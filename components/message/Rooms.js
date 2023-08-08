@@ -99,13 +99,11 @@ function Rooms({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    flex: 1,
     alignItems: "stretch",
     justifyContent: "flex-start",
   },
   noRoomsFoundContainer: {
     height: "80%",
-    flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

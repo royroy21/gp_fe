@@ -2,6 +2,7 @@ import {Pressable, StyleSheet, View} from "react-native";
 import {Chip, Surface, Text} from "@react-native-material/core";
 import dateFormat from "dateformat";
 import {Component} from "react";
+import Image from "../Image/Image";
 
 class ShowGig extends Component {
   constructor(props) {
@@ -25,25 +26,31 @@ class ShowGig extends Component {
     const navigateToGigDetail = () => {
       navigation.navigate("GigDetail", {gig: gig});
     }
-    const navigateToOwner = () => {
-      navigation.navigate("OtherUser", {user: gig.user});
-    }
     return (
       <Surface elevation={2} category="medium" style={{padding: 5, margin: 5}}>
         <Pressable onPress={navigateToGigDetail}>
-          <Text style={{color: theme.palette.primary.main}}>
-            {`${gig.title}`}
-          </Text>
-          {gig.description ? <Text style={styles.description}>{this.getDescription(gig)}</Text> : null}
-          <Text style={styles.location}>
-            {`${gig.location} (${gig.country.country})`}
-          </Text>
+          <View style={styles.container}>
+            <Image
+              imageUri={gig.image}
+              thumbnailUri={gig.thumbnail}
+              withModalViewOnPress={false}
+              containerStyle={styles.image}
+            />
+            <View style={styles.dataContainer}>
+              <Text style={{color: theme.palette.primary.main}}>
+                {`${gig.title}`}
+              </Text>
+              {gig.description ? <Text style={styles.description}>{this.getDescription(gig)}</Text> : null}
+              <Text style={styles.location}>
+                {`${gig.location} (${gig.country.country})`}
+              </Text>
+            </View>
+          </View>
           <View style={{flexDirection: "row", flexWrap: "wrap"}}>
             <Chip
               key={"user"}
               label={gig.user.username}
               style={styles.chip}
-              onPress={navigateToOwner}
             />
             {gig.user.distance_from_user ? (
               <Chip
@@ -79,6 +86,17 @@ class ShowGig extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+  },
+  dataContainer: {
+    width: "68%",
+    marginLeft: "auto",
+    marginBottom: 5,
+  },
+  image: {
+    margin: 5,
+  },
   chip: {
     margin: 2,
   },

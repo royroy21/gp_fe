@@ -10,6 +10,7 @@ import useGigsStore from "../../store/gigs";
 import Errors from "../forms/Errors";
 import Loading from "../loading/Loading";
 import LoadingModal from "../loading/LoadingModal";
+import {useFocusEffect} from "@react-navigation/native";
 
 function ShowGigs({ navigation }) {
   const theme = useTheme()
@@ -36,7 +37,11 @@ function ShowGigs({ navigation }) {
     }
     setAdvancedSearch(false);
   }
-  useEffect(() => {getGigsFromAPI()}, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getGigsFromAPI();
+    }, [])
+  );
 
   async function getNextPage() {
     if (gigs.next) {

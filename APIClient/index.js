@@ -17,43 +17,51 @@ class APIClient {
     await this.makeRequestHandleResponse(params, requestOptions, [200]);
   };
 
-  post = async (params=defaultParams) => {
-    const headers = await this.getHeaders();
+  post = async (params=defaultParams, isMultipartFormData=false) => {
+    const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "POST",
       headers: headers,
-      body: JSON.stringify(params.data)
+      // If isMultipartFormData using FormData so no need to stringify.
+      body: isMultipartFormData ? params.data : JSON.stringify(params.data),
     }
     await this.makeRequestHandleResponse(params, requestOptions, [200, 201]);
   }
 
-  put = async (params=defaultParams) => {
-    const headers = await this.getHeaders();
+  put = async (params=defaultParams, isMultipartFormData=false) => {
+    const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "PUT",
       headers: headers,
-      body: JSON.stringify(params.data)
+      // If isMultipartFormData using FormData so no need to stringify.
+      body: isMultipartFormData ? params.data : JSON.stringify(params.data),
     }
     await this.makeRequestHandleResponse(params, requestOptions, [200]);
   }
 
-  patch = async (params=defaultParams) => {
-    const headers = await this.getHeaders();
+  patch = async (params=defaultParams, isMultipartFormData=false) => {
+    const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "PATCH",
       headers: headers,
-      body: JSON.stringify(params.data)
+      // If isMultipartFormData using FormData so no need to stringify.
+      body: isMultipartFormData ? params.data : JSON.stringify(params.data),
     }
     await this.makeRequestHandleResponse(params, requestOptions, [200]);
   }
 
-  getHeaders = async () => {
+  getHeaders = async (isMultipartFormData=false) => {
+    const baseHeaders = isMultipartFormData ? (
+      {"Content-Type": "multipart/form-data", Access: "application/json"}
+    ) : (
+      {"Content-Type": "application/json"}
+    );
     const { getItem: getJWT } = useAsyncStorage("jwt");
     const jwt = await getJWT();
     return jwt ? (
-      { "Content-Type": "application/json", "Authorization":  `JWT ${JSON.parse(jwt).access}`}
+      { Authorization:  `JWT ${JSON.parse(jwt).access}`, ...baseHeaders}
     ) : (
-      { "Content-Type": "application/json"}
+      baseHeaders
     );
   }
 

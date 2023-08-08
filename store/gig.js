@@ -15,7 +15,7 @@ const useGigStore = create((set) => ({
     }
     await client.get(params);
   },
-  post: async (data, onSuccess) => {
+  post: async (data, onSuccess, isMultipartFormData=false) => {
     set({ loading: true });
     const params = {
       resource: BACKEND_ENDPOINTS.gigs,
@@ -26,9 +26,9 @@ const useGigStore = create((set) => ({
       },
       errorCallback: (json) => set({ loading: false, error: json }),
     }
-    await client.post(params);
+    await client.post(params, isMultipartFormData);
   },
-  patch: async (id, data, onSuccess) => {
+  patch: async (id, data, onSuccess, isMultipartFormData=false) => {
     set({ loading: true });
     const params = {
       resource: BACKEND_ENDPOINTS.gigs + id.toString() + "/",
@@ -39,7 +39,7 @@ const useGigStore = create((set) => ({
       },
       errorCallback: (json) => set({ loading: false, error: json }),
     }
-    await client.patch(params);
+    await client.patch(params, isMultipartFormData);
   },
   clear: () => set({object: null, loading: false, error: null}),
 }));

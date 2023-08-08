@@ -4,6 +4,7 @@ import useCountryStore from "../../store/country";
 import {useEffect, useState} from "react";
 import useGigStore from "../../store/gig";
 import useUserStore from "../../store/user";
+import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
 
 function AddGig({ navigation }) {
   const {object: defaultCountry, loading: loadingCountry, get: getCountry} = useCountryStore();
@@ -17,18 +18,36 @@ function AddGig({ navigation }) {
       "genres": [],
       "start_date": null,
       "has_spare_ticket": false,
+      "image": null,
     },
   });
   useEffect(() => {getCountry(user, resetField)}, [])
 
-  const { loading, error, post, clear } = useGigStore();
+  let image = null;
+  const { loading, error, post, patch, clear } = useGigStore();
   const onSubmit = async (data) => {
-    await post(data, onSuccess)
+    /*
+    NOTE! If an image is present first we upload string data using react-hook-form's
+    data object then we upload image data separately afterwards using FormData.
+     */
+    image = data.image;
+    if (image) {
+      await post(getDataWithOutImage(data), upLoadImage)
+    } else {
+      await post(data, onSuccess)
+    }
   }
 
   const [numberOfGenres, setNumberOfGenres] = useState(0);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
+
+  const upLoadImage = async (gig) => {
+    const formData = new FormData();
+    const formattedImage = formatImageForForm(image.uri);
+    formData.append("image", formattedImage);
+    await patch(gig.id, formData, onSuccess, true);
+  }
 
   const onSuccess = (gig) => {
     navigation.navigate("GigDetail", {gig: gig});
@@ -36,6 +55,7 @@ function AddGig({ navigation }) {
       setNumberOfGenres(0);
       setShowDatePicker(false);
       setHasSpareTicket(false);
+      image = null;
     };
   }
 
