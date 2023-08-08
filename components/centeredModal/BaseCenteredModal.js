@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, StyleSheet, View, Pressable, Dimensions, Platform} from "react-native";
+import {Modal, StyleSheet, View, Dimensions, Platform} from "react-native";
 import {useTheme} from "@react-native-material/core";
 
 const BaseCenteredModal = ({showModal, setModal, children, buttons}) => {
@@ -21,7 +21,7 @@ const BaseCenteredModal = ({showModal, setModal, children, buttons}) => {
 
   return (
     <Modal visible={showModal} animationType={"slide"} transparent={true}>
-      <Pressable
+      <View
         style={{...styles.modalContainer, backgroundColor: backgroundColor}}
         onPress={() => setModal(!showModal)}
       >
@@ -29,7 +29,7 @@ const BaseCenteredModal = ({showModal, setModal, children, buttons}) => {
           {children}
           {buttons}
         </View>
-      </Pressable>
+      </View>
     </Modal>
   );
 };

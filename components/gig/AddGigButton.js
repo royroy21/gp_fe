@@ -9,7 +9,7 @@ function AddGigButton({ navigation, theme }) {
       <IconButton
         style={{
           ...styles.button,
-          backgroundColor: theme.palette.background.main,
+          backgroundColor: "gray",
           borderColor: color,
         }}
         onPress={() => navigation.navigate("AddGig")}
@@ -17,7 +17,7 @@ function AddGigButton({ navigation, theme }) {
           <Icon
             name={"plus"}
             size={30}
-            color={color}
+            color={theme.palette.background.main}
           />
         }
       />
@@ -29,8 +29,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 20,
-    borderWidth: 1,
-    borderStyle: "solid",
   }
 });
 

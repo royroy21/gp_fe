@@ -5,7 +5,6 @@ import {Button} from "@react-native-material/core";
 const Buttons = ({showModal, setModal, actionButton, otherButton=null}) => {
   return (
     <View style={styles.container}>
-      {actionButton}
       {otherButton || (
         <Button
           style={styles.button}
@@ -13,6 +12,7 @@ const Buttons = ({showModal, setModal, actionButton, otherButton=null}) => {
           onPress={() => setModal(!showModal)}
         />
       )}
+      {actionButton}
     </View>
   )
 }

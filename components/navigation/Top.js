@@ -56,6 +56,7 @@ function TopNavigation({user, screens, initialRouteName, BottomNavigationProps, 
             component={options.component}
             options={({ navigation, route }) =>
               ({
+                headerLeft: ()=> !isWeb,
                 headerTitle: () => (
                   <Title
                     navigation={navigation}

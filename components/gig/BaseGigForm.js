@@ -12,6 +12,8 @@ import useCountriesStore from "../../store/countries";
 import useGenresStore from "../../store/genres";
 import SelectDropdown from "../SelectDropdown";
 import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
+import {useEffect} from "react";
+import ImagePicker from "../Image/ImagePicker";
 
 function BaseGigForm(props) {
   const {
@@ -35,6 +37,12 @@ function BaseGigForm(props) {
 
   const theme = useTheme();
 
+  useEffect(() => {
+    return () => {
+      clearErrors();
+    }
+  }, []);
+
   const {
     object: genres,
     search: searchGenres,
@@ -55,9 +63,12 @@ function BaseGigForm(props) {
     setValue("start_date", date)
   }
 
-  const cancel = () => {
-    clearErrors();
-    navigation.goBack();
+  const setImage = (image) => {
+    setValue("image", image)
+  }
+
+  const removeImage = () => {
+    setValue("image", null)
   }
 
   const parsedError = error || {};
@@ -66,7 +77,7 @@ function BaseGigForm(props) {
       actionButtonTitle={"submit"}
       actionButtonOnPress={handleSubmit(onSubmit)}
       backButtonTitle={"go back"}
-      backButtonOnPress={cancel}
+      backButtonOnPress={navigation.goBack}
     >
       <LoadingModal isLoading={loading || loadingCountry} />
       <CalendarModal
@@ -77,6 +88,12 @@ function BaseGigForm(props) {
       />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
+        <ImagePicker
+          setImage={setImage}
+          removeImage={removeImage}
+          existingImage={getValues("image")}
+        />
+        {parsedError.image && <Errors errorMessages={parsedError.image} />}
         <Controller
           control={control}
           rules={{

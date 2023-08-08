@@ -39,13 +39,12 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 10,
-    height: "80%",
+    height: "90%",
   },
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "70%",
-    marginTop: 40,
     marginLeft: "auto",
     marginRight: "auto",
   },
