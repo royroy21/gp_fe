@@ -11,9 +11,9 @@ import CalendarModal from "../calendar";
 import useCountriesStore from "../../store/countries";
 import useGenresStore from "../../store/genres";
 import SelectDropdown from "../SelectDropdown";
-import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
 import {useEffect} from "react";
 import ImagePicker from "../Image/ImagePicker";
+import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function BaseGigForm(props) {
   const {
@@ -73,11 +73,9 @@ function BaseGigForm(props) {
 
   const parsedError = error || {};
   return (
-    <CustomScrollViewWithTwoButtons
-      actionButtonTitle={"submit"}
-      actionButtonOnPress={handleSubmit(onSubmit)}
-      backButtonTitle={"go back"}
-      backButtonOnPress={navigation.goBack}
+    <CustomScrollViewWithOneButton
+      buttonTitle={"submit"}
+      buttonOnPress={handleSubmit(onSubmit)}
     >
       <LoadingModal isLoading={loading || loadingCountry} />
       <CalendarModal
@@ -264,7 +262,7 @@ function BaseGigForm(props) {
           }
         />
         {parsedError.has_spare_ticket && <Errors errorMessages={parsedError.has_spare_ticket} />}
-    </CustomScrollViewWithTwoButtons>
+    </CustomScrollViewWithOneButton>
   )
 }
 

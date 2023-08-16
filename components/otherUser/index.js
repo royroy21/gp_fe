@@ -1,12 +1,14 @@
-import {ListItem, Text, useTheme} from "@react-native-material/core";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
-import {View} from "react-native";
+import {useTheme} from "@react-native-material/core";
+import {StyleSheet, View} from "react-native";
 import React, {useState} from "react";
 import Errors from "../forms/Errors";
 import LoadingModal from "../loading/LoadingModal";
 import newMessage from "../message/newMessage";
 import useJWTStore from "../../store/jwt";
+import Image from "../Image/Image";
+import DisplayGenres from "../gig/DisplayGenres";
+import TextFieldWithTitle from "../data/TextFieldWithTitle";
+import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function OtherUser({ route, navigation }) {
   const [loading, setLoading] = useState(false);
@@ -18,6 +20,7 @@ function OtherUser({ route, navigation }) {
   const accessToken = JSON.parse(jwt).access;
   const theme = useTheme();
   const { user } = route.params;
+
   const directMessage = () => {
     const newMessageArguments = {
       navigation: navigation,
@@ -34,41 +37,55 @@ function OtherUser({ route, navigation }) {
     <>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       <LoadingModal isLoading={loading} />
-      <CustomScrollViewWithTwoButtons
-        actionButtonTitle={"message"}
-        actionButtonOnPress={directMessage}
-        backButtonTitle={"go back"}
-        backButtonOnPress={navigation.goBack}
+      <CustomScrollViewWithOneButton
+        buttonTitle={"message"}
+        buttonOnPress={directMessage}
       >
-        <View>
-          <ListItem
-            title={<Text>{user.username}</Text>}
-            trailing={
-              <Icon
-                name={"account"}
-                size={25}
-                color={theme.palette.secondary.main}
-              />
-            }
+        <View style={styles.imageAndGenresContainer}>
+          <Image
+            imageUri={user.image}
+            thumbnailUri={user.thumbnail}
+            containerStyle={styles.image}
           />
-          <ListItem
-            title={user.distance_from_user ? (
-              <Text>{`last seen ${user.distance_from_user} from you`}</Text>
-              ) : (
-                <Text>{"last seen unknown"}</Text>
-            )}
-            trailing={
-              <Icon
-                name={"map"}
-                size={25}
-                color={theme.palette.secondary.main}
-              />
-            }
+          <DisplayGenres
+            genres={user.genres}
+            containerStyle={styles.genres}
           />
         </View>
-      </CustomScrollViewWithTwoButtons>
+        <TextFieldWithTitle
+          title={"username"}
+          text={user.username}
+          theme={theme}
+          trailingIconName={"account"}
+        />
+        <TextFieldWithTitle
+          title={"bio"}
+          text={user.bio}
+          theme={theme}
+          trailingIconName={"music"}
+        />
+        <TextFieldWithTitle
+          title={"last seen"}
+          text={user.distance_from_user ? user.distance_from_user : "last seen unknown"}
+          theme={theme}
+          trailingIconName={"map"}
+        />
+      </CustomScrollViewWithOneButton>
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  imageAndGenresContainer: {
+    flexDirection: "row"
+  },
+  image: {
+    margin: 10,
+  },
+  genres: {
+    width: "65%",
+    alignItems: "flex-end",
+  },
+})
 
 export default OtherUser;

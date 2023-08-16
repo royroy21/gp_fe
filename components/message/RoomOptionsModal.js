@@ -16,6 +16,10 @@ const RoomOptionsModal = ({room, showOptions, setOptions, theme}) => {
           </Text>
           <ListItem
             title={<Text>{"Go to Gig"}</Text>}
+            onPress={() => {
+              navigation.navigate("GigDetail", {gig: room.gig});
+              setOptions(!showOptions);
+            }}
             trailing={
               <IconButton
                 onPress={() => {
@@ -41,6 +45,10 @@ const RoomOptionsModal = ({room, showOptions, setOptions, theme}) => {
         <ListItem
           key={index}
           title={<Text>{member.username}</Text>}
+          onPress={() => {
+            navigation.navigate("OtherUser", {user: member});
+            setOptions(!showOptions);
+          }}
           trailing={
             <IconButton
               onPress={() => {

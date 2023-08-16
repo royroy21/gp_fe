@@ -13,6 +13,10 @@ const MainMenu = ({showMainMenu, setMainMenu}) => {
     <CenteredModalWithOneButton showModal={showMainMenu} setModal={setMainMenu}>
       <ListItem
         title={<Text>{"Profile"}</Text>}
+        onPress={() => {
+          navigation.navigate("ProfilePage");
+          setMainMenu(!showMainMenu);
+        }}
         trailing={
           <IconButton
             onPress={() => {
@@ -31,6 +35,7 @@ const MainMenu = ({showMainMenu, setMainMenu}) => {
       />
       <ListItem
         title={<Text>{"Radio"}</Text>}
+        onPress={() => {}}
         trailing={
           <IconButton
             onPress={() => {}}
@@ -46,6 +51,10 @@ const MainMenu = ({showMainMenu, setMainMenu}) => {
       />
       <ListItem
         title={<Text>{"Settings"}</Text>}
+        onPress={() => {
+          navigation.navigate("Settings");
+          setMainMenu(!showMainMenu);
+        }}
         trailing={
           <IconButton
             onPress={() => {
@@ -62,15 +71,10 @@ const MainMenu = ({showMainMenu, setMainMenu}) => {
           />
         }
       />
-      <ListItem
-        title={<Text>{"Log out"}</Text>}
-        trailing={
-          <LogOut
-            navigation={navigation}
-            setMainMenu={setMainMenu}
-            theme={theme}
-          />
-        }
+      <LogOut
+        navigation={navigation}
+        setMainMenu={setMainMenu}
+        theme={theme}
       />
     </CenteredModalWithOneButton>
   );

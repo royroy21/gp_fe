@@ -5,32 +5,34 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 function DisplayGenres({genres, removeGenre=null, containerStyle={}}) {
   const theme = useTheme();
   return (
-    <View style={{...styles.container, ...containerStyle}}>
-      {genres.map((genre, key) => (
-        <Chip
-          key={key}
-          label={genre.genre}
-          style={styles.chip}
-          labelStyle={{
-            color: theme.palette.primary.main,
-          }}
-          trailing={
-            removeGenre ? (
-              <IconButton
-                onPress={() => removeGenre(genres, genre.id)}
-                icon={
-                  <Icon
-                    name={"trash-can-outline"}
-                    size={25}
-                    color={theme.palette.secondary.main}
-                  />
-                }
-              />
-            ) : null
-          }
-        />
-      ))}
-    </View>
+    genres.length ? (
+      <View style={{...styles.container, ...containerStyle}}>
+        {genres.map((genre, key) => (
+          <Chip
+            key={key}
+            label={genre.genre}
+            style={styles.chip}
+            labelStyle={{
+              color: theme.palette.primary.main,
+            }}
+            trailing={
+              removeGenre ? (
+                <IconButton
+                  onPress={() => removeGenre(genres, genre.id)}
+                  icon={
+                    <Icon
+                      name={"trash-can-outline"}
+                      size={25}
+                      color={theme.palette.secondary.main}
+                    />
+                  }
+                />
+              ) : null
+            }
+          />
+        ))}
+      </View>
+    ) : null
   )
 }
 

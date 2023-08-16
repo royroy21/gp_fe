@@ -2,6 +2,7 @@ import {Component} from "react";
 import {Surface, Text} from "@react-native-material/core";
 import {Pressable, StyleSheet, View} from "react-native";
 import dateFormat from "dateformat";
+import Image from "../Image/Image";
 
 class RoomDetail extends Component {
   constructor(props) {
@@ -25,9 +26,16 @@ class RoomDetail extends Component {
       <Surface elevation={2} category="medium" style={styles.surface}>
         <Pressable onPress={navigateToRoom}>
           <View style={styles.container}>
+            <Image
+              imageUri={room.image}
+              thumbnailUri={room.thumbnail}
+              smallerThumbnail={true}
+              withModalViewOnPress={false}
+              containerStyle={styles.image}
+            />
             <View style={styles.message}>
               <Text style={{color: theme.palette.primary.main}}>
-                {`${room.title} (${room.id}) `}
+                {room.title}
               </Text>
               <Text>
                 {this.formatLastMessage(room.last_message)}
@@ -63,13 +71,18 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
   },
+  image: {
+    margin: 5,
+  },
   message: {
     alignSelf: "flex-start",
-    width: "78%",
+    marginLeft: 5,
+    width: "58%",
   },
   metaData: {
     alignSelf: "flex-end",
     flexDirection: "column",
+    marginLeft: "auto",
   },
   timestamp: {
     color: "grey",

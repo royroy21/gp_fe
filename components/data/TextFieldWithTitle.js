@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
   container: {
     paddingLeft: 12,
     paddingRight: 12,
-
     margin: 5,
     width: "98%",
   },

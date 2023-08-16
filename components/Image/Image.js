@@ -6,6 +6,8 @@ function Image(props) {
   const {
     imageUri,
     thumbnailUri,
+    smallerThumbnail=false,
+    onThumbnailPress=null,
     withModalViewOnPress=true,
     containerStyle={},
   } = props;
@@ -16,19 +18,25 @@ function Image(props) {
   const isWeb = Boolean(Platform.OS === "web");
   const defaultGigPigImage = require("../../assets/default_gigpig.jpeg");
   const defaultGigPigThumbnail = require("../../assets/default_gigpig_thumbnail.jpeg");
-  const mobileThumbnailStyle = {
+  const largerThumbnailStyle = {
       width: dimensions,
       height: dimensions,
       borderRadius: dimensions / 2,
       ...styles.image,
   };
-  const webThumbnailStyle = {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
+  const smallerThumbnailStyle = {
+      width: isWeb ? 100 : 50,
+      height: isWeb ? 100 : 50,
+      borderRadius: isWeb ? 50 : 25,
       ...styles.image,
   };
-  const thumbnailStyle = isWeb ? webThumbnailStyle : mobileThumbnailStyle;
+  const getThumbnailStyle = () => {
+    if (smallerThumbnail) {
+      return smallerThumbnailStyle
+    }
+    return isWeb ? smallerThumbnailStyle : largerThumbnailStyle;
+  }
+  const thumbnailStyle = getThumbnailStyle();
 
   const mobileModalImageStyle = {
     width: windowWidth,
@@ -61,7 +69,9 @@ function Image(props) {
   return (
     <View style={{...containerStyle}}>
       <Pressable onPress={() => {
-        if (withModalViewOnPress) {
+        if (onThumbnailPress) {
+          onThumbnailPress();
+        } else if (withModalViewOnPress) {
           setModalVisible(true)
         }
       }}>

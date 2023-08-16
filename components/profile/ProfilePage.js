@@ -1,8 +1,11 @@
 import useUserStore from "../../store/user";
-import {ListItem, Text, useTheme} from "@react-native-material/core";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import {useTheme} from "@react-native-material/core";
 import DisplayGenres from "../gig/DisplayGenres";
-import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
+import {StyleSheet, View} from "react-native";
+import Image from "../Image/Image";
+import React from "react";
+import TextFieldWithTitle from "../data/TextFieldWithTitle";
+import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function ProfilePage({ navigation }) {
   const theme = useTheme();
@@ -12,45 +15,54 @@ function ProfilePage({ navigation }) {
     navigation.navigate("EditProfile");
   }
   return (
-    <CustomScrollViewWithTwoButtons
-      actionButtonTitle={"edit"}
-      actionButtonOnPress={edit}
-      backButtonTitle={"go back"}
-      backButtonOnPress={navigation.goBack}
+    <CustomScrollViewWithOneButton
+      buttonTitle={"edit"}
+      buttonOnPress={edit}
     >
-      <ListItem
-        title={<Text>{object.username}</Text>}
-        trailing={
-          <Icon
-            name="account"
-            size={25}
-            color={theme.palette.secondary.main}
-          />
-        }
+      <View style={styles.imageAndGenresContainer}>
+        <Image
+          imageUri={object.image}
+          thumbnailUri={object.thumbnail}
+          containerStyle={styles.image}
+        />
+        <DisplayGenres
+          genres={object.genres}
+          containerStyle={styles.genres}
+        />
+      </View>
+      <TextFieldWithTitle
+        title={"username"}
+        text={object.username}
+        theme={theme}
+        trailingIconName={"account"}
       />
-      <ListItem
-        title={<Text>{object.email}</Text>}
-        trailing={
-          <Icon
-            name="email"
-            size={25}
-            color={theme.palette.secondary.main}
-          />
-        }
+      <TextFieldWithTitle
+        title={"email"}
+        text={object.email}
+        theme={theme}
+        trailingIconName={"email"}
       />
-      <ListItem
-        title={<Text>{object.bio}</Text>}
-        trailing={
-          <Icon
-            name="music"
-            size={25}
-            color={theme.palette.secondary.main}
-          />
-        }
+      <TextFieldWithTitle
+        title={"bio"}
+        text={object.bio}
+        theme={theme}
+        trailingIconName={"music"}
       />
-      <DisplayGenres genres={object.genres}/>
-    </CustomScrollViewWithTwoButtons>
+    </CustomScrollViewWithOneButton>
   )
 }
+
+const styles = StyleSheet.create({
+  imageAndGenresContainer: {
+    flexDirection: "row"
+  },
+  image: {
+    margin: 10,
+  },
+  genres: {
+    width: "65%",
+    alignItems: "flex-end",
+  },
+})
 
 export default ProfilePage;
