@@ -1,31 +1,30 @@
 import {FlatList, SafeAreaView, StyleSheet, View} from "react-native";
 import React, {useRef, useState} from "react";
-import ShowGig from "./ShowGig";
+import ShowUser from "./ShowUser";
 import {BACKEND_ENDPOINTS} from "../../settings";
-import SearchGigs from "./SearchGigs";
-import AddGigButton from "./AddGigButton";
 import {IconButton, Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import useGigsStore from "../../store/gigs";
 import Errors from "../forms/Errors";
 import Loading from "../loading/Loading";
 import LoadingModal from "../loading/LoadingModal";
 import {useFocusEffect} from "@react-navigation/native";
+import useUsersStore from "../../store/users";
+import SearchUsers from "./SearchUsers";
 
-function ShowGigs({ navigation }) {
+function ShowUsers({ navigation }) {
   const theme = useTheme()
   const resultsListViewRef = useRef();
   const [searchFeedback, setSearchFeedback] = useState(null);
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
-  const {object: gigs, error, loading, get, clear} = useGigsStore();
+  const {object: users, error, loading, get, clear} = useUsersStore();
 
-  async function getGigsFromAPI(url=BACKEND_ENDPOINTS.gigs, doNotMergeResults=false) {
+  async function getUsersFromAPI(url=BACKEND_ENDPOINTS.user, doNotMergeResults=false) {
     if (url.includes("/api/")) {
       setSearchFeedback(null);
     }
-    if (gigs) {
-      await get(url, gigs.results, doNotMergeResults);
+    if (users) {
+      await get(url, users.results, doNotMergeResults);
     } else {
       await get(url, [], doNotMergeResults);
     }
@@ -39,7 +38,7 @@ function ShowGigs({ navigation }) {
   }
   useFocusEffect(
     React.useCallback(() => {
-      getGigsFromAPI();
+      getUsersFromAPI();
       return () => {
         setSearchFeedback(null);
         setAdvancedSearch(false);
@@ -50,9 +49,9 @@ function ShowGigs({ navigation }) {
   );
 
   async function getNextPage() {
-    if (gigs.next) {
+    if (users.next) {
       setLoadingNext(true);
-      await getGigsFromAPI(gigs.next);
+      await getUsersFromAPI(users.next);
       setLoadingNext(false);
     }
   }
@@ -60,17 +59,17 @@ function ShowGigs({ navigation }) {
   async function resetResults() {
     setSearchFeedback(null);
     clear();
-    await get(BACKEND_ENDPOINTS.gigs, [], true);
+    await get(BACKEND_ENDPOINTS.user, [], true);
   }
 
   const parsedError = error || {};
   return (
-    <>
+    <View style={styles.container}>
       {!loading ? (
-        <SearchGigs
+        <SearchUsers
           advancedSearch={advancedSearch}
           setAdvancedSearch={setAdvancedSearch}
-          getGigsFromAPI={getGigsFromAPI}
+          getUsersFromAPI={getUsersFromAPI}
           searchFeedback={searchFeedback}
           setSearchFeedback={setSearchFeedback}
           theme={theme}
@@ -92,37 +91,41 @@ function ShowGigs({ navigation }) {
       />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
-      {gigs && gigs.results.length ? (
-        <SafeAreaView style={styles.container}>
+      {users && users.results.length ? (
+        <SafeAreaView style={styles.listContainer}>
           <FlatList
             ref={resultsListViewRef}
             // https://reactnative.dev/docs/optimizing-flatlist-configuration
             // removeClippedSubviews={true}
-            data={gigs.results}
+            data={users.results}
             refreshing={loading}
             onRefresh={resetResults}
-            renderItem={({item}) => <ShowGig gig={item} theme={theme} navigation={navigation} />}
+            renderItem={({item}) => <ShowUser user={item} theme={theme} navigation={navigation} />}
             keyExtractor={item => item.id}
             onEndReached={() => getNextPage()}
           />
         </SafeAreaView>
       ) : (
         !loading ? (
-          <View style={styles.noGigsFoundContainer}>
-            <Text>{"Sorry no gigs found "}</Text>
+          <View style={styles.noUsersFoundContainer}>
+            <Text>{"Sorry no users found "}</Text>
             <Icon name="emoticon-sad" size={25} color={theme.palette.secondary.main}/>
           </View>
         ) : null
       )}
       <LoadingModal isLoading={loading && !loadingNext} />
       <Loading isLoading={loading && loadingNext} />
-      {!loading ? <AddGigButton navigation={navigation} theme={theme} /> : null}
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  listContainer: {
     width: "100%",
     flex: 1,
     alignItems: "stretch",
@@ -134,7 +137,7 @@ const styles = StyleSheet.create({
     right: 20,
     zIndex: 2,
   },
-  noGigsFoundContainer: {
+  noUsersFoundContainer: {
     height: "80%",
     flex: 1,
     flexDirection: "row",
@@ -143,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ShowGigs;
+export default ShowUsers;

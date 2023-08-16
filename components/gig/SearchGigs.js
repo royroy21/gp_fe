@@ -1,4 +1,4 @@
-import {Button, IconButton, ListItem, TextInput, useTheme, Text} from "@react-native-material/core";
+import {Button, IconButton, ListItem, TextInput, Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {StyleSheet, View} from "react-native";
 import {useState} from "react";
@@ -93,12 +93,12 @@ function AdvancedSearchModel(props) {
 
 function SearchGigs(props) {
   const {
-    showDefaultSearchBar,
     advancedSearch,
     setAdvancedSearch,
     getGigsFromAPI,
     searchFeedback,
     setSearchFeedback,
+    theme,
   } = props;
 
   const [searchString, setSearchString] = useState("");
@@ -106,8 +106,6 @@ function SearchGigs(props) {
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const theme = useTheme()
 
   function submitSearchRequest() {
     // If searchString is empty send query to return all results
@@ -143,18 +141,6 @@ function SearchGigs(props) {
 
   return (
     <View>
-      {showDefaultSearchBar ? (
-        <TextInput
-          variant={"outlined"}
-          trailing={
-            <IconButton
-              icon={<Icon name="magnify" size={25} color={theme.palette.secondary.main}/>}
-              onPress={submitSearchRequest}
-            />
-          }
-          onChangeText={setSearchString}
-        />
-      ) : null}
       {searchFeedback ? (
         <Text style={{color: theme.palette.secondary.main, ...styles.feedback}}>
           {searchFeedback}
@@ -180,11 +166,6 @@ function SearchGigs(props) {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 10,
-  },
   advancedSearch: {
     marginTop: 15,
     marginBottom: 10,

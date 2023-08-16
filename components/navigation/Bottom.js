@@ -26,13 +26,13 @@ function BottomNavigation({currentRoute, navigationTheme, isWeb}) {
       }
     }
     return {
-      size: 25,
+      size: navigateTo === "UsersScreen" ? 30 : 25,
       color: focused ? theme.palette.primary.main : "lightgrey",
     }
   }
   const navigationItems = [
     {name: "pig", navigateTo: "DefaultScreen"},
-    {name: "music", navigateTo: "MusicScreen"},
+    {name: "account-multiple", navigateTo: "UsersScreen"},
     {name: messageIcon, navigateTo: "RoomsScreen"},
   ]
 
