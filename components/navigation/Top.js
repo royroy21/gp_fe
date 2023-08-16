@@ -8,11 +8,11 @@ import {StatusBar, View, TouchableOpacity, StyleSheet} from "react-native";
 import BottomNavigation from "./Bottom";
 import {Text} from "@react-native-material/core";
 
-function Title({navigation, initialRouteName, BottomNavigationProps, isWeb}){
+function Title({title, navigation, initialRouteName, BottomNavigationProps, isWeb}){
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate(initialRouteName)}>
-        <Text style={styles.text}>{"GIGPIG"}</Text>
+        <Text style={styles.text}>{title}</Text>
       </TouchableOpacity>
       {isWeb && (
         <BottomNavigation
@@ -59,6 +59,7 @@ function TopNavigation({user, screens, initialRouteName, BottomNavigationProps, 
                 headerLeft: ()=> !isWeb,
                 headerTitle: () => (
                   <Title
+                    title={options.title}
                     navigation={navigation}
                     initialRouteName={initialRouteName}
                     BottomNavigationProps={BottomNavigationProps}
