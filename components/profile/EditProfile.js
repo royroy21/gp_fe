@@ -7,7 +7,9 @@ import SelectDropdown from "../SelectDropdown";
 import useGenresStore from "../../store/genres";
 import {useEffect, useState} from "react";
 import DisplayGenres from "../gig/DisplayGenres";
-import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
+import ImagePicker from "../Image/ImagePicker";
+import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
+import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function EditProfile({ navigation }) {
   const { me, object, patch, loading, error } = useUserStore();
@@ -24,6 +26,7 @@ function EditProfile({ navigation }) {
       email: object.email,
       bio: object.bio,
       genres: object.genres,
+      image: object.image,
     },
   });
 
@@ -39,30 +42,65 @@ function EditProfile({ navigation }) {
     setNumberOfGenres(updatedGenres.length);
   }
 
+  let image = null;
   const onSubmit = async (data) => {
-    await patch(object.id, data, onSuccess);
+    /*
+    NOTE! If an image is present first we upload string data using react-hook-form's
+    data object then we upload image data separately afterwards using FormData.
+     */
+
+    if (typeof data.image === "string") {
+      // Assume image has not been changed by user as URL from server.
+      // EG: http://192.168.77.206:8000/media/user/6da64...
+      return await patch(object.id, getDataWithOutImage(data), onSuccess)
+    }
+
+    image = data.image;
+    if (image) {
+      // Upload new image.
+      await patch(object.id, getDataWithOutImage(data), upLoadImage)
+    } else {
+      // User wants to remove the image.
+      await patch(object.id, data, onSuccess)
+    }
   }
 
-  const goBack = () => {
-    me(object.id);
-    navigation.goBack();
+  const upLoadImage = async (object) => {
+    const formData = new FormData();
+    const formattedImage = formatImageForForm(image.uri);
+    formData.append("image", formattedImage);
+    await patch(object.id, formData, onSuccess, true);
   }
 
   const onSuccess = () => {
     navigation.navigate("ProfilePage")
+    return () => {
+      image = null
+    }
+  }
+
+  const setImage = (image) => {
+    setValue("image", image)
+  }
+
+  const removeImage = () => {
+    setValue("image", null)
   }
 
   const parsedError = error || {};
   return (
-    <CustomScrollViewWithTwoButtons
-      actionButtonTitle={"submit"}
-      actionButtonOnPress={handleSubmit(onSubmit)}
-      backButtonTitle={"go back"}
-      backButtonOnPress={goBack}
+    <CustomScrollViewWithOneButton
+      buttonTitle={"submit"}
+      buttonOnPress={handleSubmit(onSubmit)}
     >
       <LoadingModal isLoading={loading} />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
+      <ImagePicker
+        setImage={setImage}
+        removeImage={removeImage}
+        existingImage={getValues("image")}
+      />
       <Controller
         control={control}
         rules={{
@@ -153,7 +191,7 @@ function EditProfile({ navigation }) {
         name="genres"
       />
       {parsedError.genres && <Errors errorMessages={parsedError.genres} />}
-    </CustomScrollViewWithTwoButtons>
+    </CustomScrollViewWithOneButton>
   )
 }
 

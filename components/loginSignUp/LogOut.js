@@ -1,4 +1,4 @@
-import {IconButton} from "@react-native-material/core";
+import {IconButton, ListItem} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useUserStore from "../../store/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,13 +8,14 @@ import useGigStore from "../../store/gig";
 import useJWTStore from "../../store/jwt";
 import useCountriesStore from "../../store/countries";
 import LoadingModal from "../loading/LoadingModal";
-import {useState} from "react";
+import React, {useState} from "react";
 import useRoomsStore from "../../store/rooms";
 import useGigsStore from "../../store/gigs";
 import useOtherUserStore from "../../store/otherUser";
 import usePreviousMessagesStore from "../../store/previousMessages";
 import {closeAndDeleteOtherWebSockets} from "../message";
 import unreadMessagesStore from "../../store/unreadMessages";
+import {Text} from "react-native";
 
 function LogOut({navigation, setMainMenu, theme}) {
   const [loading, setLoading] = useState(false);
@@ -56,13 +57,19 @@ function LogOut({navigation, setMainMenu, theme}) {
   return (
     <>
       <LoadingModal isLoading={loading}/>
-      <IconButton
+      <ListItem
+        title={<Text>{"Log out"}</Text>}
         onPress={logOut}
-        icon={
-          <Icon
-            color={theme.palette.secondary.main}
-            name={"logout"}
-            size={25}
+        trailing={
+          <IconButton
+            onPress={logOut}
+            icon={
+              <Icon
+                color={theme.palette.secondary.main}
+                name={"logout"}
+                size={25}
+              />
+            }
           />
         }
       />

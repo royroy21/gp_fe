@@ -15,11 +15,13 @@ function CustomScrollViewWithOneButton(props) {
         </ScrollView>
       </View>
       <View style={styles.buttonsContainer}>
-        <Button
-          title={buttonTitle}
-          onPress={buttonOnPress}
-          style={styles.button}
-        />
+        {buttonTitle && buttonOnPress ? (
+          <Button
+            title={buttonTitle}
+            onPress={buttonOnPress}
+            style={styles.button}
+          />
+        ) : null}
       </View>
     </View>
   )
@@ -32,13 +34,13 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 10,
-    height: "80%",
+    height: "90%",
   },
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "center",
     width: "100%",
-    marginTop: 40,
+    marginTop: 10,
     marginLeft: "auto",
     marginRight: "auto",
   },

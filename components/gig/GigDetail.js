@@ -1,10 +1,8 @@
 import {StyleSheet, View} from "react-native";
-import {ListItem, Text, useTheme} from "@react-native-material/core";
+import {useTheme} from "@react-native-material/core";
 import DisplayGenres from "./DisplayGenres";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import dateFormat from "dateformat";
 import useUserStore from "../../store/user";
-import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
 import Errors from "../forms/Errors";
 import LoadingModal from "../loading/LoadingModal";
 import React, {useState} from "react";
@@ -12,6 +10,8 @@ import newMessage from "../message/newMessage";
 import useJWTStore from "../../store/jwt";
 import Image from "../Image/Image";
 import TextFieldWithTitle from "../data/TextFieldWithTitle";
+import UserProfileLink from "../profile/UserProfileLink";
+import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function GigDetail({route, navigation}) {
   const { gig } = route.params;
@@ -24,10 +24,6 @@ function GigDetail({route, navigation}) {
     navigation.navigate("DefaultScreen");
   }
   const accessToken = JSON.parse(jwt).access;
-
-  const navigateToOwner = () => {
-    navigation.navigate("OtherUser", {user: gig.user});
-  }
   const edit = () => {
     navigation.navigate("EditGig", {gig: gig});
   }
@@ -48,11 +44,9 @@ function GigDetail({route, navigation}) {
     <>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       <LoadingModal isLoading={loading} />
-      <CustomScrollViewWithTwoButtons
-        actionButtonTitle={isGigOwner ? "edit" : "respond"}
-        actionButtonOnPress={isGigOwner ? edit : respond}
-        backButtonTitle={"go back"}
-        backButtonOnPress={navigation.goBack}
+      <CustomScrollViewWithOneButton
+        buttonTitle={isGigOwner ? "edit" : "respond"}
+        buttonOnPress={isGigOwner ? edit : respond}
       >
         <View style={styles.imageAndGenresContainer}>
           <Image
@@ -65,6 +59,13 @@ function GigDetail({route, navigation}) {
             containerStyle={styles.genres}
           />
         </View>
+        <UserProfileLink
+          user={gig.user}
+          title={"posted by"}
+          navigation={navigation}
+          theme={theme}
+          containerStyle={styles.userProfileLink}
+        />
         <TextFieldWithTitle
           title={"title"}
           text={gig.title}
@@ -106,19 +107,7 @@ function GigDetail({route, navigation}) {
           trailingIconName={"calendar"}
           style={styles.startDate}
         />
-        <ListItem
-          title={<Text>{`posted by: ${gig.user.username}`}</Text>}
-          onPress={navigateToOwner}
-          trailing={
-            <Icon
-              name={"account"}
-              size={25}
-              color={theme.palette.secondary.main}
-              onPress={navigateToOwner}
-            />
-          }
-        />
-      </CustomScrollViewWithTwoButtons>
+      </CustomScrollViewWithOneButton>
     </>
   )
 }
@@ -129,6 +118,9 @@ const styles = StyleSheet.create({
   },
   image: {
     margin: 10,
+  },
+  userProfileLink: {
+    marginTop: 10,
   },
   genres: {
     width: "65%",

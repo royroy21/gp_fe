@@ -50,10 +50,7 @@ function Settings({ navigation }) {
 
   const parsedError = error || {};
   return (
-    <CustomScrollViewWithOneButton
-      buttonTitle={"go back"}
-      buttonOnPress={navigation.goBack}
-    >
+    <CustomScrollViewWithOneButton>
       <LoadingModal isLoading={loading} />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
