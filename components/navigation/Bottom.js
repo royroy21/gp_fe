@@ -1,4 +1,4 @@
-import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {Pressable, StyleSheet, View} from "react-native";
 import {Icon, useTheme} from "@react-native-material/core";
 import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
@@ -37,11 +37,11 @@ function BottomNavigation({currentRoute, navigationTheme, isWeb}) {
   ]
 
   const containerStyle = isWeb ? styles.containerWeb : styles.container;
-  const buttonStyle = isWeb ? {paddingLeft: 50, ...styles.button} : styles.button;
+  const buttonStyle = isWeb ? {paddingLeft: 10, ...styles.button} : styles.button;
   return (
     <View style={{backgroundColor: navigationTheme.colors.card, ...containerStyle}}>
       {navigationItems.map((item) => (
-        <TouchableOpacity
+        <Pressable
           style={buttonStyle}
           key={item.name}
           onPress={() => navigation.navigate(item.navigateTo)}
@@ -51,7 +51,7 @@ function BottomNavigation({currentRoute, navigationTheme, isWeb}) {
             name={item.name}
             {...iconStyle(item.navigateTo, item.navigateTo === currentRoute)}
           />
-        </TouchableOpacity>
+        </Pressable>
       ))}
     </View>
   );
@@ -64,9 +64,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   containerWeb: {
-    display: "flex",
     flexDirection: "row",
-    width: 200,
+    alignSelf: "flex-start",
+    width: 175,
   },
   button: {
     flexGrow: 1,

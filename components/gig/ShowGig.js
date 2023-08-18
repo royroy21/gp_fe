@@ -1,4 +1,4 @@
-import {Platform, Pressable, StyleSheet, View} from "react-native";
+import {Pressable, StyleSheet, View} from "react-native";
 import {Chip, Surface, Text} from "@react-native-material/core";
 import dateFormat from "dateformat";
 import {Component} from "react";
@@ -22,8 +22,7 @@ class ShowGig extends Component {
   }
 
   render() {
-    const isWeb = Boolean(Platform.OS === "web");
-    const { gig, theme, navigation } = this.props;
+    const { gig, windowWidth, theme, navigation } = this.props;
     const navigateToGigDetail = () => {
       navigation.navigate("GigDetail", {gig: gig});
     }
@@ -38,13 +37,15 @@ class ShowGig extends Component {
               containerStyle={styles.image}
             />
             <View style={{
-              width: isWeb ? "100%" : "70%",
+              width: windowWidth / 1.6,
               ...styles.dataContainer}
             }>
               <Text style={{color: theme.palette.primary.main}}>
                 {`${gig.title}`}
               </Text>
-              {gig.description ? <Text style={styles.description}>{this.getDescription(gig)}</Text> : null}
+              {gig.description ? (
+                <Text style={styles.description}>{this.getDescription(gig)}</Text>
+              ) : null}
               <Text style={styles.location}>
                 {`${gig.location} (${gig.country.country})`}
               </Text>
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   dataContainer: {
-    marginLeft: "auto",
+    alignSelf: "flex-start",
     paddingLeft: 5,
     marginBottom: 5,
   },

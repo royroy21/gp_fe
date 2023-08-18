@@ -18,7 +18,7 @@ class RoomDetail extends Component {
   }
 
   render() {
-    const { room, theme, navigation, unReadMessagesCount } = this.props;
+    const { room, windowWidth, theme, navigation, unReadMessagesCount } = this.props;
     const navigateToRoom = () => {
       navigation.navigate("Room", {room: room});
     }
@@ -32,8 +32,13 @@ class RoomDetail extends Component {
               smallerThumbnail={true}
               withModalViewOnPress={false}
               containerStyle={styles.image}
+              thumbnailStyle={styles.thumbnailStyle}
             />
-            <View style={styles.message}>
+            <View style={{
+              width: windowWidth / 2,
+              ...styles.message,
+            }}
+            >
               <Text style={{color: theme.palette.primary.main}}>
                 {room.title}
               </Text>
@@ -74,10 +79,14 @@ const styles = StyleSheet.create({
   image: {
     margin: 5,
   },
+  thumbnailStyle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
   message: {
     alignSelf: "flex-start",
     marginLeft: 5,
-    width: "58%",
   },
   metaData: {
     alignSelf: "flex-end",

@@ -1,4 +1,4 @@
-import {FlatList, SafeAreaView, StyleSheet, View} from "react-native";
+import {Dimensions, FlatList, SafeAreaView, StyleSheet, View} from "react-native";
 import React, {useRef, useState} from "react";
 import ShowUser from "./ShowUser";
 import {BACKEND_ENDPOINTS} from "../../settings";
@@ -17,6 +17,7 @@ function ShowUsers({ navigation }) {
   const [searchFeedback, setSearchFeedback] = useState(null);
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
+  const windowWidth = Dimensions.get("window").width;
   const {object: users, error, loading, get, clear} = useUsersStore();
 
   async function getUsersFromAPI(url=BACKEND_ENDPOINTS.user, doNotMergeResults=false) {
@@ -100,7 +101,14 @@ function ShowUsers({ navigation }) {
             data={users.results}
             refreshing={loading}
             onRefresh={resetResults}
-            renderItem={({item}) => <ShowUser user={item} theme={theme} navigation={navigation} />}
+            renderItem={({item}) => (
+              <ShowUser
+                user={item}
+                windowWidth={windowWidth}
+                theme={theme}
+                navigation={navigation}
+              />
+            )}
             keyExtractor={item => item.id}
             onEndReached={() => getNextPage()}
           />

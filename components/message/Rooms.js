@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from "react";
 import useRoomsStore from "../../store/rooms";
 import Errors from "../forms/Errors";
-import {FlatList, SafeAreaView, StyleSheet, View} from "react-native";
+import {Dimensions, FlatList, SafeAreaView, StyleSheet, View} from "react-native";
 import {Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import LoadingModal from "../loading/LoadingModal";
@@ -25,6 +25,7 @@ function Rooms({ navigation }) {
   const theme = useTheme()
   const {unreadMessages} = unreadMessagesStore();
   const [loadingNext, setLoadingNext] = useState(false);
+  const windowWidth = Dimensions.get("window").width;
   const {object: rooms, error, loading, get, clear} = useRoomsStore();
 
   async function getRoomsFromAPI(url=BACKEND_ENDPOINTS.room) {
@@ -73,10 +74,12 @@ function Rooms({ navigation }) {
               return (
                 <RoomDetail
                   room={item}
+                  windowWidth={windowWidth}
                   theme={theme}
                   navigation={navigation}
                   unReadMessagesCount={unreadMessagesCount}
-              />)
+              />
+              )
             }}
             keyExtractor={item => item.id}
             onEndReached={() => getNextPage()}

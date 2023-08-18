@@ -10,6 +10,7 @@ function Image(props) {
     onThumbnailPress=null,
     withModalViewOnPress=true,
     containerStyle={},
+    thumbnailStyle={},
   } = props;
   const [modalVisible, setModalVisible] = useState(false);
   const windowWidth = Dimensions.get("window").width;
@@ -31,12 +32,18 @@ function Image(props) {
       ...styles.image,
   };
   const getThumbnailStyle = () => {
+    if (Object.keys(thumbnailStyle).length) {
+      return {
+        ...thumbnailStyle,
+        ...styles.image,
+      }
+    }
     if (smallerThumbnail) {
       return smallerThumbnailStyle
     }
     return isWeb ? smallerThumbnailStyle : largerThumbnailStyle;
   }
-  const thumbnailStyle = getThumbnailStyle();
+  const computedThumbnailStyle = getThumbnailStyle();
 
   const mobileModalImageStyle = {
     width: windowWidth,
@@ -77,7 +84,7 @@ function Image(props) {
       }}>
         <ReactNativeImage
           source={getThumbnailSrc()}
-          style={thumbnailStyle}
+          style={computedThumbnailStyle}
         />
       </Pressable>
       <Modal

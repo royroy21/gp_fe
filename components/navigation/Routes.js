@@ -10,6 +10,8 @@ import EditProfile from "../profile/EditProfile";
 import Room from "../message/Room";
 import Rooms from "../message/Rooms";
 import ShowUsers from "../users/ShowUsers";
+import LoginForm from "../loginSignUp/Login";
+import SignupForm from "../loginSignUp/SignUp";
 
 function Routes({user, setCurrentRoute, BottomNavigationProps, theme, isWeb}) {
   const initialRouteName = "DefaultScreen";
@@ -17,68 +19,80 @@ function Routes({user, setCurrentRoute, BottomNavigationProps, theme, isWeb}) {
     {
       key: initialRouteName,
       name: initialRouteName,
-      title: "GIGPIG/gigs",
+      title: "gigs",
       component: DefaultScreen,
     },
     {
       key: "GigDetail",
       name: "GigDetail",
-      title: "GIGPIG/gig",
+      title: "gig",
       component: GigDetail,
     },
     {
       key: "AddGig",
       name: "AddGig",
-      title: "GIGPIG/add_gig",
+      title: "add_gig",
       component: AddGig,
     },
     {
       key: "EditGig",
       name: "EditGig",
-      title: "GIGPIG/edit_gig",
+      title: "edit_gig",
       component: EditGig,
     },
     {
       key: "UsersScreen",
       name: "UsersScreen",
-      title: "GIGPIG/users",
+      title: "users",
       component: ShowUsers,
     },
     {
       key: "Room",
       name: "Room",
-      title: "GIGPIG/msg",
+      title: "msg",
       component: Room,
     },
     {
       key: "RoomsScreen",
       name: "RoomsScreen",
-      title: "GIGPIG/msgs",
+      title: "msgs",
       component: Rooms,
     },
     {
       key: "OtherUser",
       name: "OtherUser",
-      title: "GIGPIG/user",
+      title: "user",
       component: OtherUser,
     },
     {
       key: "ProfilePage",
       name: "ProfilePage",
-      title: "GIGPIG/profile",
+      title: "profile",
       component: ProfilePage,
     },
     {
       key: "EditProfile",
       name: "EditProfile",
-      title: "GIGPIG/edit_profile",
+      title: "edit_profile",
       component: EditProfile,
     },
     {
       key: "Settings",
       name: "Settings",
-      title: "GIGPIG/settings",
+      title: "settings",
       component: Settings,
+    },
+    {
+      key: "LoginScreen",
+      name: "LoginScreen",
+      title: "login",
+      component: LoginForm,
+    },
+    {
+      key: "SignUpScreen",
+      name: "SignUpScreen",
+      title: "sign_up",
+      component: SignupForm,
     },
   ]
   return (

@@ -1,4 +1,4 @@
-import {FlatList, SafeAreaView, StyleSheet, View} from "react-native";
+import {Dimensions, FlatList, SafeAreaView, StyleSheet, View} from "react-native";
 import React, {useRef, useState} from "react";
 import ShowGig from "./ShowGig";
 import {BACKEND_ENDPOINTS} from "../../settings";
@@ -18,6 +18,7 @@ function ShowGigs({ navigation }) {
   const [searchFeedback, setSearchFeedback] = useState(null);
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
+  const windowWidth = Dimensions.get("window").width;
   const {object: gigs, error, loading, get, clear} = useGigsStore();
 
   async function getGigsFromAPI(url=BACKEND_ENDPOINTS.gigs, doNotMergeResults=false) {
@@ -101,7 +102,14 @@ function ShowGigs({ navigation }) {
             data={gigs.results}
             refreshing={loading}
             onRefresh={resetResults}
-            renderItem={({item}) => <ShowGig gig={item} theme={theme} navigation={navigation} />}
+            renderItem={({item}) => (
+              <ShowGig
+                gig={item}
+                windowWidth={windowWidth}
+                theme={theme}
+                navigation={navigation}
+              />
+            )}
             keyExtractor={item => item.id}
             onEndReached={() => getNextPage()}
           />

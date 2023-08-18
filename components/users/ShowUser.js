@@ -1,4 +1,4 @@
-import {Platform, Pressable, StyleSheet, View} from "react-native";
+import {Pressable, StyleSheet, View} from "react-native";
 import {Chip, Surface, Text} from "@react-native-material/core";
 import {Component} from "react";
 import Image from "../Image/Image";
@@ -21,8 +21,7 @@ class ShowUser extends Component {
   }
 
   render() {
-    const isWeb = Boolean(Platform.OS === "web");
-    const { user, theme, navigation } = this.props;
+    const { user, windowWidth, theme, navigation } = this.props;
     const navigateToUser = () => {
       navigation.navigate("OtherUser", {user: user});
     }
@@ -37,7 +36,7 @@ class ShowUser extends Component {
               containerStyle={styles.image}
             />
             <View style={{
-              width: isWeb ? "100%" : "70%",
+              width: windowWidth / 1.6,
               ...styles.dataContainer}
             }>
               <Text style={{color: theme.palette.primary.main}}>
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   dataContainer: {
-    marginLeft: "auto",
+    alignSelf: "flex-start",
     paddingLeft: 5,
     marginBottom: 5,
   },
