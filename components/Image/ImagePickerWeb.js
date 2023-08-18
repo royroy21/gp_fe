@@ -1,18 +1,19 @@
 import {StyleSheet, View} from 'react-native';
 import { Button } from "@react-native-material/core";
-import * as ImagePickerLibrary from 'expo-image-picker';
-import { useCallback, useState } from "react";
+import {useCallback, useRef, useState} from "react";
 import Image from "./Image";
 import {useFocusEffect} from "@react-navigation/native";
 
-function ImagePicker(props) {
+function ImagePickerWeb(props) {
   const {
     setImage: setImageToForm,
     removeImage: removeImageFromForm,
     existingImage=null,
     thumbnailUrl=null,
   } = props;
+  const inputFile = useRef(null);
   const [image, setImage] = useState(null);
+  const [newUpload, setNewUpload] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -22,35 +23,24 @@ function ImagePicker(props) {
           uri: existingImage,
         })
       }
+      return () => {
+        setImage(null);
+        setNewUpload(false);
+      };
     }, [])
   );
 
-  const pickImageAsync = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePickerLibrary.launchImageLibraryAsync({
-      mediaTypes: ImagePickerLibrary.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      return result.assets[0];
-    }
-  };
-
-  const pickImage = () => {
-    pickImageAsync().then(data => {
-      if (!data) {
-        return
-      }
-      setImage(data);
-      setImageToForm(data);
-    })
+  const pickImage = (e) => {
+    const data = e.target.files[0]
+    setImage(data);
+    setImageToForm(data);
+    setNewUpload(true);
   }
 
   const removeImage = () => {
     setImage(null);
     removeImageFromForm();
+    setNewUpload(false);
   }
 
   return (
@@ -58,7 +48,7 @@ function ImagePicker(props) {
       {image && (
         <View style={styles.imageContainer}>
           <Image
-            imageUri={image.uri}
+            imageUri={newUpload ? URL.createObjectURL(image) : image.uri}
             thumbnailUri={thumbnailUrl}
           />
         </View>
@@ -71,11 +61,21 @@ function ImagePicker(props) {
           style={styles.button}
         />
       ) : (
-        <Button
-          title={"pick image"}
-          onPress={pickImage}
-          style={styles.button}
-        />
+        <>
+          <View style={{display: "none"}}>
+             <input
+               ref={inputFile}
+               type={"file"}
+               onChange={pickImage}
+               accept="image/*"
+             />
+          </View>
+          <Button
+            title={"pick image"}
+            onPress={() => inputFile.current.click()}
+            style={styles.button}
+          />
+        </>
       )}
       </View>
     </View>
@@ -101,4 +101,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ImagePicker;
+export default ImagePickerWeb;

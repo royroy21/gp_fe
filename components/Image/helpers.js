@@ -1,4 +1,6 @@
 export const formatImageForForm = (uri) => {
+  // Formats an image to be uploaded.
+  // This is only necessary if uploading from mobile.
   return  {
     uri,
     type: "image/" + getImageTypeFromUri(uri),

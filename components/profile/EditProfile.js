@@ -7,13 +7,16 @@ import SelectDropdown from "../SelectDropdown";
 import useGenresStore from "../../store/genres";
 import {useEffect, useState} from "react";
 import DisplayGenres from "../gig/DisplayGenres";
-import ImagePicker from "../Image/ImagePicker";
+import ImagePickerMobile from "../Image/ImagePickerMobile";
 import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
+import {Platform} from "react-native";
+import ImagePickerWeb from "../Image/ImagePickerWeb";
 
 function EditProfile({ navigation }) {
-  const { me, object, patch, loading, error } = useUserStore();
+  const { object, patch, loading, error } = useUserStore();
   const [numberOfGenres, setNumberOfGenres] = useState(object.genres.length);
+  const isWeb = Boolean(Platform.OS === "web");
 
   const {
     object: genres,
@@ -67,9 +70,14 @@ function EditProfile({ navigation }) {
 
   const upLoadImage = async (object) => {
     const formData = new FormData();
-    const formattedImage = formatImageForForm(image.uri);
-    formData.append("image", formattedImage);
-    await patch(object.id, formData, onSuccess, true);
+    if (isWeb) {
+      formData.append("image", image);
+      await patch(object.id, formData, onSuccess, true);
+    } else {
+      const formattedImage = formatImageForForm(image.uri);
+      formData.append("image", formattedImage);
+      await patch(object.id, formData, onSuccess, true);
+    }
   }
 
   const onSuccess = () => {
@@ -96,11 +104,19 @@ function EditProfile({ navigation }) {
       <LoadingModal isLoading={loading} />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
-      <ImagePicker
-        setImage={setImage}
-        removeImage={removeImage}
-        existingImage={getValues("image")}
-      />
+      {isWeb ? (
+        <ImagePickerWeb
+          setImage={setImage}
+          removeImage={removeImage}
+          existingImage={getValues("image")}
+        />
+        ) : (
+        <ImagePickerMobile
+          setImage={setImage}
+          removeImage={removeImage}
+          existingImage={getValues("image")}
+        />
+        )}
       <Controller
         control={control}
         rules={{

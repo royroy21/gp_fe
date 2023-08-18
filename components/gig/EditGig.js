@@ -3,9 +3,12 @@ import {useState} from "react";
 import useGigStore from "../../store/gig";
 import BaseGigForm from "./BaseGigForm";
 import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
+import {Platform} from "react-native";
 
 function EditGig({ route, navigation }) {
   const { gig } = route.params;
+  const isWeb = Boolean(Platform.OS === "web");
+
   const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
     defaultValues: {
       "title": gig.title,
@@ -49,9 +52,14 @@ function EditGig({ route, navigation }) {
 
   const upLoadImage = async (gig) => {
     const formData = new FormData();
-    const formattedImage = formatImageForForm(image.uri);
-    formData.append("image", formattedImage);
-    await patch(gig.id, formData, onSuccess, true);
+    if (isWeb) {
+      formData.append("image", image);
+      await patch(gig.id, formData, onSuccess, true);
+    } else {
+      const formattedImage = formatImageForForm(image.uri);
+      formData.append("image", formattedImage);
+      await patch(gig.id, formData, onSuccess, true);
+    }
   }
 
   const onSuccess = (gig) => {
@@ -66,7 +74,7 @@ function EditGig({ route, navigation }) {
 
   return (
     <BaseGigForm
-      navigation={navigation}
+      isWeb={isWeb}
       control={control}
       handleSubmit={handleSubmit}
       getValues={getValues}

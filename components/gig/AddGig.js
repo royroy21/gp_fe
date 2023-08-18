@@ -5,10 +5,13 @@ import {useEffect, useState} from "react";
 import useGigStore from "../../store/gig";
 import useUserStore from "../../store/user";
 import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
+import {Platform} from "react-native";
 
 function AddGig({ navigation }) {
   const {object: defaultCountry, loading: loadingCountry, get: getCountry} = useCountryStore();
   const { object: user } = useUserStore();
+  const isWeb = Boolean(Platform.OS === "web");
+
   const { control, handleSubmit, getValues, setValue, resetField, clearErrors } = useForm({
     defaultValues: {
       "title": "",
@@ -44,9 +47,14 @@ function AddGig({ navigation }) {
 
   const upLoadImage = async (gig) => {
     const formData = new FormData();
-    const formattedImage = formatImageForForm(image.uri);
-    formData.append("image", formattedImage);
-    await patch(gig.id, formData, onSuccess, true);
+    if (isWeb) {
+      formData.append("image", image);
+      await patch(gig.id, formData, onSuccess, true);
+    } else {
+      const formattedImage = formatImageForForm(image.uri);
+      formData.append("image", formattedImage);
+      await patch(gig.id, formData, onSuccess, true);
+    }
   }
 
   const onSuccess = (gig) => {
@@ -61,7 +69,7 @@ function AddGig({ navigation }) {
 
   return (
     <BaseGigForm
-      navigation={navigation}
+      isWeb={isWeb}
       control={control}
       handleSubmit={handleSubmit}
       getValues={getValues}

@@ -51,11 +51,9 @@ class APIClient {
   }
 
   getHeaders = async (isMultipartFormData=false) => {
-    const baseHeaders = isMultipartFormData ? (
-      {"Content-Type": "multipart/form-data", Access: "application/json"}
-    ) : (
-      {"Content-Type": "application/json"}
-    );
+    // if isMultipartFormData is true data will be sent
+    // using formData which automatically sets headers.
+    const baseHeaders = isMultipartFormData ? {} : {"Content-Type": "application/json"};
     const { getItem: getJWT } = useAsyncStorage("jwt");
     const jwt = await getJWT();
     return jwt ? (

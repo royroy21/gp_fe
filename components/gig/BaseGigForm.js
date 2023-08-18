@@ -12,12 +12,13 @@ import useCountriesStore from "../../store/countries";
 import useGenresStore from "../../store/genres";
 import SelectDropdown from "../SelectDropdown";
 import {useEffect} from "react";
-import ImagePicker from "../Image/ImagePicker";
+import ImagePickerMobile from "../Image/ImagePickerMobile";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
+import ImagePickerWeb from "../Image/ImagePickerWeb";
 
 function BaseGigForm(props) {
   const {
-    navigation,
+    isWeb,
     control,
     handleSubmit,
     getValues,
@@ -86,11 +87,19 @@ function BaseGigForm(props) {
       />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
-        <ImagePicker
+      {isWeb ? (
+        <ImagePickerWeb
           setImage={setImage}
           removeImage={removeImage}
           existingImage={getValues("image")}
         />
+        ) : (
+        <ImagePickerMobile
+          setImage={setImage}
+          removeImage={removeImage}
+          existingImage={getValues("image")}
+        />
+        )}
         {parsedError.image && <Errors errorMessages={parsedError.image} />}
         <Controller
           control={control}
