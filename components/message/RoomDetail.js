@@ -10,8 +10,8 @@ class RoomDetail extends Component {
   }
 
   formatLastMessage(lastMessage) {
-    if (lastMessage.length > 100) {
-      return `${lastMessage.substring(0, 100)}...`
+    if (lastMessage.length > 25) {
+      return `${lastMessage.substring(0, 25)}...`
     } else {
       return lastMessage
     }
