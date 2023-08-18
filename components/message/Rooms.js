@@ -59,11 +59,11 @@ function Rooms({ navigation }) {
 
   const parsedError = error || {};
   return (
-    <>
+    <View style={styles.container}>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {rooms && rooms.results.length ? (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.listContainer}>
           <FlatList
             data={rooms.results}
             refreshing={loading}
@@ -92,12 +92,18 @@ function Rooms({ navigation }) {
       )}
       <LoadingModal isLoading={loading && !loadingNext} />
       <Loading isLoading={loading && loadingNext} />
-    </>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    // TODO - will need to uncomment this when message search is added.
+    // flex: 1,
+    // alignItems: "center",
+    // justifyContent: "center",
+  },
+  listContainer: {
     width: "100%",
     alignItems: "stretch",
     justifyContent: "flex-start",
