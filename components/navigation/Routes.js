@@ -79,7 +79,7 @@ function Routes({user, setCurrentRoute, BottomNavigationProps, theme, isWeb}) {
     {
       key: "Settings",
       name: "Settings",
-      title: "settings",
+      title: "stg",
       component: Settings,
     },
     {

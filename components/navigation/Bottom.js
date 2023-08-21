@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   containerWeb: {
     flexDirection: "row",
     alignSelf: "flex-start",
-    width: 175,
+    width: 150,
   },
   button: {
     flexGrow: 1,

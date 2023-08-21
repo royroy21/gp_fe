@@ -7,14 +7,17 @@ import BottomNavigation from "./Bottom";
 import {IconButton, Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-function Title({title, navigation, initialRouteName, BottomNavigationProps, isWeb}){
+function Title({title, navigation, route, initialRouteName, BottomNavigationProps, isWeb}){
+  const doNotShowBottomOnTheseRoutes = [
+    "LoginScreen", "SignUpScreen",
+  ];
   return (
     <View style={styles.container}>
       <Pressable onPress={() => navigation.navigate(initialRouteName)} style={styles.textContainer}>
         <Text style={styles.gigPigText}>{"GIGPIG"}</Text>
         <Text style={styles.text}>{`/${title}`}</Text>
       </Pressable>
-      {isWeb && (
+      {isWeb && !doNotShowBottomOnTheseRoutes.includes(route.name) && (
         <BottomNavigation
           {...BottomNavigationProps}
           isWeb={isWeb}
@@ -92,6 +95,7 @@ function TopNavigation({user, screens, initialRouteName, BottomNavigationProps, 
                   <Title
                     title={options.title}
                     navigation={navigation}
+                    route={route}
                     initialRouteName={initialRouteName}
                     BottomNavigationProps={BottomNavigationProps}
                     isWeb={isWeb}
