@@ -6,7 +6,9 @@ function LoadingContent() {
   return (
     <View style={styles.content}>
       {isWeb ? (
-        <Text style={styles.webText}>{"LOADING..."}</Text>
+        <View style={styles.webContainer}>
+          <Text style={styles.webText}>{"LOADING"}</Text>
+        </View>
       ) : (
         <Image source={require("../../assets/squaresWave.gif")}/>
       )}
@@ -19,6 +21,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
+  },
+  webContainer: {
+    backgroundColor: "grey",
   },
   webText: {
     fontSize: 20,
