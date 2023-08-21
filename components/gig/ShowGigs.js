@@ -1,20 +1,105 @@
-import {Dimensions, FlatList, SafeAreaView, StyleSheet, View} from "react-native";
+import {Dimensions, FlatList, Platform, SafeAreaView, StyleSheet, View} from "react-native";
 import React, {useRef, useState} from "react";
 import ShowGig from "./ShowGig";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import SearchGigs from "./SearchGigs";
 import AddGigButton from "./AddGigButton";
-import {IconButton, Text, useTheme} from "@react-native-material/core";
+import {Button, IconButton, Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useGigsStore from "../../store/gigs";
 import Errors from "../forms/Errors";
 import Loading from "../loading/Loading";
 import LoadingModal from "../loading/LoadingModal";
 import {useFocusEffect} from "@react-navigation/native";
+import {ScrollView} from "react-native-web";
+
+function ListGigs(props) {
+  const [showLoadMore, setShowLoadMore] = useState(false);
+  const {
+    isWeb,
+    navigation,
+    resultsListViewRef,
+    gigs,
+    resetResults,
+    getNextPage,
+    loading,
+    windowWidth,
+    theme,
+  } = props;
+  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+    const paddingToBottom = 2;
+    return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+  };
+  const onScroll = ({nativeEvent}) => {
+    if (isCloseToBottom(nativeEvent) && !loading && gigs.next) {
+      setShowLoadMore(true)
+    }
+  }
+
+  if (isWeb) {
+    return (
+      <>
+        <ScrollView
+          ref={resultsListViewRef}
+          onScroll={onScroll}
+          scrollEventThrottle={400}
+        >
+          {gigs.results.map(item => (
+            <ShowGig
+              key={item.id}
+              gig={item}
+              windowWidth={windowWidth}
+              theme={theme}
+              navigation={navigation}
+            />
+          ))}
+        </ScrollView>
+        {showLoadMore ? (
+          <View
+            style={{
+              backgroundColor: theme.palette.background.main,
+              ...styles.showMoreButtonContainer,
+            }}
+          >
+            <Button
+              title={"Load more"}
+              variant={"text"}
+              onPress={() => {
+                setShowLoadMore(false)
+                getNextPage();
+              }}
+            />
+          </View>
+        ) : null}
+      </>
+    )
+  }
+  return (
+    <FlatList
+      ref={resultsListViewRef}
+      // https://reactnative.dev/docs/optimizing-flatlist-configuration
+      // removeClippedSubviews={true}
+      data={gigs.results}
+      refreshing={false}
+      onRefresh={resetResults}
+      renderItem={({item}) => (
+        <ShowGig
+          gig={item}
+          windowWidth={windowWidth}
+          theme={theme}
+          navigation={navigation}
+        />
+      )}
+      keyExtractor={item => item.id}
+      onEndReached={() => getNextPage()}
+    />
+  )
+}
 
 function ShowGigs({ navigation }) {
   const theme = useTheme()
   const resultsListViewRef = useRef();
+  const isWeb = Boolean(Platform.OS === "web");
   const [searchFeedback, setSearchFeedback] = useState(null);
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
@@ -33,7 +118,11 @@ function ShowGigs({ navigation }) {
     if (doNotMergeResults) {
       if (resultsListViewRef.current) {
         // For fresh results scroll back to top.
-        resultsListViewRef.current.scrollToOffset({ offset: 0, animated: true });
+        if (isWeb) {
+          resultsListViewRef.current.scrollTo({ offset: 0, animated: false });
+        } else {
+          resultsListViewRef.current.scrollToOffset({ offset: 0, animated: true });
+        }
       }
     }
     setAdvancedSearch(false);
@@ -95,23 +184,16 @@ function ShowGigs({ navigation }) {
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {gigs && gigs.results.length ? (
         <SafeAreaView style={styles.container}>
-          <FlatList
-            ref={resultsListViewRef}
-            // https://reactnative.dev/docs/optimizing-flatlist-configuration
-            // removeClippedSubviews={true}
-            data={gigs.results}
-            refreshing={loading}
-            onRefresh={resetResults}
-            renderItem={({item}) => (
-              <ShowGig
-                gig={item}
-                windowWidth={windowWidth}
-                theme={theme}
-                navigation={navigation}
-              />
-            )}
-            keyExtractor={item => item.id}
-            onEndReached={() => getNextPage()}
+          <ListGigs
+            isWeb={isWeb}
+            navigation={navigation}
+            resultsListViewRef={resultsListViewRef}
+            gigs={gigs}
+            resetResults={resetResults}
+            getNextPage={getNextPage}
+            loading={loading}
+            windowWidth={windowWidth}
+            theme={theme}
           />
         </SafeAreaView>
       ) : (
@@ -141,6 +223,13 @@ const styles = StyleSheet.create({
     top: 20,
     right: 20,
     zIndex: 2,
+  },
+  showMoreButtonContainer: {
+    position: "absolute",
+    width: "100%",
+    bottom: 0,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   noGigsFoundContainer: {
     height: "80%",
