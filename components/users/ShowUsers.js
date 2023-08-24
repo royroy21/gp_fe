@@ -32,6 +32,8 @@ function ListUsers(props) {
   const onScroll = ({nativeEvent}) => {
     if (isCloseToBottom(nativeEvent) && !loading && users.next) {
       setShowLoadMore(true)
+    } else if (showLoadMore){
+      setShowLoadMore(false);
     }
   }
 

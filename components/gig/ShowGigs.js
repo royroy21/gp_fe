@@ -33,6 +33,8 @@ function ListGigs(props) {
   const onScroll = ({nativeEvent}) => {
     if (isCloseToBottom(nativeEvent) && !loading && gigs.next) {
       setShowLoadMore(true)
+    }  else if (showLoadMore){
+      setShowLoadMore(false);
     }
   }
 
