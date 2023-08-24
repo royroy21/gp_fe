@@ -321,7 +321,25 @@ function Room(props) {
             <Text>{" "}</Text>
           </View>
         )}
-        <View style={styles.inputContainer}>
+        {isWeb ? (
+          <TextInput
+            onChangeText={(text) => setMessage(text)}
+            value={message}
+            multiline={true}
+            trailing={
+              <IconButton
+                onPress={send}
+                icon={
+                  <Icon
+                    name={"send"}
+                    size={25}
+                    color={theme.palette.secondary.main}
+                  />
+                }
+              />
+            }
+          />
+        ) : (
           <TextInput
             inputStyle={{
               paddingTop: 10,
@@ -343,7 +361,7 @@ function Room(props) {
               />
             }
           />
-        </View>
+        )}
         {
           webSocket ? (
             <LoadingModal isLoading={(loading || waitingForSocket()) && !loadingPreviousPage} />
@@ -360,12 +378,6 @@ const styles = StyleSheet.create({
   },
   messagesContainer: {
     height: "90%",
-  },
-  inputContainer: {
-    padding: 5,
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
   },
   noMessagesContainer: {
     height: "85%",
