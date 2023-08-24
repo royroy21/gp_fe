@@ -7,6 +7,7 @@ export default function TextInput(props) {
     <MaterialTextInput
       inputStyle={Platform.OS === "web" && {outline: "none"}}
       variant={"filled"}
+      autoCapitalize={"none"}
       {...props}
     />
   )
