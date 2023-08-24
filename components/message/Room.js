@@ -1,11 +1,11 @@
 import useUserStore from "../../store/user";
-import {IconButton, Text, useTheme} from "@react-native-material/core";
-import {FlatList, Keyboard, SafeAreaView, StyleSheet, View} from "react-native";
+import {Button, IconButton, Text, useTheme} from "@react-native-material/core";
+import {FlatList, Keyboard, Platform, SafeAreaView, StyleSheet, View} from "react-native";
 import MessageDetail from "./MessageDetail";
 import TextInput from "../forms/TextInput";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import LoadingModal from "../loading/LoadingModal";
-import React, {useCallback, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import usePreviousMessagesStore from "../../store/previousMessages";
 import {BACKEND_ENDPOINTS, DEFAULT_ERROR_MESSAGE} from "../../settings";
 import useJWTStore from "../../store/jwt";
@@ -15,10 +15,140 @@ import getWebSocket, {readyStates} from "./index";
 import Loading from "../loading/Loading";
 import RoomOptionsModal from "./RoomOptionsModal";
 import unreadMessagesStore from "../../store/unreadMessages";
+import {ScrollView} from "react-native-web";
+
+function ListMessages(props) {
+  const messagesContentRef = useRef(null);
+  const [showLoadMore, setShowLoadMore] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [messagesContentMarginTop, setMessagesContentMarginTop] = useState(0);
+  const {
+    isWeb,
+    showLoadMoreButton,
+    user,
+    getPreviousPage,
+    messagesRef,
+    messages,
+    previousMessages,
+    loadingPreviousPage,
+    theme,
+  } = props;
+
+  const isCloseToTop = ({contentOffset}) => {
+    return contentOffset.y === 0
+  };
+  const onScroll = ({nativeEvent}) => {
+    if (isCloseToTop(nativeEvent) && !loadingPreviousPage && previousMessages.next) {
+      setShowLoadMore(true);
+    } else if (showLoadMore){
+      setShowLoadMore(false);
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isWeb && initialLoad) {
+        setInitialLoad(false);
+        messagesRef.current.scrollToEnd();
+      }
+      return () => {
+        setShowLoadMore(false);
+        setInitialLoad(true);
+        setMessagesContentMarginTop(0);
+      };
+    }, [])
+  );
+
+  useEffect(() => {
+    if (!isWeb) {
+      return
+    }
+    // Really hacky way to get margin to set correctly so web messages start at bottom of screen.
+    if (messagesRef.current && messagesContentRef.current) {
+      const marginTop = messagesRef.current.clientHeight - messagesContentRef.current.clientHeight;
+      if (marginTop > 0) {
+        setMessagesContentMarginTop(marginTop);
+      } else if (messagesContentMarginTop !== 0) {
+        setMessagesContentMarginTop(0);
+      }
+    }
+  }, [messages])
+
+  if (isWeb) {
+    const reversedMessages = messages.slice().reverse();
+    return (
+      <>
+        {showLoadMore && showLoadMoreButton ? (
+          <View
+            style={{
+              backgroundColor: theme.palette.background.main,
+              ...styles.showMoreButtonContainer,
+            }}
+          >
+            <Button
+              title={"Load more"}
+              variant={"text"}
+              onPress={() => {
+                setShowLoadMore(false)
+                getPreviousPage();
+              }}
+            />
+          </View>
+        ) : null}
+        <ScrollView
+          ref={messagesRef}
+          onScroll={onScroll}
+          scrollEventThrottle={400}
+          style={{height: "100%"}}
+        >
+          <View
+            ref={messagesContentRef}
+            style={{marginTop: messagesContentMarginTop}}
+          >
+          {reversedMessages.map(item => (
+            <MessageDetail
+              key={item.id}
+              message={item}
+              isLocalUser={item.user.id === user.id}
+              theme={theme}
+            />
+          ))}
+          </View>
+        </ScrollView>
+      </>
+    )
+  }
+
+  return (
+    <FlatList
+      inverted={true}
+      onEndReached={getPreviousPage}
+      ref={messagesRef}
+      data={messages}
+      keyExtractor={(item) => String(item.id)}
+      renderItem={({item}) => (
+        <MessageDetail
+          message={item}
+          isLocalUser={item.user.id === user.id}
+          theme={theme}
+        />
+      )}
+    />
+  )
+}
 
 function Room(props) {
+  // If isWeb we get last PAGE_SIZE messages, but the user cannot get anymore.
+  // This is a way to solve the `snap to top` on content change problem.
+  // EG we just don't ever change the content size. Boom.
+  // If user needs to see older messages they use mobile.
+  // TODO - could come back to this problem later.
+  const PAGE_SIZE = 150;
+  const showLoadMoreButton = false;
+
   const {remove: removeRoomFromUnReadMessages} = unreadMessagesStore();
   const theme = useTheme();
+  const isWeb = Boolean(Platform.OS === "web");
   const { navigation, route } = props;
   const room = route.params.room;
   const { object: user } = useUserStore();
@@ -41,7 +171,11 @@ function Room(props) {
   const {object: previousMessages, loading, get, clear} = usePreviousMessagesStore();
   const getPreviousMessages = async () => {
     clear();
-    await get(BACKEND_ENDPOINTS.message + "?room_id=" + room.id, [], setMessages);
+    let params = `?room_id=${room.id}`
+    if (isWeb && PAGE_SIZE) {
+      params += `&page_size=${PAGE_SIZE}`
+    }
+    await get(BACKEND_ENDPOINTS.message + params, [], setMessages);
   }
 
   const setUpWebSocket = (callback) => {
@@ -75,7 +209,16 @@ function Room(props) {
     const newMessage = JSON.parse(event.data);
     setMessages(prevState => [newMessage, ...prevState]);
     if (newMessage.user.id === user.id) {
-      messagesRef.current.scrollToIndex({index: 0, animated: true});
+      if (!messagesRef.current) {
+        return
+      }
+      if (isWeb) {
+        // A horrible hack so that the scrollView has chance
+        // to update it's size before performing the scrollToEnd.
+        setTimeout(messagesRef.current.scrollToEnd, 1000);
+      } else {
+        messagesRef.current.scrollToIndex({index: 0, animated: true});
+      }
     } else {
       setAlert("new message received");
       setTimeout(() => setAlert(null), 1500);
@@ -161,19 +304,16 @@ function Room(props) {
         {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
         {messages.length ? (
           <SafeAreaView style={styles.messagesContainer}>
-            <FlatList
-              inverted={true}
-              onEndReached={getPreviousPage}
-              ref={messagesRef}
-              data={messages}
-              keyExtractor={(item) => String(item.id)}
-              renderItem={({item}) => (
-                <MessageDetail
-                  message={item}
-                  isLocalUser={item.user.id === user.id}
-                  theme={theme}
-                />
-              )}
+            <ListMessages
+              isWeb={isWeb}
+              showLoadMoreButton={showLoadMoreButton}
+              user={user}
+              getPreviousPage={getPreviousPage}
+              messagesRef={messagesRef}
+              messages={messages}
+              previousMessages={previousMessages}
+              loadingPreviousPage={loadingPreviousPage}
+              theme={theme}
             />
           </SafeAreaView>
         ) : (
@@ -238,6 +378,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 20,
     right: 20,
+    zIndex: 2,
+  },
+  showMoreButtonContainer: {
+    position: "absolute",
+    width: "100%",
+    top: 0,
+    marginLeft: "auto",
+    marginRight: "auto",
     zIndex: 2,
   },
   alert: {
