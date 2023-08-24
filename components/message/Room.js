@@ -374,6 +374,8 @@ function Room(props) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    justifyContent: "flex-end",
     height: "100%",
   },
   messagesContainer: {
