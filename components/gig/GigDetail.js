@@ -9,7 +9,7 @@ import React, {useState} from "react";
 import newMessage from "../message/newMessage";
 import useJWTStore from "../../store/jwt";
 import Image from "../Image/Image";
-import TextFieldWithTitle from "../data/TextFieldWithTitle";
+import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import UserProfileLink from "../profile/UserProfileLink";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 

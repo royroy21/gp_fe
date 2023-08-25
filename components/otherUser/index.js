@@ -7,7 +7,7 @@ import newMessage from "../message/newMessage";
 import useJWTStore from "../../store/jwt";
 import Image from "../Image/Image";
 import DisplayGenres from "../gig/DisplayGenres";
-import TextFieldWithTitle from "../data/TextFieldWithTitle";
+import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function OtherUser({ route, navigation }) {

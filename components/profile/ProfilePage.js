@@ -4,7 +4,7 @@ import DisplayGenres from "../gig/DisplayGenres";
 import {StyleSheet, View} from "react-native";
 import Image from "../Image/Image";
 import React from "react";
-import TextFieldWithTitle from "../data/TextFieldWithTitle";
+import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function ProfilePage({ navigation }) {
