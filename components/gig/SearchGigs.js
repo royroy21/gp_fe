@@ -41,7 +41,7 @@ function AdvancedSearchModel(props) {
         setDate={setStartDate}
         onRequestClose={() => setShowDatePicker(false)}
       />
-      <View style={styles.advancedSearch}>
+      <View style={styles.searchOptions}>
         <TextInput
           variant={"outlined"}
           trailing={
@@ -52,40 +52,38 @@ function AdvancedSearchModel(props) {
           }
           onChangeText={setSearchString}
         />
-        <View>
-          <ListItem
-            title={<Text>{"Show my gigs only?"}</Text>}
-            onPress={() => setShowMyGigs(!showMyGigs)}
-            trailing={
-              showMyGigs ? (
-                <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
-              ) : (
-                <Icon name="thumb-down-outline" size={20} color={"grey"}/>
-              )
-            }
-          />
-          <ListItem
-            title={<Text>{"Has spare ticket?"}</Text>}
-            onPress={() => setHasSpareTicket(!hasSpareTicket)}
-            trailing={
-              hasSpareTicket ? (
-                <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
-              ) : (
-                <Icon name="thumb-down-outline" size={20} color={"grey"}/>
-              )
-            }
-          />
-          <ListItem
-            title={<Text>{startDate ? dateFormat(startDate, "fullDate") : "Gig start date?"}</Text>}
-            onPress={() => setShowDatePicker(!showDatePicker)}
-            trailing={
-              <IconButton
-                onPress={() => setShowDatePicker(!showDatePicker)}
-                icon={<Icon name="calendar" size={25} color={theme.palette.secondary.main}/>}
-              />
-            }
-          />
-        </View>
+        <ListItem
+          title={<Text>{"Show my gigs only?"}</Text>}
+          onPress={() => setShowMyGigs(!showMyGigs)}
+          trailing={
+            showMyGigs ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
+          title={<Text>{"Has spare ticket?"}</Text>}
+          onPress={() => setHasSpareTicket(!hasSpareTicket)}
+          trailing={
+            hasSpareTicket ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
+          title={<Text>{startDate ? dateFormat(startDate, "fullDate") : "Gig start date?"}</Text>}
+          onPress={() => setShowDatePicker(!showDatePicker)}
+          trailing={
+            <IconButton
+              onPress={() => setShowDatePicker(!showDatePicker)}
+              icon={<Icon name="calendar" size={25} color={theme.palette.secondary.main}/>}
+            />
+          }
+        />
       </View>
     </CenteredModalWithTwoButton>
   )
@@ -166,11 +164,8 @@ function SearchGigs(props) {
 }
 
 const styles = StyleSheet.create({
-  advancedSearch: {
-    marginTop: 15,
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10,
+  searchOptions: {
+    marginBottom: 25,
   },
   feedback: {
     fontSize: 14,
