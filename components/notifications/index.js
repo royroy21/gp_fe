@@ -52,7 +52,7 @@ async function postNotificationToken(userId, token, active) {
   Post notification token to server.
    */
   const params = {
-    resource: `${BACKEND_ENDPOINTS.user}${userId}/notification-token/`,
+    resource: `${BACKEND_ENDPOINTS.user}notification-token/`,
     successCallback: () => console.log("Successfully posted notification token."),
     // TODO - Log this as sentry?
     errorCallback: (json) => console.log("error @postNotificationToken: ", JSON.stringify(json)),
