@@ -1,9 +1,10 @@
-import {Button, IconButton, TextInput, Text, ListItem} from "@react-native-material/core";
+import {Button, IconButton, Text, ListItem} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {StyleSheet, View} from "react-native";
 import {useState} from "react";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
+import TextInput from "../forms/TextInput";
 
 function AdvancedSearchModel(props) {
   const {
