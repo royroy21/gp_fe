@@ -3,8 +3,6 @@ import LoadingModal from "../loading/LoadingModal";
 import Errors from "../forms/Errors";
 import {Controller, useForm} from "react-hook-form";
 import TextInput from "../forms/TextInput";
-import SelectDropdown from "../SelectDropdown";
-import useGenresStore from "../../store/genres";
 import {useEffect, useState} from "react";
 import DisplayGenres from "../gig/DisplayGenres";
 import ImagePickerMobile from "../Image/ImagePickerMobile";
@@ -12,16 +10,14 @@ import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 import {Platform} from "react-native";
 import ImagePickerWeb from "../Image/ImagePickerWeb";
+import SelectGenres from "../selectors/SelectGenres";
+import {useTheme} from "@react-native-material/core";
 
 function EditProfile({ navigation }) {
+  const theme = useTheme();
   const { object, patch, loading, error } = useUserStore();
   const [numberOfGenres, setNumberOfGenres] = useState(object.genres.length);
   const isWeb = Boolean(Platform.OS === "web");
-
-  const {
-    object: genres,
-    search: searchGenres,
-  } = useGenresStore();
 
   const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
     defaultValues: {
@@ -181,27 +177,23 @@ function EditProfile({ navigation }) {
          // required: true,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
-          <SelectDropdown
-            data={genres}
-            defaultValue={value}
+          <SelectGenres
             onSelect={(selectedItem) => {
               const selectedGenres = getValues("genres");
               if (selectedGenres.map(genre => genre.id).includes(selectedItem.id)) {
-                return
+                // Remove genre
+                const filteredGenres = selectedGenres.filter(genre => genre.id !== selectedItem.id);
+                onChange(filteredGenres);
+                setNumberOfGenres(filteredGenres.length)
+              } else {
+                // Add genre
+                selectedGenres.push(selectedItem);
+                onChange(selectedGenres);
+                setNumberOfGenres(selectedGenres.length)
               }
-              selectedGenres.push(selectedItem);
-              onChange(selectedGenres);
-              setNumberOfGenres(selectedGenres.length)
             }}
-            buttonTextAfterSelection={(selectedItem, index) => {
-              return "select more genres?"
-            }}
-            rowTextForSelection={(item, index) => {
-              return item.genre
-            }}
-            defaultButtonText={"add genres you're into?"}
-            searchPlaceHolder={"Search Genres"}
-            onChangeSearchInputText={(query) => searchGenres(query)}
+            selectedGenres={getValues("genres")}
+            theme={theme}
           />
         )}
         name="genres"

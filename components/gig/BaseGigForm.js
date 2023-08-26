@@ -8,13 +8,12 @@ import DisplayGenres from "./DisplayGenres";
 import {IconButton, ListItem, useTheme} from "@react-native-material/core";
 import dateFormat from "dateformat";
 import CalendarModal from "../calendar";
-import useGenresStore from "../../store/genres";
-import SelectDropdown from "../SelectDropdown";
 import {useEffect} from "react";
 import ImagePickerMobile from "../Image/ImagePickerMobile";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 import ImagePickerWeb from "../Image/ImagePickerWeb";
 import SelectCountry from "../selectors/SelectCountry";
+import SelectGenres from "../selectors/SelectGenres";
 
 function BaseGigForm(props) {
   const {
@@ -43,11 +42,6 @@ function BaseGigForm(props) {
       clearErrors();
     }
   }, []);
-
-  const {
-    object: genres,
-    search: searchGenres,
-  } = useGenresStore();
 
   const removeGenre = (genres, genreIDToRemove) => {
     const updatedGenres = genres.filter(genre => {return genre.id !== genreIDToRemove});
@@ -175,27 +169,23 @@ function BaseGigForm(props) {
            // required: true,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <SelectDropdown
-              data={genres}
-              defaultValue={value}
+            <SelectGenres
               onSelect={(selectedItem) => {
                 const selectedGenres = getValues("genres");
                 if (selectedGenres.map(genre => genre.id).includes(selectedItem.id)) {
-                  return
+                  // Remove genre
+                  const filteredGenres = selectedGenres.filter(genre => genre.id !== selectedItem.id);
+                  onChange(filteredGenres);
+                  setNumberOfGenres(filteredGenres.length)
+                } else {
+                  // Add genre
+                  selectedGenres.push(selectedItem);
+                  onChange(selectedGenres);
+                  setNumberOfGenres(selectedGenres.length)
                 }
-                selectedGenres.push(selectedItem);
-                onChange(selectedGenres);
-                setNumberOfGenres(selectedGenres.length)
               }}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                return "select more genres?"
-              }}
-              rowTextForSelection={(item, index) => {
-                return item.genre
-              }}
-              defaultButtonText={"select genres"}
-              searchPlaceHolder={"Search Genres"}
-              onChangeSearchInputText={(query) => searchGenres(query)}
+              selectedGenres={getValues("genres")}
+              theme={theme}
             />
           )}
           name="genres"
