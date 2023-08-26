@@ -12,7 +12,7 @@ function CustomScrollViewWithTwoButtons(props) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <ScrollView>
+        <ScrollView keyboardShouldPersistTaps={"always"}>
           {children}
         </ScrollView>
       </View>

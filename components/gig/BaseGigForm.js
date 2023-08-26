@@ -8,13 +8,13 @@ import DisplayGenres from "./DisplayGenres";
 import {IconButton, ListItem, useTheme} from "@react-native-material/core";
 import dateFormat from "dateformat";
 import CalendarModal from "../calendar";
-import useCountriesStore from "../../store/countries";
 import useGenresStore from "../../store/genres";
 import SelectDropdown from "../SelectDropdown";
 import {useEffect} from "react";
 import ImagePickerMobile from "../Image/ImagePickerMobile";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 import ImagePickerWeb from "../Image/ImagePickerWeb";
+import SelectCountry from "../selectors/SelectCountry";
 
 function BaseGigForm(props) {
   const {
@@ -48,11 +48,6 @@ function BaseGigForm(props) {
     object: genres,
     search: searchGenres,
   } = useGenresStore();
-
-  const {
-    object: countries,
-    search: searchCountries,
-  } = useCountriesStore();
 
   const removeGenre = (genres, genreIDToRemove) => {
     const updatedGenres = genres.filter(genre => {return genre.id !== genreIDToRemove});
@@ -159,21 +154,10 @@ function BaseGigForm(props) {
            // required: true,
           }}
           render={({ field: { onChange, onBlur, value } }) => (
-            <SelectDropdown
-              data={countries}
-              defaultValue={value}
-              onSelect={(selectedItem) => {
-                onChange(selectedItem);
-              }}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                return selectedItem.country;
-              }}
-              rowTextForSelection={(item, index) => {
-                return `${item.country} (${item.code})`;
-              }}
-              defaultButtonText={value ? value.country : ""}
-              searchPlaceHolder={"Search Country"}
-              onChangeSearchInputText={(query) => searchCountries(query)}
+            <SelectCountry
+              defaultCountry={value}
+              onSelect={onChange}
+              theme={theme}
             />
           )}
           name="country"
