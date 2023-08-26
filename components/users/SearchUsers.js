@@ -1,4 +1,4 @@
-import {Button, IconButton, TextInput, Text} from "@react-native-material/core";
+import {Button, IconButton, TextInput, Text, ListItem} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {StyleSheet, View} from "react-native";
 import {useState} from "react";
@@ -10,6 +10,8 @@ function AdvancedSearchModel(props) {
     setSearchString,
     advancedSearch,
     setAdvancedSearch,
+    showFavorites,
+    setShowFavorites,
     submitSearchRequest,
     theme,
   } = props
@@ -24,7 +26,7 @@ function AdvancedSearchModel(props) {
         />
       }
     >
-      <View style={styles.advancedSearch}>
+      <View style={styles.searchOptions}>
         <TextInput
           variant={"outlined"}
           trailing={
@@ -34,6 +36,17 @@ function AdvancedSearchModel(props) {
             />
           }
           onChangeText={setSearchString}
+        />
+        <ListItem
+          title={<Text>{"Favorites?"}</Text>}
+          onPress={() => setShowFavorites(!showFavorites)}
+          trailing={
+            showFavorites ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
         />
       </View>
     </CenteredModalWithTwoButton>
@@ -51,6 +64,7 @@ function SearchUsers(props) {
   } = props;
 
   const [searchString, setSearchString] = useState("");
+  const [showFavorites, setShowFavorites] = useState(false);
 
   function submitSearchRequest() {
     // If searchString is empty send query to return all results
@@ -61,6 +75,10 @@ function SearchUsers(props) {
       searchFeedBack += `everything, `;
     } else {
       searchFeedBack += `${search}, `;
+    }
+    if (showFavorites) {
+      search += "&is_favorite=true"
+      searchFeedBack += "my favorites, "
     }
     getUsersFromAPI(BACKEND_ENDPOINTS.searchUsers + "?search=" + search, true);
     searchFeedBack = searchFeedBack.trim()
@@ -81,6 +99,8 @@ function SearchUsers(props) {
         setSearchString={setSearchString}
         advancedSearch={advancedSearch}
         setAdvancedSearch={setAdvancedSearch}
+        showFavorites={showFavorites}
+        setShowFavorites={setShowFavorites}
         submitSearchRequest={submitSearchRequest}
         theme={theme}
       />
@@ -89,11 +109,8 @@ function SearchUsers(props) {
 }
 
 const styles = StyleSheet.create({
-  advancedSearch: {
-    marginTop: 15,
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10,
+  searchOptions: {
+    marginBottom: 25,
   },
   feedback: {
     fontSize: 14,
