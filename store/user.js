@@ -36,6 +36,32 @@ const useUserStore = create((set) => ({
     }
     await client.patch(params, isMultipartFormData);
   },
+  addFavorite: async (user_id, onSuccess = () => {}) => {
+    set({ loading: true });
+    const params = {
+      resource: `${BACKEND_ENDPOINTS.user}add-favorite-user/`,
+      data: {id: user_id},
+      successCallback: (json) => {
+        set({loading: false, error: null})
+        onSuccess(json);
+      },
+      errorCallback: (json) => set({ loading: false, error: json }),
+    }
+    await client.post(params);
+  },
+  removeFavorite: async (user_id, onSuccess = () => {}) => {
+    set({ loading: true });
+    const params = {
+      resource: `${BACKEND_ENDPOINTS.user}remove-favorite-user/`,
+      data: {id: user_id},
+      successCallback: (json) => {
+        set({loading: false, error: null})
+        onSuccess(json);
+      },
+      errorCallback: (json) => set({ loading: false, error: json }),
+    }
+    await client.post(params);
+  },
   clear: () => set({object: null, loading: false, error: null}),
 }));
 

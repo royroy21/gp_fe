@@ -2,6 +2,7 @@ import {Pressable, StyleSheet, View} from "react-native";
 import {Chip, Surface, Text} from "@react-native-material/core";
 import {Component} from "react";
 import Image from "../Image/Image";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 class ShowUser extends Component {
   constructor(props) {
@@ -49,6 +50,19 @@ class ShowUser extends Component {
             </View>
           </View>
           <View style={{flexDirection: "row", flexWrap: "wrap"}}>
+            {user.is_favorite ? (
+              <Chip
+                key={"is_favorite"}
+                label={
+                  <Icon
+                    name={"star"}
+                    size={20}
+                    color={"orange"}
+                  />
+                }
+                style={styles.chip}
+              />
+            ) : null}
             {user.distance_from_user ? (
               <Chip
                 key={"distance_from_user"}

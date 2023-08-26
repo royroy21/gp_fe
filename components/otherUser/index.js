@@ -9,6 +9,8 @@ import Image from "../Image/Image";
 import DisplayGenres from "../gig/DisplayGenres";
 import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
+import FavoriteUser from "./FavoriteUser";
+import useOtherUserStore from "../../store/otherUser";
 
 function OtherUser({ route, navigation }) {
   const [loading, setLoading] = useState(false);
@@ -20,6 +22,7 @@ function OtherUser({ route, navigation }) {
   const accessToken = JSON.parse(jwt).access;
   const theme = useTheme();
   const { user } = route.params;
+  const {loading: loadingFromOtherUser} = useOtherUserStore();
 
   const directMessage = () => {
     const newMessageArguments = {
@@ -36,11 +39,16 @@ function OtherUser({ route, navigation }) {
   return (
     <>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
-      <LoadingModal isLoading={loading} />
+      <LoadingModal isLoading={loading || loadingFromOtherUser} />
       <CustomScrollViewWithOneButton
         buttonTitle={"message"}
         buttonOnPress={directMessage}
       >
+        <FavoriteUser
+          navigation={navigation}
+          user={user}
+          isFavorite={user.is_favorite}
+        />
         <View style={styles.imageAndGenresContainer}>
           <Image
             imageUri={user.image}
