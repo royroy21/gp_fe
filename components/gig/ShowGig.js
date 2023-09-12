@@ -48,7 +48,7 @@ class ShowGig extends Component {
                 <Text style={styles.description}>{this.getDescription(gig)}</Text>
               ) : null}
               <Text style={styles.location}>
-                {`${gig.location} (${gig.country.country})`}
+                {gig.location}
               </Text>
             </View>
           </View>
@@ -69,6 +69,11 @@ class ShowGig extends Component {
             <Chip
               key={"user"}
               label={gig.user.username}
+              style={styles.chip}
+            />
+            <Chip
+              key={"country"}
+              label={gig.country.country}
               style={styles.chip}
             />
             {gig.user.distance_from_user ? (
