@@ -97,7 +97,7 @@ function BaseGigForm(props) {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              label={"title, artist, band, festival .."}
+              label={"gig, artist, band, festival .."}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}

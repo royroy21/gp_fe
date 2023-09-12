@@ -1,13 +1,11 @@
 import {StyleSheet, View} from "react-native";
 import {Text} from "@react-native-material/core";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 function TextFieldWithTitle(props) {
   const {
     title,
     text,
-    theme,
-    trailingIconName=null,
+    trailing=null,
     style={},
   } = props;
   return (
@@ -15,13 +13,8 @@ function TextFieldWithTitle(props) {
       <Text style={styles.title}>{title}</Text>
       <View style={styles.textContainer}>
         <Text style={styles.text}>{text}</Text>
-        {trailingIconName ? (
-          <Icon
-            name={trailingIconName}
-            size={25}
-            color={theme.palette.secondary.main}
-            style={styles.trailingIcon}
-          />
+        {trailing ? (
+          trailing
         ) : null}
       </View>
     </View>

@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   content: {
-    marginTop: 10,
+    // marginTop: 10,
     height: "90%",
   },
   buttonsContainer: {

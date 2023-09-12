@@ -1,8 +1,6 @@
-import {IconButton} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useUserStore from "../../store/user";
 import useOtherUserStore from "../../store/otherUser";
-import {StyleSheet} from "react-native";
 
 function FavoriteUser({navigation, user, isFavorite}) {
   const {addFavorite, removeFavorite} = useUserStore();
@@ -25,24 +23,13 @@ function FavoriteUser({navigation, user, isFavorite}) {
   }
 
   return (
-    <IconButton
-      style={styles.button}
+    <Icon
       onPress={onPress}
-      icon={
-        <Icon
-          name={"star"}
-          size={25}
-          color={isFavorite ? "orange" : "grey"}
-        />
-      }
+      name={"star"}
+      size={25}
+      color={isFavorite ? "orange" : "grey"}
     />
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    marginLeft: "auto",
-  },
-})
 
 export default FavoriteUser;

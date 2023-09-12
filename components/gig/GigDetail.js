@@ -59,53 +59,40 @@ function GigDetail({route, navigation}) {
             containerStyle={styles.genres}
           />
         </View>
+        <TextFieldWithTitle
+          title={"gig"}
+          text={gig.title}
+        />
+        {gig.description ? (
+          <TextFieldWithTitle
+            title={"description"}
+            text={gig.description}
+          />
+        ) : null}
+        <TextFieldWithTitle
+          title={"location"}
+          text={gig.location}
+        />
+        <TextFieldWithTitle
+          title={"country"}
+          text={`${gig.country.country} (${gig.country.code})`}
+        />
+        {gig.has_spare_ticket ? (
+          <TextFieldWithTitle
+            title={"has spare ticket"}
+            text={"yes"}
+          />
+        ) : null}
+        <TextFieldWithTitle
+          title={"gig date"}
+          text={`${dateFormat(gig.start_date, "fullDate")}`}
+        />
         <UserProfileLink
           user={gig.user}
           title={"posted by"}
           navigation={navigation}
           theme={theme}
           containerStyle={styles.userProfileLink}
-        />
-        <TextFieldWithTitle
-          title={"title"}
-          text={gig.title}
-          theme={theme}
-          trailingIconName={"music"}
-        />
-        {gig.description ? (
-          <TextFieldWithTitle
-            title={"description"}
-            text={gig.description}
-            theme={theme}
-            trailingIconName={"file"}
-          />
-        ) : null}
-        <TextFieldWithTitle
-          title={"location"}
-          text={gig.location}
-          theme={theme}
-          trailingIconName={"warehouse"}
-        />
-        <TextFieldWithTitle
-          title={"country"}
-          text={`${gig.country.country} (${gig.country.code})`}
-          theme={theme}
-          trailingIconName={"island"}
-        />
-        {gig.has_spare_ticket ? (
-          <TextFieldWithTitle
-            title={"has spare ticket"}
-            text={"yes"}
-            theme={theme}
-            trailingIconName={"thumb-up-outline"}
-          />
-        ) : null}
-        <TextFieldWithTitle
-          title={"gig date"}
-          text={`${dateFormat(gig.start_date, "fullDate")}`}
-          theme={theme}
-          trailingIconName={"calendar"}
-          style={styles.startDate}
         />
       </CustomScrollViewWithOneButton>
     </>
@@ -125,9 +112,6 @@ const styles = StyleSheet.create({
   genres: {
     width: "65%",
     alignItems: "flex-end",
-  },
-  startDate: {
-    marginBottom: 15,
   },
 })
 

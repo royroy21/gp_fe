@@ -1,5 +1,4 @@
 import useUserStore from "../../store/user";
-import {useTheme} from "@react-native-material/core";
 import DisplayGenres from "../gig/DisplayGenres";
 import {StyleSheet, View} from "react-native";
 import Image from "../Image/Image";
@@ -8,7 +7,6 @@ import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 
 function ProfilePage({ navigation }) {
-  const theme = useTheme();
   const { object } = useUserStore();
 
   const edit = () => {
@@ -33,20 +31,14 @@ function ProfilePage({ navigation }) {
       <TextFieldWithTitle
         title={"username"}
         text={object.username}
-        theme={theme}
-        trailingIconName={"account"}
       />
       <TextFieldWithTitle
         title={"email"}
         text={object.email}
-        theme={theme}
-        trailingIconName={"email"}
       />
       <TextFieldWithTitle
         title={"bio"}
         text={object.bio}
-        theme={theme}
-        trailingIconName={"music"}
       />
     </CustomScrollViewWithOneButton>
   )

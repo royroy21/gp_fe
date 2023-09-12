@@ -1,4 +1,3 @@
-import {useTheme} from "@react-native-material/core";
 import {StyleSheet, View} from "react-native";
 import React, {useState} from "react";
 import Errors from "../forms/Errors";
@@ -20,7 +19,6 @@ function OtherUser({ route, navigation }) {
     navigation.navigate("DefaultScreen");
   }
   const accessToken = JSON.parse(jwt).access;
-  const theme = useTheme();
   const { user } = route.params;
   const {loading: loadingFromOtherUser} = useOtherUserStore();
 
@@ -44,11 +42,6 @@ function OtherUser({ route, navigation }) {
         buttonTitle={"message"}
         buttonOnPress={directMessage}
       >
-        <FavoriteUser
-          navigation={navigation}
-          user={user}
-          isFavorite={user.is_favorite}
-        />
         <View style={styles.imageAndGenresContainer}>
           <Image
             imageUri={user.image}
@@ -63,20 +56,21 @@ function OtherUser({ route, navigation }) {
         <TextFieldWithTitle
           title={"username"}
           text={user.username}
-          theme={theme}
-          trailingIconName={"account"}
+          trailing={
+            <FavoriteUser
+              navigation={navigation}
+              user={user}
+              isFavorite={user.is_favorite}
+            />
+          }
         />
         <TextFieldWithTitle
           title={"bio"}
           text={user.bio}
-          theme={theme}
-          trailingIconName={"music"}
         />
         <TextFieldWithTitle
           title={"last seen"}
           text={user.distance_from_user ? user.distance_from_user : "last seen unknown"}
-          theme={theme}
-          trailingIconName={"map"}
         />
       </CustomScrollViewWithOneButton>
     </>
