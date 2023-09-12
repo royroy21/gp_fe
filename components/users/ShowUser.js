@@ -9,14 +9,6 @@ class ShowUser extends Component {
       super(props);
   }
 
-  getBio(user) {
-    if (user.bio.length > 100) {
-      return `${user.bio.substring(0, 100)}...`
-    } else {
-      return user.bio
-    }
-  }
-
   shouldComponentUpdate() {
      return false;
   }
@@ -32,6 +24,7 @@ class ShowUser extends Component {
           <View style={styles.container}>
             <Image
               imageUri={user.image}
+              smallerThumbnail={true}
               thumbnailUri={user.thumbnail}
               withModalViewOnPress={false}
               containerStyle={styles.image}
@@ -40,12 +33,8 @@ class ShowUser extends Component {
               width: windowWidth / 1.6,
               ...styles.dataContainer}
             }>
-              <Text style={{color: theme.palette.primary.main}}>
-                {`${user.username}`}
-              </Text>
-              {user.bio ? <Text style={styles.bio}>{this.getBio(user)}</Text> : null}
-              <Text style={styles.country}>
-                {user.country ? user.country.country : "unknown"}
+              <Text style={{color: theme.palette.primary.main, ...styles.username}}>
+                {user.username}
               </Text>
             </View>
           </View>
@@ -60,6 +49,13 @@ class ShowUser extends Component {
                     color={"orange"}
                   />
                 }
+                style={styles.chip}
+              />
+            ) : null}
+            {user.country ? (
+              <Chip
+                key={"country"}
+                label={user.country.country}
                 style={styles.chip}
               />
             ) : null}
@@ -92,6 +88,9 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     paddingLeft: 5,
     marginBottom: 5,
+  },
+  username: {
+    margin: 5,
   },
   image: {
     margin: 5,

@@ -85,7 +85,7 @@ function GigDetail({route, navigation}) {
         />
         <TextFieldWithTitle
           title={"country"}
-          text={`${gig.country.country} (${gig.country.code})`}
+          text={gig.country.country}
         />
         {gig.has_spare_ticket ? (
           <TextFieldWithTitle
