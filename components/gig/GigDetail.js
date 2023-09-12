@@ -12,10 +12,13 @@ import Image from "../Image/Image";
 import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import UserProfileLink from "../profile/UserProfileLink";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
+import FavoriteGig from "./FavoriteGig";
+import useGigStore from "../../store/gig";
 
 function GigDetail({route, navigation}) {
   const { gig } = route.params;
   const { object: user } = useUserStore();
+  const {loading: loadingFromGig} = useGigStore();
   const theme = useTheme();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -43,7 +46,7 @@ function GigDetail({route, navigation}) {
   return (
     <>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
-      <LoadingModal isLoading={loading} />
+      <LoadingModal isLoading={loading || loadingFromGig} />
       <CustomScrollViewWithOneButton
         buttonTitle={isGigOwner ? "edit" : "respond"}
         buttonOnPress={isGigOwner ? edit : respond}
@@ -62,6 +65,13 @@ function GigDetail({route, navigation}) {
         <TextFieldWithTitle
           title={"gig"}
           text={gig.title}
+          trailing={
+            <FavoriteGig
+              navigation={navigation}
+              gig={gig}
+              isFavorite={gig.is_favorite}
+            />
+          }
         />
         {gig.description ? (
           <TextFieldWithTitle

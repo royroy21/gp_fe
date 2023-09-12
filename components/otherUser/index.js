@@ -10,6 +10,7 @@ import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 import FavoriteUser from "./FavoriteUser";
 import useOtherUserStore from "../../store/otherUser";
+import useUserStore from "../../store/user";
 
 function OtherUser({ route, navigation }) {
   const [loading, setLoading] = useState(false);
@@ -21,6 +22,7 @@ function OtherUser({ route, navigation }) {
   const accessToken = JSON.parse(jwt).access;
   const { user } = route.params;
   const {loading: loadingFromOtherUser} = useOtherUserStore();
+  const {loading: loadingFromUser} = useUserStore();
 
   const directMessage = () => {
     const newMessageArguments = {
@@ -37,7 +39,7 @@ function OtherUser({ route, navigation }) {
   return (
     <>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
-      <LoadingModal isLoading={loading || loadingFromOtherUser} />
+      <LoadingModal isLoading={loading || loadingFromOtherUser || loadingFromUser} />
       <CustomScrollViewWithOneButton
         buttonTitle={"message"}
         buttonOnPress={directMessage}

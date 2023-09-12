@@ -3,6 +3,7 @@ import {Chip, Surface, Text} from "@react-native-material/core";
 import dateFormat from "dateformat";
 import {Component} from "react";
 import Image from "../Image/Image";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 class ShowGig extends Component {
   constructor(props) {
@@ -52,6 +53,19 @@ class ShowGig extends Component {
             </View>
           </View>
           <View style={{flexDirection: "row", flexWrap: "wrap"}}>
+            {gig.is_favorite ? (
+              <Chip
+                key={"is_favorite"}
+                label={
+                  <Icon
+                    name={"star"}
+                    size={20}
+                    color={"orange"}
+                  />
+                }
+                style={styles.chip}
+              />
+            ) : null}
             <Chip
               key={"user"}
               label={gig.user.username}

@@ -15,6 +15,8 @@ function AdvancedSearchModel(props) {
     setAdvancedSearch,
     showMyGigs,
     setShowMyGigs,
+    showFavorites,
+    setShowFavorites,
     hasSpareTicket,
     setHasSpareTicket,
     startDate,
@@ -65,6 +67,17 @@ function AdvancedSearchModel(props) {
           }
         />
         <ListItem
+          title={<Text>{"Favorites?"}</Text>}
+          onPress={() => setShowFavorites(!showFavorites)}
+          trailing={
+            showFavorites ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
           title={<Text>{"Has spare ticket?"}</Text>}
           onPress={() => setHasSpareTicket(!hasSpareTicket)}
           trailing={
@@ -102,6 +115,7 @@ function SearchGigs(props) {
 
   const [searchString, setSearchString] = useState("");
   const [showMyGigs, setShowMyGigs] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -119,6 +133,10 @@ function SearchGigs(props) {
     if (showMyGigs) {
       search += "&my_gigs=true"
       searchFeedBack += "my gigs, "
+    }
+    if (showFavorites) {
+      search += "&is_favorite=true"
+      searchFeedBack += "my favorites, "
     }
     if (hasSpareTicket) {
       search += "&has_spare_ticket=true"
@@ -151,6 +169,8 @@ function SearchGigs(props) {
         setAdvancedSearch={setAdvancedSearch}
         showMyGigs={showMyGigs}
         setShowMyGigs={setShowMyGigs}
+        showFavorites={showFavorites}
+        setShowFavorites={setShowFavorites}
         hasSpareTicket={hasSpareTicket}
         setHasSpareTicket={setHasSpareTicket}
         startDate={startDate}
