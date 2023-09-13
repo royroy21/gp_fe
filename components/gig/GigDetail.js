@@ -66,11 +66,13 @@ function GigDetail({route, navigation}) {
           title={"gig"}
           text={gig.title}
           trailing={
-            <FavoriteGig
-              navigation={navigation}
-              gig={gig}
-              isFavorite={gig.is_favorite}
-            />
+            !isGigOwner ? (
+              <FavoriteGig
+                navigation={navigation}
+                gig={gig}
+                isFavorite={gig.is_favorite}
+              />
+            ) : null
           }
         />
         {gig.description ? (
