@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     height: 45,
     display: "flex",
     flexDirection: "row",
+    zIndex: 3,
   },
   containerWeb: {
     flexDirection: "row",

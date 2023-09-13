@@ -12,10 +12,10 @@ function Title({title, navigation, route, initialRouteName, BottomNavigationProp
     "LoginScreen", "SignUpScreen",
   ];
   return (
-    <View style={styles.container}>
-      <Pressable onPress={() => navigation.navigate(initialRouteName)} style={styles.textContainer}>
-        <Text style={styles.gigPigText}>{"GIGPIG"}</Text>
-        <Text style={styles.text}>{`/${title}`}</Text>
+    <View style={titleStyles.container}>
+      <Pressable onPress={() => navigation.navigate(initialRouteName)} style={titleStyles.textContainer}>
+        <Text style={titleStyles.gigPigText}>{"GIGPIG"}</Text>
+        <Text style={titleStyles.text}>{`/${title}`}</Text>
       </Pressable>
       {isWeb && !doNotShowBottomOnTheseRoutes.includes(route.name) && (
         <BottomNavigation
@@ -44,7 +44,7 @@ function GoBackButton({navigation, route}) {
   )
 }
 
-const styles = StyleSheet.create({
+const titleStyles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
@@ -67,7 +67,7 @@ function TopNavigation({user, screens, initialRouteName, BottomNavigationProps, 
   const Stack = createNativeStackNavigator();
   const [mainMenu, setMainMenu] = useState(false);
   return (
-    <>
+    <View style={styles.container}>
       <MainMenu
         showMainMenu={mainMenu}
         setMainMenu={setMainMenu}
@@ -107,8 +107,15 @@ function TopNavigation({user, screens, initialRouteName, BottomNavigationProps, 
           />
         ))}
       </Stack.Navigator>
-    </>
+    </View>
   )
 }
 
 export default TopNavigation;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    zIndex: 3,
+  },
+});
