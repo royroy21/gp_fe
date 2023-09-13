@@ -23,7 +23,8 @@ class ShowGig extends Component {
   }
 
   render() {
-    const { gig, windowWidth, theme, navigation } = this.props;
+    const { gig, user, windowWidth, theme, navigation } = this.props;
+    const isGigOwner = user && user.id === gig.user.id;
     const navigateToGigDetail = () => {
       navigation.navigate("GigDetail", {gig: gig});
     }
@@ -66,17 +67,30 @@ class ShowGig extends Component {
                 style={styles.chip}
               />
             ) : null}
-            <Chip
-              key={"user"}
-              label={gig.user.username}
-              style={styles.chip}
-            />
+            {isGigOwner && gig.replies ? (
+              <Chip
+                key={"replies"}
+                label={
+                  <Text style={styles.repliesText}>
+                    {gig.replies === 1 ? "1 reply" : `${gig.replies} replies`}
+                  </Text>
+                }
+                style={styles.chip}
+              />
+            ) : null}
+            {!isGigOwner ? (
+              <Chip
+                key={"user"}
+                label={gig.user.username}
+                style={styles.chip}
+              />
+            ) : null}
             <Chip
               key={"country"}
               label={gig.country.country}
               style={styles.chip}
             />
-            {gig.user.distance_from_user ? (
+            {!isGigOwner && gig.user.distance_from_user ? (
               <Chip
                 key={"distance_from_user"}
                 label={`last seen ${gig.user.distance_from_user} from you`}
@@ -120,6 +134,10 @@ const styles = StyleSheet.create({
   },
   image: {
     margin: 5,
+  },
+  repliesText: {
+    color: "yellow",
+    fontSize: 14,
   },
   chip: {
     margin: 2,

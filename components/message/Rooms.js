@@ -113,7 +113,8 @@ function ListRooms(props) {
   )
 }
 
-function Rooms({ navigation }) {
+function Rooms({ route, navigation }) {
+  const initialQuery = route.params ? route.params.initialQuery : null;
   const theme = useTheme()
   const {unreadMessages} = unreadMessagesStore();
   const resultsListViewRef = useRef();
@@ -148,7 +149,11 @@ function Rooms({ navigation }) {
 
   useFocusEffect(
     useCallback(() => {
-      getRoomsFromAPI();
+      if (initialQuery) {
+        getRoomsFromAPI(initialQuery);
+      } else {
+        getRoomsFromAPI();
+      }
       return () => {
         setSearchFeedback(null);
         setAdvancedSearch(false);

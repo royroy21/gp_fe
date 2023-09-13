@@ -12,6 +12,7 @@ import Loading from "../loading/Loading";
 import LoadingModal from "../loading/LoadingModal";
 import {useFocusEffect} from "@react-navigation/native";
 import {ScrollView} from "react-native-web";
+import useUserStore from "../../store/user";
 
 function ListGigs(props) {
   const [showLoadMore, setShowLoadMore] = useState(false);
@@ -19,6 +20,7 @@ function ListGigs(props) {
     isWeb,
     navigation,
     resultsListViewRef,
+    user,
     gigs,
     resetResults,
     getNextPage,
@@ -49,6 +51,7 @@ function ListGigs(props) {
           {gigs.results.map(item => (
             <ShowGig
               key={item.id}
+              user={user}
               gig={item}
               windowWidth={windowWidth}
               theme={theme}
@@ -86,6 +89,7 @@ function ListGigs(props) {
       onRefresh={resetResults}
       renderItem={({item}) => (
         <ShowGig
+          user={user}
           gig={item}
           windowWidth={windowWidth}
           theme={theme}
@@ -107,6 +111,7 @@ function ShowGigs({ navigation }) {
   const [loadingNext, setLoadingNext] = useState(false);
   const windowWidth = Dimensions.get("window").width;
   const {object: gigs, error, loading, get, clear} = useGigsStore();
+  const { object: user } = useUserStore();
 
   async function getGigsFromAPI(url=BACKEND_ENDPOINTS.gigs, doNotMergeResults=false) {
     if (url.includes("/api/")) {
@@ -190,6 +195,7 @@ function ShowGigs({ navigation }) {
             isWeb={isWeb}
             navigation={navigation}
             resultsListViewRef={resultsListViewRef}
+            user={user}
             gigs={gigs}
             resetResults={resetResults}
             getNextPage={getNextPage}

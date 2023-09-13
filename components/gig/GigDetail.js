@@ -14,6 +14,8 @@ import UserProfileLink from "../profile/UserProfileLink";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 import FavoriteGig from "./FavoriteGig";
 import useGigStore from "../../store/gig";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import {BACKEND_ENDPOINTS} from "../../settings";
 
 function GigDetail({route, navigation}) {
   const { gig } = route.params;
@@ -62,6 +64,24 @@ function GigDetail({route, navigation}) {
             containerStyle={styles.genres}
           />
         </View>
+        {isGigOwner && gig.replies ? (
+          <TextFieldWithTitle
+            title={"replies"}
+            text={gig.replies}
+            trailing={
+              <Icon
+                onPress={() => {
+                  navigation.navigate(
+                    "RoomsScreen",
+                    {"initialQuery": BACKEND_ENDPOINTS.room + `?gig_id=${gig.id}`})
+                }}
+                name={"speaker-wireless"}
+                size={25}
+                color={"orange"}
+              />
+            }
+          />
+        ) : null}
         <TextFieldWithTitle
           title={"gig"}
           text={gig.title}
