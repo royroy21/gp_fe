@@ -22,6 +22,7 @@ export const BACKEND_ENDPOINTS = {
   searchGigs: BACKEND_URL + "/search/gig/",
   searchCountries: BACKEND_URL + "/search/country/suggest/?country_suggest__completion=",
   searchGenres: BACKEND_URL + "/search/genre/suggest/?genre_suggest__completion=",
+  searchRooms: BACKEND_URL + "/search/room/",
   searchUsers: BACKEND_URL + "/search/user/",
 };
 export const BACKEND_SOCKET_URL = LOCAL_BACKEND_SOCKET_URL;
