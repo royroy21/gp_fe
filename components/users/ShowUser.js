@@ -13,6 +13,16 @@ class ShowUser extends Component {
      return false;
   }
 
+  bioLineLength = 60;
+
+  getBio(user) {
+    if (user.bio.length > this.bioLineLength) {
+      return `${user.bio.substring(0, this.bioLineLength)}...`
+    } else {
+      return user.bio
+    }
+  }
+
   render() {
     const { user, windowWidth, theme, navigation } = this.props;
     const navigateToUser = () => {
@@ -33,9 +43,12 @@ class ShowUser extends Component {
               width: windowWidth / 1.6,
               ...styles.dataContainer}
             }>
-              <Text style={{color: theme.palette.primary.main, ...styles.username}}>
+              <Text style={{color: theme.palette.primary.main}}>
                 {user.username}
               </Text>
+              {user.bio ? (
+                <Text style={styles.bio}>{this.getBio(user)}</Text>
+              ) : null}
             </View>
           </View>
           <View style={{flexDirection: "row", flexWrap: "wrap"}}>
@@ -88,9 +101,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     paddingLeft: 5,
     marginBottom: 5,
-  },
-  username: {
-    margin: 5,
   },
   image: {
     margin: 5,
