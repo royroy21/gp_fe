@@ -34,6 +34,28 @@ const MainMenu = ({showMainMenu, setMainMenu}) => {
         }
       />
       <ListItem
+        title={<Text>{"My Gigs"}</Text>}
+        onPress={() => {
+          navigation.navigate("MyGigs");
+          setMainMenu(!showMainMenu);
+        }}
+        trailing={
+          <IconButton
+            onPress={() => {
+              navigation.navigate("MyGigs");
+              setMainMenu(!showMainMenu);
+            }}
+            icon={
+              <Icon
+                color={theme.palette.secondary.main}
+                name={"music"}
+                size={25}
+              />
+            }
+          />
+        }
+      />
+      <ListItem
         title={<Text>{"Radio"}</Text>}
         onPress={() => {}}
         trailing={

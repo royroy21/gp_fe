@@ -12,6 +12,7 @@ import Rooms from "../message/Rooms";
 import ShowUsers from "../users/ShowUsers";
 import LoginForm from "../loginSignUp/Login";
 import SignupForm from "../loginSignUp/SignUp";
+import ShowMyGigs from "../gig/ShowMyGigs";
 
 function Routes({user, setCurrentRoute, BottomNavigationProps, theme, isWeb}) {
   const initialRouteName = "DefaultScreen";
@@ -21,6 +22,12 @@ function Routes({user, setCurrentRoute, BottomNavigationProps, theme, isWeb}) {
       name: initialRouteName,
       title: "gigs",
       component: DefaultScreen,
+    },
+    {
+      key: "MyGigs",
+      name: "MyGigs",
+      title: "my_gigs",
+      component: ShowMyGigs,
     },
     {
       key: "GigDetail",

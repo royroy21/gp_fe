@@ -13,8 +13,6 @@ function AdvancedSearchModel(props) {
     setSearchString,
     advancedSearch,
     setAdvancedSearch,
-    showMyGigs,
-    setShowMyGigs,
     showFavorites,
     setShowFavorites,
     hasSpareTicket,
@@ -54,17 +52,6 @@ function AdvancedSearchModel(props) {
             />
           }
           onChangeText={setSearchString}
-        />
-        <ListItem
-          title={<Text>{"Show my gigs only?"}</Text>}
-          onPress={() => setShowMyGigs(!showMyGigs)}
-          trailing={
-            showMyGigs ? (
-              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
-            ) : (
-              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
-            )
-          }
         />
         <ListItem
           title={<Text>{"Favorites?"}</Text>}
@@ -114,7 +101,6 @@ function SearchGigs(props) {
   } = props;
 
   const [searchString, setSearchString] = useState("");
-  const [showMyGigs, setShowMyGigs] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -129,10 +115,6 @@ function SearchGigs(props) {
       searchFeedBack += `everything, `;
     } else {
       searchFeedBack += `${search}, `;
-    }
-    if (showMyGigs) {
-      search += "&my_gigs=true"
-      searchFeedBack += "my gigs, "
     }
     if (showFavorites) {
       search += "&is_favorite=true"
@@ -167,8 +149,6 @@ function SearchGigs(props) {
         setSearchString={setSearchString}
         advancedSearch={advancedSearch}
         setAdvancedSearch={setAdvancedSearch}
-        showMyGigs={showMyGigs}
-        setShowMyGigs={setShowMyGigs}
         showFavorites={showFavorites}
         setShowFavorites={setShowFavorites}
         hasSpareTicket={hasSpareTicket}
