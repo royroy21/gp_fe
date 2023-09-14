@@ -2,11 +2,9 @@ import {Dimensions, FlatList, Platform, SafeAreaView, StyleSheet, View} from "re
 import React, {useRef, useState} from "react";
 import ShowGig from "./ShowGig";
 import {BACKEND_ENDPOINTS} from "../../settings";
-import SearchGigs from "./SearchGigs";
 import AddGigButton from "./AddGigButton";
 import {Button, IconButton, Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import useGigsStore from "../../store/gigs";
 import Errors from "../forms/Errors";
 import Loading from "../loading/Loading";
 import LoadingModal from "../loading/LoadingModal";
@@ -14,6 +12,7 @@ import {useFocusEffect} from "@react-navigation/native";
 import {ScrollView} from "react-native-web";
 import useUserStore from "../../store/user";
 import useMyGigsStore from "../../store/myGigs";
+import SearchMyGigs from "./SearchMyGigs";
 
 function ListGigs(props) {
   const [showLoadMore, setShowLoadMore] = useState(false);
@@ -171,7 +170,7 @@ function ShowMyGigs({ navigation }) {
   return (
     <View style={styles.outerContainer}>
       {!loading ? (
-        <SearchGigs
+        <SearchMyGigs
           advancedSearch={advancedSearch}
           setAdvancedSearch={setAdvancedSearch}
           getGigsFromAPI={getGigsFromAPI}
