@@ -4,9 +4,11 @@ import {IconButton, ListItem} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {useNavigation} from "@react-navigation/native";
 import CenteredModalWithOneButton from "../centeredModal/CenteredModalWithOneButton";
+import EditRoomMembership from "./EditRoomMembership";
 
-const RoomOptionsModal = ({room, showOptions, setOptions, theme}) => {
+const RoomOptionsModal = ({room, user, showOptions, setOptions, theme}) => {
   const navigation = useNavigation();
+  const isRoomOwner = user.id === room.user.id;
   return (
     <CenteredModalWithOneButton showModal={showOptions} setModal={setOptions}>
       {room.gig ? (
@@ -45,6 +47,7 @@ const RoomOptionsModal = ({room, showOptions, setOptions, theme}) => {
         <ListItem
           key={index}
           title={<Text>{member.username}</Text>}
+          secondaryText={member.id === room.user.id ? (<Text>{"owner"}</Text>) : null}
           onPress={() => {
             navigation.navigate("OtherUser", {user: member});
             setOptions(!showOptions);
@@ -66,6 +69,13 @@ const RoomOptionsModal = ({room, showOptions, setOptions, theme}) => {
           }
         />
       ))}
+      {isRoomOwner ? (
+        <EditRoomMembership
+          room={room}
+          navigation={navigation}
+          theme={theme}
+        />
+      ) : null}
     </CenteredModalWithOneButton>
   );
 };

@@ -19,10 +19,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
+    marginTop: 30,
   },
   closeButton: {
     width: 100,
-    marginTop: 20,
   },
 });
 

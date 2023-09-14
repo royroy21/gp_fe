@@ -267,6 +267,7 @@ function Room(props) {
       <Loading isLoading={loadingPreviousPage} positionTop={true} />
       <RoomOptionsModal
         room={room}
+        user={user}
         showOptions={showOptions}
         setOptions={setOptions}
         theme={theme}
