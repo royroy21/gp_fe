@@ -17,6 +17,8 @@ import RoomOptionsModal from "./RoomOptionsModal";
 import unreadMessagesStore from "../../store/unreadMessages";
 import {ScrollView} from "react-native-web";
 
+const DEBUG = true;
+
 function ListMessages(props) {
   const messagesContentRef = useRef(null);
   const [showLoadMore, setShowLoadMore] = useState(false);
@@ -205,6 +207,14 @@ function Room(props) {
     setAlert(null);
   }
 
+  if (DEBUG) {
+    // because sockets are flaky..
+    console.log("\n\n==> starting room.");
+    console.log("==> ready state of socket client: ", webSocket ? readyStates[webSocket.readyState] : "no socket found");
+    console.log("==> messages length: ", messages.results ? messages.results.length : "no messages");
+    console.log("==> loadingPreviousPage: ", loadingPreviousPage);
+  }
+
   function executeMessageReceivedBehavior(event) {
     const newMessage = JSON.parse(event.data);
     setMessages(prevState => [newMessage, ...prevState]);
@@ -273,9 +283,6 @@ function Room(props) {
         theme={theme}
       />
       <View style={styles.container}>
-        {/*<Text>*/}
-        {/*  {`room: ${room.id} connection status: ${webSocket ? readyStates[webSocket.readyState] : "null"}`}*/}
-        {/*</Text>*/}
         <IconButton
           style={{
             ...styles.menuButton,
@@ -380,7 +387,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   messagesContainer: {
-    height: "90%",
+    height: "88%",
   },
   noMessagesContainer: {
     height: "85%",
