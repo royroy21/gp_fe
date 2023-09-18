@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text} from "react-native";
+import {StyleSheet, ScrollView, Text} from "react-native";
 import {IconButton, ListItem} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {useNavigation} from "@react-navigation/native";
@@ -11,6 +11,7 @@ const RoomOptionsModal = ({room, user, showOptions, setOptions, theme}) => {
   const isRoomOwner = user.id === room.user.id;
   return (
     <CenteredModalWithOneButton showModal={showOptions} setModal={setOptions}>
+      <ScrollView style={styles.container}>
       {room.gig ? (
         <>
           <Text style={{...styles.title, color: theme.palette.primary.main}}>
@@ -76,11 +77,15 @@ const RoomOptionsModal = ({room, user, showOptions, setOptions, theme}) => {
           theme={theme}
         />
       ) : null}
+      </ScrollView>
     </CenteredModalWithOneButton>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    height: "50%",
+  },
   title: {
     marginLeft: 15,
   },
