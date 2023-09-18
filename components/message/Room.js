@@ -17,7 +17,7 @@ import RoomOptionsModal from "./RoomOptionsModal";
 import unreadMessagesStore from "../../store/unreadMessages";
 import {ScrollView} from "react-native-web";
 
-const DEBUG = true;
+const DEBUG = false;
 
 function ListMessages(props) {
   const messagesContentRef = useRef(null);
