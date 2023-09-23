@@ -7,6 +7,7 @@ import dateFormat from "dateformat";
 import CalendarModal from "../calendar";
 import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
 import TextInput from "../forms/TextInput";
+import TextTicker from "../Text/TextTicker";
 
 function AdvancedSearchModel(props) {
   const {
@@ -141,9 +142,9 @@ function SearchGigs(props) {
   return (
     <View>
       {searchFeedback ? (
-        <Text style={{color: theme.palette.secondary.main, ...styles.feedback}}>
+        <TextTicker style={{color: theme.palette.secondary.main, ...styles.feedback}}>
           {searchFeedback}
-        </Text>
+        </TextTicker>
       ) : null}
       <AdvancedSearchModel
         setSearchString={setSearchString}
