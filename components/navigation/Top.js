@@ -7,14 +7,14 @@ import BottomNavigation from "./Bottom";
 import {IconButton, Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-function Title({title, navigation, route, initialRouteName, BottomNavigationProps, isWeb}){
+function Title({title, navigation, route, initialRouteName, BottomNavigationProps, isWeb, isSmallScreen}){
   const doNotShowBottomOnTheseRoutes = [
     "LoginScreen", "SignUpScreen",
   ];
   return (
     <View style={titleStyles.container}>
       <Pressable onPress={() => navigation.navigate(initialRouteName)} style={titleStyles.textContainer}>
-        <Text style={titleStyles.gigPigText}>{"GIGPIG"}</Text>
+        {!(isWeb && isSmallScreen) ? (<Text style={titleStyles.gigPigText}>{"GIGPIG"}</Text>) : null}
         <Text style={titleStyles.text}>{`/${title}`}</Text>
       </Pressable>
       {isWeb && !doNotShowBottomOnTheseRoutes.includes(route.name) && (
@@ -63,7 +63,16 @@ const titleStyles = StyleSheet.create({
   },
 });
 
-function TopNavigation({user, screens, initialRouteName, BottomNavigationProps, theme, isWeb}) {
+function TopNavigation(props) {
+  const {
+    user,
+    screens,
+    initialRouteName,
+    BottomNavigationProps,
+    theme,
+    isWeb,
+    isSmallScreen,
+  } = props;
   const Stack = createNativeStackNavigator();
   const [mainMenu, setMainMenu] = useState(false);
   return (
@@ -99,6 +108,7 @@ function TopNavigation({user, screens, initialRouteName, BottomNavigationProps, 
                     initialRouteName={initialRouteName}
                     BottomNavigationProps={BottomNavigationProps}
                     isWeb={isWeb}
+                    isSmallScreen={isSmallScreen}
                   />
                 ),
                 headerRight: () => LoginOrMenuButton(navigation, user, mainMenu, setMainMenu),

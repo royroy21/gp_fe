@@ -4,7 +4,7 @@ import {Text} from "@react-native-material/core";
 function TextFieldWithTitle(props) {
   const {
     title,
-    text,
+    text=null,
     trailing=null,
     style={},
   } = props;
@@ -12,10 +12,8 @@ function TextFieldWithTitle(props) {
     <View style={{...styles.container, ...style}}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.textContainer}>
-        <Text style={styles.text}>{text}</Text>
-        {trailing ? (
-          trailing
-        ) : null}
+        {text ? <Text style={styles.text}>{text}</Text>: null}
+        {trailing ? trailing : null}
       </View>
     </View>
   )

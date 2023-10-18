@@ -15,6 +15,8 @@ export const BACKEND_ENDPOINTS = {
   token: BACKEND_URL + "/api/token/",
   user: BACKEND_URL + "/api/user/",
   me: BACKEND_URL + "/api/user/me/",
+  album: BACKEND_URL + "/api/album/",
+  track: BACKEND_URL + "/api/audio/",
   gigs: BACKEND_URL + "/api/gig/",
   country: BACKEND_URL + "/api/country/?code=",
   message: BACKEND_URL + "/api/message/",
@@ -37,3 +39,7 @@ export const BACKEND_SOCKET_ENDPOINTS = {
 export const DEFAULT_COUNTRY_CODE = "GB";
 
 export const DEFAULT_ERROR_MESSAGE = "Sorry an unexpected error has occurred."
+
+// Screen size
+// Defines what counts as a small screen for web app.
+export const smallScreenWidth = 500;

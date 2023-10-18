@@ -17,6 +17,17 @@ class APIClient {
     await this.makeRequestHandleResponse(params, requestOptions, [200]);
   };
 
+  delete = async (params=defaultParams) => {
+    const headers = await this.getHeaders();
+    const requestOptions = {
+      method: "DELETE",
+      headers: headers,
+    }
+    await this.makeRequestHandleResponse(
+      params, requestOptions, [204], true,
+    );
+  };
+
   post = async (params=defaultParams, isMultipartFormData=false) => {
     const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
@@ -63,7 +74,9 @@ class APIClient {
     );
   }
 
-  makeRequestHandleResponse = async (params, requestOptions, validStatusCodes) => {
+  makeRequestHandleResponse = async (
+      params, requestOptions, validStatusCodes, responseWithoutJSON=false
+  ) => {
     try {
       const response = await fetch(params.resource, requestOptions);
       if (!validStatusCodes.includes(response.status) ) {
@@ -71,8 +84,15 @@ class APIClient {
         params.errorCallback(json);
         return;
       }
-      const json = await response.json();
-      params.successCallback(json);
+      if (responseWithoutJSON) {
+        // For responses that do not contain JSON.
+        // For example if deleting we get 204
+        // response without content.
+        params.successCallback();
+      } else {
+        const json = await response.json();
+        params.successCallback(json);
+      }
     } catch (error) {
       // TODO - Sentry logging here
       console.error("unknown error @ APIClient.handleResponse: ", error, params);

@@ -5,8 +5,11 @@ import Image from "../Image/Image";
 import React from "react";
 import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
+import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton";
+import {useTheme} from "@react-native-material/core";
 
 function ProfilePage({ navigation }) {
+  const theme = useTheme();
   const { object } = useUserStore();
 
   const edit = () => {
@@ -39,6 +42,12 @@ function ProfilePage({ navigation }) {
       <TextFieldWithTitle
         title={"bio"}
         text={object.bio}
+      />
+      <ShowAlbumsWithAddMusicButton
+        resource={object}
+        type={"profile"}
+        theme={theme}
+        navigation={navigation}
       />
     </CustomScrollViewWithOneButton>
   )

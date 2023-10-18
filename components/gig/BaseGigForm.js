@@ -98,6 +98,7 @@ function BaseGigForm(props) {
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               label={"gig, artist, band, festival .."}
+              // label={"gig, artist, band, festival, jam .."}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -114,6 +115,7 @@ function BaseGigForm(props) {
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               label={"location, venue, pub, warehouse .."}
+              // label={"venue, pub, warehouse, flat, garage .."}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}

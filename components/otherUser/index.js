@@ -11,8 +11,11 @@ import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButto
 import FavoriteUser from "./FavoriteUser";
 import useOtherUserStore from "../../store/otherUser";
 import useUserStore from "../../store/user";
+import {useTheme} from "@react-native-material/core";
+import ShowAlbums from "../audio/ShowAlbums";
 
 function OtherUser({ route, navigation }) {
+  const theme = useTheme();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const {object: jwt} = useJWTStore();
@@ -44,6 +47,11 @@ function OtherUser({ route, navigation }) {
         buttonTitle={"message"}
         buttonOnPress={directMessage}
       >
+        <FavoriteUser
+          navigation={navigation}
+          user={user}
+          isFavorite={user.is_favorite}
+        />
         <View style={styles.imageAndGenresContainer}>
           <Image
             imageUri={user.image}
@@ -58,13 +66,6 @@ function OtherUser({ route, navigation }) {
         <TextFieldWithTitle
           title={"username"}
           text={user.username}
-          trailing={
-            <FavoriteUser
-              navigation={navigation}
-              user={user}
-              isFavorite={user.is_favorite}
-            />
-          }
         />
         <TextFieldWithTitle
           title={"bio"}
@@ -73,6 +74,12 @@ function OtherUser({ route, navigation }) {
         <TextFieldWithTitle
           title={"last seen"}
           text={user.distance_from_user ? user.distance_from_user : "last seen unknown"}
+        />
+        <ShowAlbums
+          resource={user}
+          type={"profile"}
+          theme={theme}
+          navigation={navigation}
         />
       </CustomScrollViewWithOneButton>
     </>

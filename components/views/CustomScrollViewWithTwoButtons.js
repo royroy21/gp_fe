@@ -4,10 +4,10 @@ import {Button} from "@react-native-material/core";
 function CustomScrollViewWithTwoButtons(props) {
   const {
     children,
-    actionButtonTitle,
-    actionButtonOnPress,
-    backButtonTitle,
-    backButtonOnPress,
+    actionButton1Title,
+    actionButton1OnPress,
+    actionButton2Title,
+    actionButton2OnPress,
   } = props;
   return (
     <View style={styles.container}>
@@ -18,14 +18,14 @@ function CustomScrollViewWithTwoButtons(props) {
       </View>
       <View style={styles.buttonsContainer}>
         <Button
-          title={backButtonTitle}
-          onPress={backButtonOnPress}
-          style={styles.closeButton}
+          title={actionButton1Title}
+          onPress={actionButton1OnPress}
+          style={styles.button}
         />
         <Button
-          title={actionButtonTitle}
-          onPress={actionButtonOnPress}
-          style={styles.submitButton}
+          title={actionButton2Title}
+          onPress={actionButton2OnPress}
+          style={styles.button}
         />
       </View>
     </View>
@@ -47,10 +47,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
   },
-  backButton: {
-    minWidth: 110,
-  },
-  submitButton: {
+  button: {
     minWidth: 110,
   },
 })

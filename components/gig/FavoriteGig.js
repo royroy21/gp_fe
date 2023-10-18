@@ -1,5 +1,6 @@
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useGigStore from "../../store/gig";
+import {ListItem, Text} from "@react-native-material/core";
 
 function FavoriteGig({navigation, gig, isFavorite}) {
   const {get, addFavorite, removeFavorite} = useGigStore();
@@ -21,11 +22,17 @@ function FavoriteGig({navigation, gig, isFavorite}) {
   }
 
   return (
-    <Icon
+    <ListItem
+      title={<Text style={{color: "grey"}}>{isFavorite ? "un-favorite" : "favorite"}</Text>}
       onPress={onPress}
-      name={"star"}
-      size={25}
-      color={isFavorite ? "orange" : "grey"}
+      trailing={
+        <Icon
+          name="star"
+          size={25}
+          color={isFavorite ? "orange" : "grey"}
+          onPress={onPress}
+        />
+      }
     />
   )
 }

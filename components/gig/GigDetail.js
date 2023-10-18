@@ -16,6 +16,8 @@ import FavoriteGig from "./FavoriteGig";
 import useGigStore from "../../store/gig";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {BACKEND_ENDPOINTS} from "../../settings";
+import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton";
+import ShowAlbums from "../audio/ShowAlbums";
 
 function GigDetail({route, navigation}) {
   const { gig } = route.params;
@@ -53,6 +55,13 @@ function GigDetail({route, navigation}) {
         buttonTitle={isGigOwner ? "edit" : "respond"}
         buttonOnPress={isGigOwner ? edit : respond}
       >
+        {!isGigOwner ? (
+          <FavoriteGig
+            navigation={navigation}
+            gig={gig}
+            isFavorite={gig.is_favorite}
+          />
+        ) : null}
         <View style={styles.imageAndGenresContainer}>
           <Image
             imageUri={gig.image}
@@ -85,15 +94,6 @@ function GigDetail({route, navigation}) {
         <TextFieldWithTitle
           title={"gig"}
           text={gig.title}
-          trailing={
-            !isGigOwner ? (
-              <FavoriteGig
-                navigation={navigation}
-                gig={gig}
-                isFavorite={gig.is_favorite}
-              />
-            ) : null
-          }
         />
         {gig.description ? (
           <TextFieldWithTitle
@@ -126,6 +126,21 @@ function GigDetail({route, navigation}) {
           theme={theme}
           containerStyle={styles.userProfileLink}
         />
+        {isGigOwner ? (
+          <ShowAlbumsWithAddMusicButton
+            resource={gig}
+            type={"gig"}
+            theme={theme}
+            navigation={navigation}
+          />
+        ) : (
+          <ShowAlbums
+            resource={gig}
+            type={"gig"}
+            theme={theme}
+            navigation={navigation}
+          />
+        )}
       </CustomScrollViewWithOneButton>
     </>
   )

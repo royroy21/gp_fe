@@ -1,6 +1,7 @@
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useUserStore from "../../store/user";
 import useOtherUserStore from "../../store/otherUser";
+import {ListItem, Text} from "@react-native-material/core";
 
 function FavoriteUser({navigation, user, isFavorite}) {
   const {addFavorite, removeFavorite} = useUserStore();
@@ -23,11 +24,17 @@ function FavoriteUser({navigation, user, isFavorite}) {
   }
 
   return (
-    <Icon
+    <ListItem
+      title={<Text style={{color: "grey"}}>{isFavorite ? "un-favorite" : "favorite"}</Text>}
       onPress={onPress}
-      name={"star"}
-      size={25}
-      color={isFavorite ? "orange" : "grey"}
+      trailing={
+        <Icon
+          name="star"
+          size={25}
+          color={isFavorite ? "orange" : "grey"}
+          onPress={onPress}
+        />
+      }
     />
   )
 }
