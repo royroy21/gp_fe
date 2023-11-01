@@ -209,7 +209,7 @@ function Room(props) {
 
   if (DEBUG) {
     // because sockets are flaky..
-    console.log("\n\n==> starting room.");
+    console.log("\n\n==> starting room.", room.id);
     console.log("==> ready state of socket client: ", webSocket ? readyStates[webSocket.readyState] : "no socket found");
     console.log("==> messages length: ", messages.results ? messages.results.length : "no messages");
     console.log("==> loading from usePreviousMessagesStore (on first page load): ", loading);
