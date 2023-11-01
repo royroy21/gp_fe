@@ -17,7 +17,7 @@ import RoomOptionsModal from "./RoomOptionsModal";
 import unreadMessagesStore from "../../store/unreadMessages";
 import {ScrollView} from "react-native-web";
 
-const DEBUG = false;
+const DEBUG = true;
 
 function ListMessages(props) {
   const messagesContentRef = useRef(null);
@@ -212,7 +212,9 @@ function Room(props) {
     console.log("\n\n==> starting room.");
     console.log("==> ready state of socket client: ", webSocket ? readyStates[webSocket.readyState] : "no socket found");
     console.log("==> messages length: ", messages.results ? messages.results.length : "no messages");
-    console.log("==> loadingPreviousPage: ", loadingPreviousPage);
+    console.log("==> loading from usePreviousMessagesStore (on first page load): ", loading);
+    console.log("==> loadingPreviousPage (when scrolling up): ", loadingPreviousPage);
+    console.log("\n\n");
   }
 
   function executeMessageReceivedBehavior(event) {
