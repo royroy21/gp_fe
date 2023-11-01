@@ -9,6 +9,16 @@ import EditRoomMembership from "./EditRoomMembership";
 const RoomOptionsModal = ({room, user, showOptions, setOptions, theme}) => {
   const navigation = useNavigation();
   const isRoomOwner = user.id === room.user.id;
+
+  const onListItemPress = (member) => {
+    if (user.id === member.id) {
+      navigation.navigate("ProfilePage")
+    } else {
+      navigation.navigate("OtherUser", {user: member});
+    }
+    setOptions(!showOptions);
+  }
+
   return (
     <CenteredModalWithOneButton showModal={showOptions} setModal={setOptions}>
       <ScrollView style={styles.container}>
@@ -49,16 +59,10 @@ const RoomOptionsModal = ({room, user, showOptions, setOptions, theme}) => {
           key={index}
           title={<Text>{member.username}</Text>}
           secondaryText={member.id === room.user.id ? (<Text>{"owner"}</Text>) : null}
-          onPress={() => {
-            navigation.navigate("OtherUser", {user: member});
-            setOptions(!showOptions);
-          }}
+          onPress={() => onListItemPress(member)}
           trailing={
             <IconButton
-              onPress={() => {
-                navigation.navigate("OtherUser", {user: member});
-                setOptions(!showOptions);
-              }}
+              onPress={() => onListItemPress(member)}
               icon={
                 <Icon
                   color={theme.palette.secondary.main}
