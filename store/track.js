@@ -6,6 +6,7 @@ const useTrackStore = create((set) => ({
   object: null,
   loading: false,
   error: null,
+  store: track => set({ object: track, loading: false, error: null }),
   get: async (id, onSuccess = () => {}) => {
     set({ loading: true });
     const params = {

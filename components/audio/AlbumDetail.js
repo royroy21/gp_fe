@@ -6,13 +6,13 @@ import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import useUserStore from "../../store/user";
 import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
 import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {Button, Text} from "@react-native-material/core";
 import useAlbumStore from "../../store/album";
 import LoadingModal from "../loading/LoadingModal";
 import ShowTracks from "./ShowTracks";
 import SquarePlusButton from "../buttons/SquarePlusButton";
-import {useFocusEffect} from "@react-navigation/native";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 
 function AlbumDetailContent({ album, isOwner }) {
   return (
@@ -92,37 +92,86 @@ const AlbumDetailContentStyles = StyleSheet.create({
   },
 })
 
-function AlbumDetail({navigation, route}) {
-  // Album here could be an object or ID depending on if
-  // coming from AddTrack (object) or EditTrack (ID) or other.
-  // If album is ID we get fetch the object from BE database.
-  const { albumId } = route.params;
-  const { object } = useUserStore();
+function AlbumDetail({ navigation, route }) {
+  const isFocused = useIsFocused();
+  const { id, refresh } = route.params;
   const {
     object: album,
+    store,
     get: getAlbum,
     delete: deleteAlbum,
     loading,
-    clear,
   } = useAlbumStore();
+  const [albumInState, setAlbumInState] = useState(refresh ? null : album);
 
+  const correctAlbumInState = () => {
+    const formattedAlbum = albumInState || {id: null};
+    return parseInt(formattedAlbum.id) === parseInt(id);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+      if (!correctAlbumInState()) {
+        getAlbum(id, setAlbumInState);
+      }
+      return () => {
+        isActive = false;
+      };
+    }, [id])
+  );
+
+  if (!isFocused) {
+    return null
+  }
+
+  if (!correctAlbumInState()) {
+    return (
+      <LoadingModal
+        isLoading={loading}
+        debugMessage={"from @AlbumDetail 1"}
+      />
+    )
+  }
+
+  return (
+    <InnerAlbumDetail
+      album={albumInState}
+      store={store}
+      setAlbumInState={setAlbumInState}
+      deleteAlbum={deleteAlbum}
+      loading={loading}
+      navigation={navigation}
+    />
+  )
+
+}
+
+function InnerAlbumDetail({ album, store, deleteAlbum, loading, navigation }) {
+  // Album here could be an object or ID depending on if
+  // coming from AddTrack (object) or EditTrack (ID) or other.
+  // If album is ID we get fetch the object from BE database.
+  const { object: user } = useUserStore();
   const [deleteAlbumModal, setDeleteAlbumModal] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
-      getAlbum(albumId);
       return () => {
         setDeleteAlbumModal(false);
-        clear();
       };
     }, [])
   );
 
-  if (!album || loading) {
-    return <LoadingModal isLoading={loading} />
+  const getIsOwner = () => {
+    if (!user) {
+      return false
+    }
+    return user.id === album.user.id;
   }
-
-  const isOwner = object.id === album.user.id;
+  const isOwner = getIsOwner();
 
   if (!isOwner) {
     return (
@@ -133,17 +182,19 @@ function AlbumDetail({navigation, route}) {
   }
 
   const edit = () => {
-    navigation.navigate("EditAlbum", {album: album});
+    store(album);
+    navigation.push("EditAlbum", {id: album.id});
   }
 
   const onSuccess = () => {
     const params = album.gig
-      ? {resource: album.gig, type: "gig"}
-      : {resource: album.profile, type: "profile"}
-    navigation.navigate("AddMusic", params);
+      ? {resourceId: album.gig.id, type: "gig"}
+      : {resourceId: album.profile.id, type: "profile"}
+    navigation.push("AddMusic", params);
   }
 
   const deleteAlbumAction = () => {
+    setDeleteAlbumModal(false);
     deleteAlbum(album.id, onSuccess);
   }
 
@@ -152,7 +203,8 @@ function AlbumDetail({navigation, route}) {
   }
 
   const navigateToAddTrack = () => {
-    navigation.navigate("AddTrack", {album: album});
+    store(album);
+    navigation.push("AddTrack", {albumId: album.id});
   }
 
   if (album.is_default) {

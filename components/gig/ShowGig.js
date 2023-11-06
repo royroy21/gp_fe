@@ -23,10 +23,11 @@ class ShowGig extends Component {
   }
 
   render() {
-    const { gig, user, windowWidth, theme, navigation } = this.props;
+    const { gig, storeGig, user, windowWidth, theme, navigation } = this.props;
     const isGigOwner = user && user.id === gig.user.id;
     const navigateToGigDetail = () => {
-      navigation.navigate("GigDetail", {gig: gig});
+      storeGig(gig);
+      navigation.push("GigDetail", {id: gig.id});
     }
     return (
       <Surface elevation={2} category="medium" style={{padding: 5, margin: 5}}>

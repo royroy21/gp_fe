@@ -9,8 +9,9 @@ import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoBut
 import TextInput from "../forms/TextInput";
 import TextTicker from "../Text/TextTicker";
 
-function AdvancedSearchModel(props) {
+function AdvancedSearchModal(props) {
   const {
+    user,
     setSearchString,
     advancedSearch,
     setAdvancedSearch,
@@ -54,17 +55,19 @@ function AdvancedSearchModel(props) {
           }
           onChangeText={setSearchString}
         />
-        <ListItem
-          title={<Text>{"Favorites?"}</Text>}
-          onPress={() => setShowFavorites(!showFavorites)}
-          trailing={
-            showFavorites ? (
-              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
-            ) : (
-              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
-            )
-          }
-        />
+        {user ? (
+          <ListItem
+            title={<Text>{"Favorites?"}</Text>}
+            onPress={() => setShowFavorites(!showFavorites)}
+            trailing={
+              showFavorites ? (
+                <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+              ) : (
+                <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+              )
+            }
+          />
+        ) : null}
         <ListItem
           title={<Text>{"Has spare ticket?"}</Text>}
           onPress={() => setHasSpareTicket(!hasSpareTicket)}
@@ -93,6 +96,7 @@ function AdvancedSearchModel(props) {
 
 function SearchGigs(props) {
   const {
+    user,
     advancedSearch,
     setAdvancedSearch,
     getGigsFromAPI,
@@ -146,7 +150,8 @@ function SearchGigs(props) {
           {searchFeedback}
         </TextTicker>
       ) : null}
-      <AdvancedSearchModel
+      <AdvancedSearchModal
+        user={user}
         setSearchString={setSearchString}
         advancedSearch={advancedSearch}
         setAdvancedSearch={setAdvancedSearch}

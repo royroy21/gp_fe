@@ -27,7 +27,10 @@ function Title({title, navigation, route, initialRouteName, BottomNavigationProp
   )
 }
 
-function GoBackButton({navigation, route}) {
+function GoBackButton({navigation, route, isWeb}) {
+  if (isWeb) {
+    return null
+  }
   return (
     route.name !== "DefaultScreen" ? (
       <IconButton
@@ -97,6 +100,7 @@ function TopNavigation(props) {
                   <GoBackButton
                     navigation={navigation}
                     route={route}
+                    isWeb={isWeb}
                   />
                 ),
                 headerBackVisible: false,

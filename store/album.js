@@ -6,6 +6,7 @@ const useAlbumStore = create((set) => ({
   object: null,
   loading: false,
   error: null,
+  store: album => set({ object: album, loading: false, error: null }),
   get: async (id, onSuccess = () => {}) => {
     set({ loading: true });
     const params = {

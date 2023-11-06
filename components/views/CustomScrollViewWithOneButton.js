@@ -1,11 +1,12 @@
 import {ScrollView, StyleSheet, View} from "react-native";
-import {Button} from "@react-native-material/core";
+import {Button, Text} from "@react-native-material/core";
 
 function CustomScrollViewWithOneButton(props) {
   const {
     children,
     buttonTitle,
     buttonOnPress,
+    bottomMessage=null,
   } = props;
   return (
     <View style={styles.container}>
@@ -21,6 +22,9 @@ function CustomScrollViewWithOneButton(props) {
             onPress={buttonOnPress}
             style={styles.button}
           />
+        ) : null}
+        {bottomMessage ? (
+          <Text style={styles.bottomMessage}>{bottomMessage}</Text>
         ) : null}
       </View>
     </View>
@@ -46,6 +50,9 @@ const styles = StyleSheet.create({
   },
   button: {
     minWidth: 110,
+  },
+  bottomMessage: {
+    color: "grey",
   },
 })
 

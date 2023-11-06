@@ -1,12 +1,94 @@
 import {useForm} from "react-hook-form";
-import {useState} from "react";
+import React, {useCallback, useState} from "react";
 import useGigStore from "../../store/gig";
 import BaseGigForm from "./BaseGigForm";
 import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
 import {Platform} from "react-native";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
+import useUserStore from "../../store/user";
+import LoadingModal from "../loading/LoadingModal";
+import {useTheme} from "@react-native-material/core";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import {DEBUG} from "../../settings";
 
-function EditGig({ route, navigation }) {
-  const { gig } = route.params;
+function EditGig({ navigation, route }) {
+  const isFocused = useIsFocused();
+  const theme = useTheme();
+  const { id } = route.params;
+  const { object: user } = useUserStore();
+  const {
+    object: gig,
+    get,
+    store,
+    loading,
+    error,
+    patch,
+  } = useGigStore();
+  const [gigInState, setGigInState] = useState(gig);
+
+  const correctGigInState = () => {
+    const formattedGig = gigInState || {id: null};
+    DEBUG && console.log("@EditGig correctGigInState ", formattedGig, id);
+    return parseInt(formattedGig.id) === parseInt(id);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      DEBUG && console.log("@GigEdit hits 0");
+      let isActive = true;
+      if (!isActive) {
+        DEBUG && console.log("@GigEdit hits 1 - not active");
+        return
+      }
+      if (!correctGigInState()) {
+        DEBUG && console.log("@GigEdit hits 2 - getting gig");
+        get(id, setGigInState);
+      }
+
+      return () => {
+        isActive = false;
+      };
+    }, [id])
+  );
+
+  if (!isFocused) {
+    DEBUG && console.log("@GigEdit hits 3 - not focused");
+    return null
+  }
+
+  if (!user) {
+    DEBUG && console.log("@GigEdit hits 4 - no user");
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
+  }
+
+  if (!correctGigInState()) {
+    DEBUG && console.log("@GigEdit hits 5 - loading as no gig");
+    return (
+      <LoadingModal
+        isLoading={loading}
+        debugMessage={"from @EditGig"}
+      />
+    )
+  }
+
+
+  DEBUG && console.log("@GigEdit hits 6 - display inner");
+  return (
+    <InnerEditGig
+      gig={gigInState}
+      get={get}
+      store={store}
+      loading={loading}
+      error={error}
+      patch={patch}
+      navigation={navigation}
+    />
+  )
+}
+
+function InnerEditGig({ gig, get, store, loading, error, patch, navigation }) {
   const isWeb = Boolean(Platform.OS === "web");
 
   const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
@@ -23,7 +105,7 @@ function EditGig({ route, navigation }) {
   });
 
   let image = null;
-  const {get, loading, error, patch, clear} = useGigStore();
+
   const onSubmit = async (data) => {
     /*
     NOTE! If an image is present first we upload string data using react-hook-form's
@@ -63,7 +145,8 @@ function EditGig({ route, navigation }) {
   }
 
   const onSuccess = (gig) => {
-    navigation.navigate("GigDetail", {gig: gig});
+    store(gig);
+    navigation.push("GigDetail", {id: gig.id});
     return () => {
       setNumberOfGenres(0);
       setShowDatePicker(false);
@@ -81,11 +164,7 @@ function EditGig({ route, navigation }) {
       setValue={setValue}
       loading={loading}
       error={error}
-      clearErrors={() => {
-        clear();
-        clearErrors();
-        get(gig.id);
-      }}
+      clearErrors={clearErrors}
       numberOfGenres={numberOfGenres}
       setNumberOfGenres={setNumberOfGenres}
       showDatePicker={showDatePicker}

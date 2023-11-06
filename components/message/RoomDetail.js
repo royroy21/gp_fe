@@ -18,10 +18,20 @@ class RoomDetail extends Component {
   }
 
   render() {
-    const { room, windowWidth, theme, navigation, unReadMessagesCount } = this.props;
+    const {
+      room,
+      storeRoom,
+      windowWidth,
+      theme,
+      navigation,
+      unReadMessagesCount,
+    } = this.props;
+
     const navigateToRoom = () => {
-      navigation.navigate("Room", {room: room});
+      storeRoom(room);
+      navigation.push("Room", {id: room.id});
     }
+
     return (
       <Surface elevation={2} category="medium" style={styles.surface}>
         <Pressable onPress={navigateToRoom}>

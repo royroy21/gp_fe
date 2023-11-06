@@ -1,22 +1,49 @@
 import BaseGigForm from "./BaseGigForm";
 import {useForm} from "react-hook-form";
-import useCountryStore from "../../store/country";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import useGigStore from "../../store/gig";
 import useUserStore from "../../store/user";
 import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
 import {Platform} from "react-native";
+import {DEFAULT_COUNTRY} from "../../settings";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import {useTheme} from "@react-native-material/core";
+import {useNavigation} from "@react-navigation/native";
 
 function AddGig({ navigation }) {
-  const {object: defaultCountry, loading: loadingCountry, get: getCountry} = useCountryStore();
   const { object: user } = useUserStore();
+  const theme = useTheme();
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
+  }
+
+  return (
+    <InnerAddGig
+      user={user}
+      navigation={navigation}
+    />
+  )
+
+}
+
+function InnerAddGig({ user, navigation }) {
+
+  // const navigate = useNavigation();
+
   const isWeb = Boolean(Platform.OS === "web");
+
+  const {
+    store: storeGig,
+  } = useGigStore();
 
   const { control, handleSubmit, getValues, setValue, resetField, clearErrors } = useForm({
     defaultValues: {
       "title": "",
       "location": "",
-      "country": defaultCountry,
+      "country": user.country || DEFAULT_COUNTRY,
       "description": "",
       "genres": [],
       "start_date": null,
@@ -24,14 +51,13 @@ function AddGig({ navigation }) {
       "image": null,
     },
   });
-  useEffect(() => {getCountry(user, resetField)}, [])
 
   let image = null;
   const { loading, error, post, patch, clear } = useGigStore();
   const onSubmit = async (data) => {
     /*
     NOTE! If an image is present first we upload string data using react-hook-form's
-    data object then we upload image data separately afterwards using FormData.
+    data object then we upload image data separately afterward using FormData.
      */
     image = data.image;
     if (image) {
@@ -58,7 +84,8 @@ function AddGig({ navigation }) {
   }
 
   const onSuccess = (gig) => {
-    navigation.navigate("GigDetail", {gig: gig});
+    storeGig(gig);
+    navigation.push("GigDetail", {id: gig.id});
     return () => {
       setNumberOfGenres(0);
       setShowDatePicker(false);
@@ -87,7 +114,6 @@ function AddGig({ navigation }) {
       hasSpareTicket={hasSpareTicket}
       setHasSpareTicket={setHasSpareTicket}
       onSubmit={onSubmit}
-      loadingCountry={loadingCountry}
     />
   )
 }

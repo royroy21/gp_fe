@@ -97,7 +97,7 @@ function EditProfile({ navigation }) {
       buttonTitle={"submit"}
       buttonOnPress={handleSubmit(onSubmit)}
     >
-      <LoadingModal isLoading={loading} />
+      <LoadingModal isLoading={loading} debugMessage={"from @EditProfile"}/>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {isWeb ? (

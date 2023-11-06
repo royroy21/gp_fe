@@ -73,7 +73,7 @@ const NotificationClickedOnBehaviour = {
   // on based upon received data type.
   // For example navigate to a screen.
   "room": (navigation, data) => {
-    navigation.navigate("Room", {room: data.serialized_object});
+    navigation.push("Room", {id: data.serialized_object.id});
   }
 }
 

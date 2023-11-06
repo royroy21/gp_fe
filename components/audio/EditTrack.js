@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {useForm} from "react-hook-form";
 import {Platform, StyleSheet} from "react-native";
 import {formatImageForForm} from "../Image/helpers";
@@ -6,16 +6,99 @@ import useTrackStore from "../../store/track";
 import BaseTrackForm from "./BaseTrackForm";
 import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
 import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
-import {Button, Text} from "@react-native-material/core";
+import {Button, Text, useTheme} from "@react-native-material/core";
 import {getDataWithOutFile, getDataWithOutImageAndFile} from "./helpers";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
+import LoadingModal from "../loading/LoadingModal";
+import useUserStore from "../../store/user";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 
-function EditTrack({navigation, route}) {
+function EditTrack({ navigation, route }) {
+  const isFocused = useIsFocused();
+  const { id, numberOfExistingTracks } = route.params;
+  const theme = useTheme();
+  const { object: user } = useUserStore();
+  const {
+    object: track,
+    get,
+    loading,
+    error,
+    patch,
+    delete: deleteTrack,
+    clear,
+  } = useTrackStore();
+  const [trackInState, setTrackInState] = useState(track);
+
+  const correctTrackInState = () => {
+    const formattedTrack = trackInState || {id: null};
+    return parseInt(formattedTrack.id) === parseInt(id);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+      if (!correctTrackInState()) {
+        get(id, setTrackInState);
+      }
+
+      return () => {
+        isActive = false;
+      };
+    }, [id])
+  );
+
+  if (!isFocused) {
+    return null
+  }
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
+  }
+
+  if (!correctTrackInState()) {
+    return (
+      <LoadingModal
+        isLoading={loading}
+        debugMessage={"from @EditTrack"}
+      />
+    )
+  }
+
+  return (
+    <InnerEditTrack
+      track={trackInState}
+      numberOfExistingTracks={numberOfExistingTracks}
+      loading={loading}
+      error={error}
+      patch={patch}
+      deleteTrack={deleteTrack}
+      clear={clear}
+      navigation={navigation}
+    />
+  )
+}
+
+function InnerEditTrack(props) {
   /*
   NOTE! AUDIO DATA CANNOT BE CHANGED.
   ONLY DELETING AND RE-ADDING TRACK LOGIC IS AVAILABLE.
    */
+  const {
+    track,
+    numberOfExistingTracks,
+    loading,
+    error,
+    patch,
+    deleteTrack,
+    clear,
+    navigation,
+  } = props;
 
-  const { track, numberOfExistingTracks } = route.params;
   const { album: albumId } = track;
   const isWeb = Boolean(Platform.OS === "web");
   const [deleteTrackModal, setDeleteTrackModal] = useState(false);
@@ -30,10 +113,7 @@ function EditTrack({navigation, route}) {
     },
   });
 
-  const { loading, error, patch, delete: deleteTrack, clear } = useTrackStore();
-
   let image = null;
-
   const onSubmit = async (data) => {
     /*
     NOTE! If an image or file is present first we upload string data using react-hook-form's
@@ -71,7 +151,7 @@ function EditTrack({navigation, route}) {
   }
 
   const onSuccess = () => {
-    navigation.navigate("AlbumDetail", {albumId: albumId});
+    navigation.push("AlbumDetail", {id: albumId, refresh: true});
     return () => {
       setDeleteTrackModal(false);
       image = null;

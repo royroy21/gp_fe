@@ -5,7 +5,7 @@ import dateFormat from "dateformat";
 import useUserStore from "../../store/user";
 import Errors from "../forms/Errors";
 import LoadingModal from "../loading/LoadingModal";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import newMessage from "../message/newMessage";
 import useJWTStore from "../../store/jwt";
 import Image from "../Image/Image";
@@ -15,51 +15,130 @@ import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButto
 import FavoriteGig from "./FavoriteGig";
 import useGigStore from "../../store/gig";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {BACKEND_ENDPOINTS} from "../../settings";
+import {BACKEND_ENDPOINTS, DEBUG} from "../../settings";
 import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton";
 import ShowAlbums from "../audio/ShowAlbums";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
+import useRoomStore from "../../store/room";
 
-function GigDetail({route, navigation}) {
-  const { gig } = route.params;
+function GigDetail({ navigation, route }) {
+  const isFocused = useIsFocused();
+  const { id } = route.params;
   const { object: user } = useUserStore();
-  const {loading: loadingFromGig} = useGigStore();
+  const {object: gig, get: getGig, loading} = useGigStore();
+  const [gigInState, setGigInState] = useState(gig);
+
+  const correctGigInState = () => {
+    const formattedGig = gigInState || {id: null};
+    DEBUG && console.log("@GigDetail correctGigInState ", formattedGig, id);
+    return parseInt(formattedGig.id) === parseInt(id);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      DEBUG && console.log("@GigDetail hits 0");
+      let isActive = true;
+      if (!isActive) {
+        DEBUG && console.log("@GigDetail hits 1 - not active");
+        return
+      }
+      if (!correctGigInState()) {
+        DEBUG && console.log("@GigDetail hits 2 - getting gig");
+        getGig(id, setGigInState);
+      }
+      return () => {
+        isActive = false;
+      };
+    }, [id])
+  );
+
+  if (!isFocused) {
+    DEBUG && console.log("@GigDetail hits 3 - not focused");
+    return null
+  }
+
+  if (!correctGigInState()) {
+    DEBUG && console.log("@GigDetail hits 4 - incorrect gig in state ", gigInState);
+    return (
+      <LoadingModal
+        isLoading={loading}
+        debugMessage={"from @GigDetail 1"}
+      />
+    )
+  }
+
+  DEBUG && console.log("@GigDetail hits 5 - display inner");
+  return (
+    <InnerGigDetail
+      user={user}
+      gig={gigInState}
+      navigation={navigation}
+    />
+  )
+}
+
+function InnerGigDetail({ user, gig, loading, navigation }) {
+  const { store: storeRoom } = useRoomStore();
   const theme = useTheme();
-  const [loading, setLoading] = useState(false);
+  const [loadingMessageWS, setLoadingMessageWS] = useState(false);
   const [error, setError] = useState(null);
   const {object: jwt} = useJWTStore();
-  if (!jwt) {
-    navigation.navigate("DefaultScreen");
-  }
-  const accessToken = JSON.parse(jwt).access;
+  const accessToken = jwt ? JSON.parse(jwt).access : null;
+
   const edit = () => {
-    navigation.navigate("EditGig", {gig: gig});
+    navigation.push("EditGig", {id: gig.id});
   }
+
   const respond = () => {
     const newMessageArguments = {
+      storeRoom: storeRoom,
       navigation: navigation,
       parameters: "?type=gig&gig_id=" + gig.id,
       accessToken: accessToken,
-      setLoading: setLoading,
+      setLoading: setLoadingMessageWS,
       setError: setError,
     }
     newMessage(newMessageArguments);
   }
-  const isGigOwner = user && user.id === gig.user.id;
+
+  const getIsGigOwner = () => {
+    if (!user || !gig) {
+      return false
+    }
+    return user.id === gig.user.id;
+  }
+  const isGigOwner = getIsGigOwner();
+
+  const getButtonTitle = () => {
+    if (!user) {
+      return null
+    }
+    return isGigOwner ? "edit" : "respond";
+  }
+
+  const buttonOnPress = () => {
+    if (!user) {
+      return null
+    }
+    return isGigOwner ? edit : respond;
+  }
 
   const parsedError = error || {};
   return (
     <>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
-      <LoadingModal isLoading={loading || loadingFromGig} />
+      <LoadingModal isLoading={loading || loadingMessageWS} debugMessage={"from @GigDetail 2"} />
       <CustomScrollViewWithOneButton
-        buttonTitle={isGigOwner ? "edit" : "respond"}
-        buttonOnPress={isGigOwner ? edit : respond}
+        buttonTitle={getButtonTitle()}
+        buttonOnPress={buttonOnPress()}
+        bottomMessage={!user && "Login to respond"}
       >
-        {!isGigOwner ? (
+        {user && !isGigOwner ? (
           <FavoriteGig
             navigation={navigation}
             gig={gig}
             isFavorite={gig.is_favorite}
+            theme={theme}
           />
         ) : null}
         <View style={styles.imageAndGenresContainer}>
@@ -80,7 +159,7 @@ function GigDetail({route, navigation}) {
             trailing={
               <Icon
                 onPress={() => {
-                  navigation.navigate(
+                  navigation.push(
                     "RoomsScreen",
                     {"initialQuery": BACKEND_ENDPOINTS.room + `?gig_id=${gig.id}`})
                 }}
@@ -128,14 +207,14 @@ function GigDetail({route, navigation}) {
         />
         {isGigOwner ? (
           <ShowAlbumsWithAddMusicButton
-            resource={gig}
+            resourceId={gig.id}
             type={"gig"}
             theme={theme}
             navigation={navigation}
           />
         ) : (
           <ShowAlbums
-            resource={gig}
+            resourceId={gig.id}
             type={"gig"}
             theme={theme}
             navigation={navigation}

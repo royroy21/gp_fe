@@ -4,11 +4,14 @@ import React from "react";
 import {Surface, Text} from "@react-native-material/core";
 import TextTicker from "../Text/TextTicker";
 import DisplayGenres from "../gig/DisplayGenres";
+import useAlbumStore from "../../store/album";
 
 function ShowAlbum({album, navigation, theme}) {
+  const { store } = useAlbumStore();
 
   const goToAlbum = () => {
-    navigation.navigate("AlbumDetail", {albumId: album.id});
+    store(album);
+    navigation.push("AlbumDetail", {id: album.id});
   }
 
   return (

@@ -1,6 +1,7 @@
 import {BACKEND_SOCKET_ENDPOINTS, DEFAULT_ERROR_MESSAGE} from "../../settings";
 
-const newMessage = ({navigation, parameters, accessToken, setLoading, setError}) => {
+const newMessage = ({ storeRoom, navigation, parameters, accessToken, setLoading, setError }) => {
+  setLoading(true);
   const url = BACKEND_SOCKET_ENDPOINTS.newMessage + parameters;
   const ws = new WebSocket(url + "&token=" + accessToken);
   ws.onerror = () => {
@@ -10,9 +11,10 @@ const newMessage = ({navigation, parameters, accessToken, setLoading, setError})
   };
   ws.onmessage = (e) => {
     const room = JSON.parse(e.data)["room"];
-    setLoading(false);
     ws.close();
-    navigation.navigate("Room", {room: room});
+    setLoading(false);
+    storeRoom(room);
+    navigation.push("Room", {id: room.id});
   };
 }
 

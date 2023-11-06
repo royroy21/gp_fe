@@ -62,9 +62,6 @@ function SelectCountryModal(props) {
 }
 
 function SelectCountry({defaultCountry, onSelect, theme}) {
-  if (!defaultCountry) {
-    return null
-  }
   const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
   const [showModal, setModal] = useState(false);
 
@@ -81,8 +78,16 @@ function SelectCountry({defaultCountry, onSelect, theme}) {
 
   useFocusEffect(
     useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
       // Populate countries array.
       searchCountries(defaultCountry.country);
+
+      return () => {
+        isActive = false;
+      };
     }, [])
   );
 

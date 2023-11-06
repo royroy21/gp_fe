@@ -32,7 +32,6 @@ function BaseGigForm(props) {
     hasSpareTicket,
     setHasSpareTicket,
     onSubmit,
-    loadingCountry=false,
   } = props;
 
   const theme = useTheme();
@@ -67,7 +66,7 @@ function BaseGigForm(props) {
       buttonTitle={"submit"}
       buttonOnPress={handleSubmit(onSubmit)}
     >
-      <LoadingModal isLoading={loading || loadingCountry} />
+      <LoadingModal isLoading={loading} debugMessage={"from @BaseGigForm"}/>
       <CalendarModal
         visible={showDatePicker}
         date={getValues("start_date")}

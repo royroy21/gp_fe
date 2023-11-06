@@ -80,17 +80,20 @@ function SelectGenres({onSelect, selectedGenres, theme}) {
     search: searchGenres,
   } = useGenresStore();
 
-  // const onGenresSelect = (genre) => {
-  //   onSelect(genre);
-  //   setSelectedGenres(genre);
-  // }
-
   useFocusEffect(
     useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
       // Populate genres array with the first genre available.
       if (selectedGenres.length) {
         searchGenres(selectedGenres[0].genre);
       }
+
+      return () => {
+        isActive = false;
+      };
     }, [])
   );
 

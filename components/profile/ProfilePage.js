@@ -7,10 +7,17 @@ import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton";
 import {useTheme} from "@react-native-material/core";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 
 function ProfilePage({ navigation }) {
   const theme = useTheme();
-  const { object } = useUserStore();
+  const { object: user } = useUserStore();
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
+  }
 
   const edit = () => {
     navigation.navigate("EditProfile");
@@ -22,29 +29,29 @@ function ProfilePage({ navigation }) {
     >
       <View style={styles.imageAndGenresContainer}>
         <Image
-          imageUri={object.image}
-          thumbnailUri={object.thumbnail}
+          imageUri={user.image}
+          thumbnailUri={user.thumbnail}
           containerStyle={styles.image}
         />
         <DisplayGenres
-          genres={object.genres}
+          genres={user.genres}
           containerStyle={styles.genres}
         />
       </View>
       <TextFieldWithTitle
         title={"username"}
-        text={object.username}
+        text={user.username}
       />
       <TextFieldWithTitle
         title={"email"}
-        text={object.email}
+        text={user.email}
       />
       <TextFieldWithTitle
         title={"bio"}
-        text={object.bio}
+        text={user.bio}
       />
       <ShowAlbumsWithAddMusicButton
-        resource={object}
+        resourceId={user.id}
         type={"profile"}
         theme={theme}
         navigation={navigation}

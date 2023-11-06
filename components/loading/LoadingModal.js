@@ -1,7 +1,9 @@
 import {Modal, StyleSheet, View} from "react-native";
+import {DEBUG} from "../../settings";
 import LoadingContent from "./LoadingContent";
+import {Text} from "@react-native-material/core";
 
-function LoadingModal({isLoading}) {
+function LoadingModal({ isLoading, debugMessage=null }) {
   return (
     <Modal
       animationType={"none"}
@@ -10,6 +12,7 @@ function LoadingModal({isLoading}) {
     >
       <View style={styles.container}>
         <LoadingContent />
+        {DEBUG && debugMessage && <Text style={{color: "red"}}>{debugMessage}</Text>}
       </View>
     </Modal>
   )

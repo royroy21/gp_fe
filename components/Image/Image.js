@@ -22,13 +22,14 @@ function Image(props) {
   const largerThumbnailStyle = {
       width: dimensions,
       height: dimensions,
-      // borderRadius: dimensions / 2,
+      borderRadius: 15,
       ...styles.image,
   };
   const smallerThumbnailStyle = {
       width: isWeb ? 100 : 50,
       height: isWeb ? 100 : 50,
       // borderRadius: isWeb ? 50 : 25,
+      borderRadius: 5,
       ...styles.image,
   };
   const getThumbnailStyle = () => {

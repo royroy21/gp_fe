@@ -1,23 +1,57 @@
 import {Pressable, StyleSheet, View} from "react-native";
 import {Icon, useTheme} from "@react-native-material/core";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import unreadMessagesStore from "../../store/unreadMessages";
 
-function BottomNavigation({currentRoute, navigationTheme, isWeb}) {
+function BottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
+  if (isWeb) {
+    return (
+      <InnerBottomNavigationIsWeb
+        navigationTheme={navigationTheme}
+        isWeb={isWeb}
+      />
+    )
+  }
+
+  return (
+    <InnerBottomNavigation
+      currentRouteName={currentRouteName}
+      navigationTheme={navigationTheme}
+      isWeb={isWeb}
+    />
+  )
+}
+
+function InnerBottomNavigationIsWeb({ navigationTheme, isWeb }) {
+  // Defining route here as react native mobile doesn't
+  // like useRoute defined outside navigator screens.
+  const route = useRoute();
+  return (
+    <InnerBottomNavigation
+      currentRouteName={route.name}
+      navigationTheme={navigationTheme}
+      isWeb={isWeb}
+    />
+  )
+}
+
+function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
   /*
   NOTE: For web this navigation is located inside the top navigation bar.
    */
+  const navigation = useNavigation();
+  const theme = useTheme()
+
   const {unreadMessages} = unreadMessagesStore();
   const noNewMessagesIcon = "message";
   const unReadMessagesIcon = "message-badge";
   const [messageIcon, setMessageIcon] = useState(noNewMessagesIcon);
+
   useEffect(() => {
     unreadMessages.length ? setMessageIcon(unReadMessagesIcon) : setMessageIcon(noNewMessagesIcon);
   }, [unreadMessages.length])
 
-  const navigation = useNavigation();
-  const theme = useTheme()
   function iconStyle(navigateTo, focused) {
     if (navigateTo === "RoomsScreen" && unreadMessages.length) {
       return {
@@ -49,7 +83,7 @@ function BottomNavigation({currentRoute, navigationTheme, isWeb}) {
           <Icon
             key={item.name}
             name={item.name}
-            {...iconStyle(item.navigateTo, item.navigateTo === currentRoute)}
+            {...iconStyle(item.navigateTo, item.navigateTo === currentRouteName)}
           />
         </Pressable>
       ))}

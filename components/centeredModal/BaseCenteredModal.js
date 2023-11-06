@@ -2,7 +2,7 @@ import React from 'react';
 import {Modal, StyleSheet, View, Dimensions, Platform} from "react-native";
 import {useTheme} from "@react-native-material/core";
 
-const BaseCenteredModal = ({showModal, setModal, children, buttons}) => {
+const BaseCenteredModal = ({showModal, setModal, children, buttons, forceWidth50Percent=true}) => {
   const theme = useTheme();
   const windowWidth = Dimensions.get('window').width;
   const isWeb = Boolean(Platform.OS === "web");
@@ -13,7 +13,7 @@ const BaseCenteredModal = ({showModal, setModal, children, buttons}) => {
   ) : (
     {
       ...styles.modalContent,
-      width: "50%",
+      width: forceWidth50Percent ? "50%" : undefined,
       marginLeft: "auto",
       marginRight: "auto",
     }

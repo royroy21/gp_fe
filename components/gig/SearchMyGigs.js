@@ -8,7 +8,7 @@ import CalendarModal from "../calendar";
 import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
 import TextInput from "../forms/TextInput";
 
-function AdvancedSearchModel(props) {
+function AdvancedSearchModal(props) {
   const {
     setSearchString,
     advancedSearch,
@@ -145,7 +145,7 @@ function SearchMyGigs(props) {
           {searchFeedback}
         </Text>
       ) : null}
-      <AdvancedSearchModel
+      <AdvancedSearchModal
         setSearchString={setSearchString}
         advancedSearch={advancedSearch}
         setAdvancedSearch={setAdvancedSearch}

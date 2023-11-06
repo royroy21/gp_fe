@@ -85,15 +85,25 @@ function AddUsersModal(props) {
 
   useFocusEffect(
     useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+
       // Populate users array.
-      initialSearchUsers()
+      initialSearchUsers();
+
+      return () => {
+        isActive = false;
+      }
     }, [])
   );
 
-  const {patch, loading} = useRoomStore();
+  const { store, patch, loading } = useRoomStore();
 
   const onSuccess = (json) => {
-    navigation.navigate("Room", {room: json, openOptions: true});
+    store(json);
+    navigation.push("Room", {id: json.id, openOptions: true});
   }
 
   const addUsersAction = async () => {
@@ -113,7 +123,7 @@ function AddUsersModal(props) {
         />
       }
     >
-      <LoadingModal isLoading={loading} />
+      <LoadingModal isLoading={loading} debugMessage={"from @AddUsersModal"}/>
       <TextInput
         variant={"outlined"}
         trailing={

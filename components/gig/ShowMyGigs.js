@@ -13,6 +13,8 @@ import {ScrollView} from "react-native-web";
 import useUserStore from "../../store/user";
 import useMyGigsStore from "../../store/myGigs";
 import SearchMyGigs from "./SearchMyGigs";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import useGigStore from "../../store/gig";
 
 function ListGigs(props) {
   const [showLoadMore, setShowLoadMore] = useState(false);
@@ -22,6 +24,7 @@ function ListGigs(props) {
     resultsListViewRef,
     user,
     gigs,
+    storeGig,
     resetResults,
     getNextPage,
     loading,
@@ -53,6 +56,7 @@ function ListGigs(props) {
               key={item.id}
               user={user}
               gig={item}
+              storeGig={storeGig}
               windowWidth={windowWidth}
               theme={theme}
               navigation={navigation}
@@ -91,6 +95,7 @@ function ListGigs(props) {
         <ShowGig
           user={user}
           gig={item}
+          storeGig={storeGig}
           windowWidth={windowWidth}
           theme={theme}
           navigation={navigation}
@@ -110,7 +115,19 @@ function ShowMyGigs({ navigation }) {
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
   const windowWidth = Dimensions.get("window").width;
-  const {object: gigs, error, loading, get, clear} = useMyGigsStore();
+
+  const {
+    object: gigs,
+    error,
+    loading,
+    get,
+    clear,
+  } = useMyGigsStore();
+
+  const {
+    store: storeGig,
+  } = useGigStore();
+
   const { object: user } = useUserStore();
 
   async function getGigsFromAPI(url=BACKEND_ENDPOINTS.gigs, doNotMergeResults=false) {
@@ -142,11 +159,17 @@ function ShowMyGigs({ navigation }) {
   }
   useFocusEffect(
     React.useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+
       getGigsFromAPI();
       return () => {
         setSearchFeedback(null);
         setAdvancedSearch(false);
         setLoadingNext(false);
+        isActive = false;
         clear();
       };
     }, [])
@@ -164,6 +187,12 @@ function ShowMyGigs({ navigation }) {
     setSearchFeedback(null);
     clear();
     await get(BACKEND_ENDPOINTS.gigs + "?my_gigs=true", [], true);
+  }
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
   }
 
   const parsedError = error || {};
@@ -203,6 +232,7 @@ function ShowMyGigs({ navigation }) {
             resultsListViewRef={resultsListViewRef}
             user={user}
             gigs={gigs}
+            storeGig={storeGig}
             resetResults={resetResults}
             getNextPage={getNextPage}
             loading={loading}
@@ -218,7 +248,7 @@ function ShowMyGigs({ navigation }) {
           </View>
         ) : null
       )}
-      <LoadingModal isLoading={loading && !loadingNext} />
+      <LoadingModal isLoading={loading && !loadingNext} debugMessage={"from @ShowMyGigs"}/>
       <Loading isLoading={loading && loadingNext} />
       {!loading ? <AddGigButton navigation={navigation} theme={theme} /> : null}
     </View>
