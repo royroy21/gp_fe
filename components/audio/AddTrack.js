@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {useForm} from "react-hook-form";
 import {Platform} from "react-native";
 import {formatImageForForm} from "../Image/helpers";
@@ -6,9 +6,77 @@ import useTrackStore from "../../store/track";
 import BaseTrackForm from "./BaseTrackForm";
 import {formatAudioForForm, getDataWithOutImageAndFile} from "./helpers";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
+import useUserStore from "../../store/user";
+import useAlbumStore from "../../store/album";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
+import LoadingModal from "../loading/LoadingModal";
+import {DEBUG} from "../../settings";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import {useTheme} from "@react-native-material/core";
 
-function AddTrack({navigation, route}) {
-  const { album } = route.params;
+function AddTrack({ navigation, route }) {
+  const isFocused = useIsFocused();
+  const theme = useTheme();
+  const { object: user } = useUserStore();
+  const { albumId } = route.params;
+  const {
+    object: album,
+    get: getAlbum,
+    store: storeAlbum,
+    loading,
+  } = useAlbumStore();
+  const [albumInState, setAlbumInState] = useState(album);
+
+  const correctAlbumInState = () => {
+    const formattedAlbum = albumInState || {id: null};
+    return parseInt(formattedAlbum.id) === parseInt(albumId);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+      if (!correctAlbumInState()) {
+        getAlbum(albumId, setAlbumInState);
+      }
+
+      return () => {
+        isActive = false;
+      };
+    }, [albumId])
+  );
+
+  if (!isFocused) {
+    return null
+  }
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
+  }
+
+  if (!correctAlbumInState()) {
+    return (
+      <LoadingModal
+        isLoading={loading}
+        debugMessage={"from @AddTrack"}
+      />
+    )
+  }
+
+  return (
+    <InnerAddTrack
+      album={albumInState}
+      storeAlbum={storeAlbum}
+      navigation={navigation}
+    />
+  )
+}
+
+function InnerAddTrack({ album, storeAlbum, navigation }) {
   const isWeb = Boolean(Platform.OS === "web");
   const [noFileError, setNoFileError] = useState(null);
 
@@ -79,7 +147,8 @@ function AddTrack({navigation, route}) {
   }
 
   const onSuccess = (audio) => {
-    navigation.navigate("AlbumDetail", {albumId: audio.album.id});
+    storeAlbum(audio.album);
+    navigation.push("AlbumDetail", {id: album.id});
     return () => {
       setNoFileError(null);
       image = null;

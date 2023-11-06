@@ -1,5 +1,5 @@
 import {StyleSheet, View} from "react-native";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import Errors from "../forms/Errors";
 import LoadingModal from "../loading/LoadingModal";
 import newMessage from "../message/newMessage";
@@ -13,45 +13,142 @@ import useOtherUserStore from "../../store/otherUser";
 import useUserStore from "../../store/user";
 import {useTheme} from "@react-native-material/core";
 import ShowAlbums from "../audio/ShowAlbums";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
+import useRoomStore from "../../store/room";
 
-function OtherUser({ route, navigation }) {
-  const theme = useTheme();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const {object: jwt} = useJWTStore();
-  if (!jwt) {
-    navigation.navigate("DefaultScreen");
+function OtherUser({ navigation, route }) {
+  const isFocused = useIsFocused();
+  const { id } = route.params;
+  const {
+    object: otherUser,
+    get: getOtherUser,
+    loading: loadingFromOtherUser,
+  } = useOtherUserStore();
+  const [otherUserInState, setOtherUserInState] = useState(otherUser);
+
+  const correctOtherUserInState = () => {
+    const formattedOtherUser = otherUserInState || {id: null};
+    return parseInt(formattedOtherUser.id) === parseInt(id);
   }
-  const accessToken = JSON.parse(jwt).access;
-  const { user } = route.params;
-  const {loading: loadingFromOtherUser} = useOtherUserStore();
-  const {loading: loadingFromUser} = useUserStore();
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+      if (!correctOtherUserInState()) {
+        getOtherUser(id, setOtherUserInState);
+      }
+      return () => {
+        isActive = false;
+      };
+    }, [id])
+  );
+
+  if (!isFocused) {
+    return null
+  }
+
+  if (!correctOtherUserInState()) {
+    return (
+      <LoadingModal
+        isLoading={loadingFromOtherUser}
+        debugMessage={"from @OtherUser 1"}
+      />
+    )
+  }
+
+  return (
+    <InnerOtherUser
+      user={otherUserInState}
+      loadingFromOtherUser={loadingFromOtherUser}
+      navigation={navigation}
+    />
+  )
+
+}
+
+function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
+  const theme = useTheme();
+  const [loadingMessageWS, setLoadingMessageWS] = useState(false);
+  const [ error, setError] = useState(null);
+  const { object: jwt } = useJWTStore();
+  const accessToken = jwt ? JSON.parse(jwt).access : null;
+  const { object: thisUser, loading: loadingFromUser } = useUserStore();
+  const { store: storeRoom } = useRoomStore();
 
   const directMessage = () => {
     const newMessageArguments = {
+      storeRoom: storeRoom,
       navigation: navigation,
       parameters: "?type=direct&to_user_id=" + user.id,
       accessToken: accessToken,
-      setLoading: setLoading,
+      setLoading: setLoadingMessageWS,
       setError: setError,
     }
     newMessage(newMessageArguments);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setLoadingMessageWS(false);
+        setError(null);
+      };
+    }, [])
+  );
+
+  const getUserIsViewingOwnPage = () => {
+    const formattedUser = user || {id: null};
+    const formattedThisUser = thisUser || {id: null};
+    return (
+      (formattedThisUser.id && formattedUser.id)
+      && (parseInt(formattedThisUser.id) === parseInt(formattedUser.id))
+    )
+  }
+
+  const getButtonTitle = () => {
+    if (getUserIsViewingOwnPage()) {
+      return "profile"
+    }
+    return thisUser ? "message": null
+  }
+
+  const getButtonAction = () => {
+    if (getUserIsViewingOwnPage()) {
+      return () => navigation.navigate("ProfilePage");
+    }
+    return thisUser ? directMessage: null
+  }
+
+  if (!user) {
+    return (
+      <LoadingModal isLoading={loadingFromOtherUser} debugMessage={"from @OtherUser 1"}/>
+    )
   }
 
   const parsedError = error || {};
   return (
     <>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
-      <LoadingModal isLoading={loading || loadingFromOtherUser || loadingFromUser} />
+      <LoadingModal
+        isLoading={loadingMessageWS || loadingFromOtherUser || loadingFromUser}
+        debugMessage={"from @OtherUser 2"}
+      />
       <CustomScrollViewWithOneButton
-        buttonTitle={"message"}
-        buttonOnPress={directMessage}
+        buttonTitle={getButtonTitle()}
+        buttonOnPress={getButtonAction()}
+        bottomMessage={!thisUser && "Login to message this user"}
       >
-        <FavoriteUser
-          navigation={navigation}
-          user={user}
-          isFavorite={user.is_favorite}
-        />
+        {thisUser && (
+          <FavoriteUser
+            navigation={navigation}
+            user={user}
+            isFavorite={user.is_favorite}
+            theme={theme}
+          />
+        )}
         <View style={styles.imageAndGenresContainer}>
           <Image
             imageUri={user.image}
@@ -76,7 +173,7 @@ function OtherUser({ route, navigation }) {
           text={user.distance_from_user ? user.distance_from_user : "last seen unknown"}
         />
         <ShowAlbums
-          resource={user}
+          resourceId={user.id}
           type={"profile"}
           theme={theme}
           navigation={navigation}

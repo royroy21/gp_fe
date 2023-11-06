@@ -2,16 +2,24 @@ import {Pressable, StyleSheet, View} from "react-native";
 import {Text} from "@react-native-material/core";
 import Image from "../Image/Image";
 import useUserStore from "../../store/user";
+import useOtherUserStore from "../../store/otherUser";
 
 function UserProfileLink({user, title="user", navigation, theme, containerStyle={}}) {
   const {object} = useUserStore();
+  const { store: storeOtherUser } = useOtherUserStore();
+  const thisUser = object || {id: null};
+
   const navigateToOwner = () => {
-    navigation.navigate("OtherUser", {user: user});
+    storeOtherUser(user);
+    navigation.push("OtherUser", {id: user.id});
   }
+
   const navigateToProfile = () => {
     navigation.navigate("ProfilePage");
   }
-  const onPress = object.id === user.id ? navigateToProfile : navigateToOwner;
+
+  const onPress = thisUser.id === user.id ? navigateToProfile : navigateToOwner;
+
   return (
     <Pressable
       onPress={onPress}
@@ -32,6 +40,7 @@ function UserProfileLink({user, title="user", navigation, theme, containerStyle=
         withModalViewOnPress={false}
         onThumbnailPress={onPress}
         containerStyle={styles.trailingImage}
+        thumbnailStyle={styles.thumbnailStyle}
       />
     </Pressable>
   )
@@ -47,7 +56,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     marginLeft: 5,
     marginRight: 5,
-    width: "98%"
+    width: "98%",
+    borderRadius: 15,
   },
   title: {
     fontSize: 12,
@@ -65,6 +75,11 @@ const styles = StyleSheet.create({
   },
   trailingImage: {
     marginLeft: "auto",
+  },
+  thumbnailStyle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
 })
 

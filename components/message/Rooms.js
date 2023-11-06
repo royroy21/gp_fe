@@ -12,6 +12,9 @@ import {BACKEND_ENDPOINTS} from "../../settings";
 import unreadMessagesStore from "../../store/unreadMessages";
 import {ScrollView} from "react-native-web";
 import SearchRooms from "./SearchRooms";
+import useRoomStore from "../../store/room";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import useUserStore from "../../store/user";
 
 const countUnreadMessages = (roomId, unreadMessages) => {
   let count = 0;
@@ -30,6 +33,7 @@ function ListRooms(props) {
     navigation,
     resultsListViewRef,
     rooms,
+    storeRoom,
     unreadMessages,
     resetResults,
     getNextPage,
@@ -61,7 +65,9 @@ function ListRooms(props) {
             const unreadMessagesCount = countUnreadMessages(item.id, unreadMessages);
             return (
               <RoomDetail
+                key={item.id}
                 room={item}
+                storeRoom={storeRoom}
                 windowWidth={windowWidth}
                 theme={theme}
                 navigation={navigation}
@@ -99,7 +105,9 @@ function ListRooms(props) {
         const unreadMessagesCount = countUnreadMessages(item.id, unreadMessages);
         return (
           <RoomDetail
+            key={item.id}
             room={item}
+            storeRoom={storeRoom}
             windowWidth={windowWidth}
             theme={theme}
             navigation={navigation}
@@ -123,6 +131,8 @@ function Rooms({ route, navigation }) {
   const [loadingNext, setLoadingNext] = useState(false);
   const windowWidth = Dimensions.get("window").width;
   const {object: rooms, error, loading, get, clear} = useRoomsStore();
+  const { store: storeRoom } = useRoomStore();
+  const { object: user } = useUserStore();
 
   async function getRoomsFromAPI(url=BACKEND_ENDPOINTS.room, doNotMergeResults=false) {
     if (url.includes("/api/")) {
@@ -148,6 +158,11 @@ function Rooms({ route, navigation }) {
 
   useFocusEffect(
     useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+
       const initialQuery = route.params ? route.params.initialQuery : null;
       if (initialQuery) {
         getRoomsFromAPI(initialQuery);
@@ -159,6 +174,7 @@ function Rooms({ route, navigation }) {
         setSearchFeedback(null);
         setAdvancedSearch(false);
         setLoadingNext(false);
+        isActive = false;
         clear();
       };
     }, [])
@@ -176,6 +192,12 @@ function Rooms({ route, navigation }) {
     setSearchFeedback(null);
     clear();
     await get(BACKEND_ENDPOINTS.room, [], true);
+  }
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
   }
 
   const parsedError = error || {};
@@ -214,6 +236,7 @@ function Rooms({ route, navigation }) {
             navigation={navigation}
             resultsListViewRef={resultsListViewRef}
             rooms={rooms}
+            storeRoom={storeRoom}
             unreadMessages={unreadMessages}
             resetResults={resetResults}
             getNextPage={getNextPage}
@@ -230,7 +253,7 @@ function Rooms({ route, navigation }) {
           </View>
         ) : null
       )}
-      <LoadingModal isLoading={loading && !loadingNext} />
+      <LoadingModal isLoading={loading && !loadingNext} debugMessage={"from @Rooms"}/>
       <Loading isLoading={loading && loadingNext} />
     </View>
   )

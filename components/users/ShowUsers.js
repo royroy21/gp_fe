@@ -11,6 +11,8 @@ import {useFocusEffect} from "@react-navigation/native";
 import useUsersStore from "../../store/users";
 import SearchUsers from "./SearchUsers";
 import {ScrollView} from "react-native-web";
+import useOtherUserStore from "../../store/otherUser";
+import useUserStore from "../../store/user";
 
 function ListUsers(props) {
   const [showLoadMore, setShowLoadMore] = useState(false);
@@ -19,6 +21,7 @@ function ListUsers(props) {
     navigation,
     resultsListViewRef,
     users,
+    storeOtherUser,
     resetResults,
     getNextPage,
     loading,
@@ -49,6 +52,7 @@ function ListUsers(props) {
             <ShowUser
               key={item.id}
               user={item}
+              storeOtherUser={storeOtherUser}
               windowWidth={windowWidth}
               theme={theme}
               navigation={navigation}
@@ -85,7 +89,9 @@ function ListUsers(props) {
       onRefresh={resetResults}
       renderItem={({item}) => (
         <ShowUser
+          key={item.id}
           user={item}
+          storeOtherUser={storeOtherUser}
           windowWidth={windowWidth}
           theme={theme}
           navigation={navigation}
@@ -105,7 +111,9 @@ function ShowUsers({ navigation }) {
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
   const windowWidth = Dimensions.get("window").width;
-  const {object: users, error, loading, get, clear} = useUsersStore();
+  const { object: users, error, loading, get, clear } = useUsersStore();
+  const { object: user } = useUserStore();
+  const { store: storeOtherUser } = useOtherUserStore();
 
   async function getUsersFromAPI(url=BACKEND_ENDPOINTS.user, doNotMergeResults=false) {
     if (url.includes("/api/")) {
@@ -130,11 +138,17 @@ function ShowUsers({ navigation }) {
   }
   useFocusEffect(
     React.useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+
       getUsersFromAPI();
       return () => {
         setSearchFeedback(null);
         setAdvancedSearch(false);
         setLoadingNext(false);
+        isActive = false;
         clear();
       };
     }, [])
@@ -159,6 +173,7 @@ function ShowUsers({ navigation }) {
     <View style={styles.container}>
       {!loading ? (
         <SearchUsers
+          user={user}
           advancedSearch={advancedSearch}
           setAdvancedSearch={setAdvancedSearch}
           getUsersFromAPI={getUsersFromAPI}
@@ -190,6 +205,7 @@ function ShowUsers({ navigation }) {
             navigation={navigation}
             resultsListViewRef={resultsListViewRef}
             users={users}
+            storeOtherUser={storeOtherUser}
             resetResults={resetResults}
             getNextPage={getNextPage}
             loading={loading}
@@ -205,7 +221,7 @@ function ShowUsers({ navigation }) {
           </View>
         ) : null
       )}
-      <LoadingModal isLoading={loading && !loadingNext} />
+      <LoadingModal isLoading={loading && !loadingNext} debugMessage={"from @ShowUsers"}/>
       <Loading isLoading={loading && loadingNext} />
     </View>
   )

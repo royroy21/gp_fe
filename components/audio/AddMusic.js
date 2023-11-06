@@ -11,7 +11,7 @@ function AddMusic({navigation, route}) {
   const theme = useTheme()
 
   const {
-    resource,  // resource can be a gig or profile object.
+    resourceId,  // resourceId can be for gig or profile.
     type,  // type must be one of "gig" or "profile".
   } = route.params;
 
@@ -24,20 +24,26 @@ function AddMusic({navigation, route}) {
 
   useFocusEffect(
     useCallback(() => {
-      getAlbums(`?${type}_id=${resource.id}`);
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+
+      getAlbums(`?${type}_id=${resourceId}`);
       return () => {
+        isActive = false;
         clearAlbums();
       };
-    }, [])
+    }, [type, resourceId])
   );
 
   const navigateToAddAlbum = () => {
-    navigation.navigate("AddAlbum", {resource: resource, type: type});
+    navigation.push("AddAlbum", {resourceId: resourceId, type: type});
   }
 
   return (
     <>
-      <LoadingModal isLoading={loadingAlbums} />
+      <LoadingModal isLoading={loadingAlbums} debugMessage={"from @AddMusic"}/>
       <ListAlbums
         albums={albums}
         showAlbumsWithoutTracks={true}

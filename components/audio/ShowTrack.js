@@ -8,6 +8,7 @@ function ShowTrack(props) {
   const {
     track,
     tracks,
+    storeTrack,
     setTracksAndPlayTrack,
     isPlaying,
     paused,
@@ -17,7 +18,8 @@ function ShowTrack(props) {
     theme,
   } = props;
   const navigateToEditTrack = () => {
-    navigation.navigate("EditTrack", {track: track, numberOfExistingTracks: tracks.length});
+    storeTrack(track);
+    navigation.push("EditTrack", {id: track.id, numberOfExistingTracks: tracks.length});
   }
   let iconName;
   if (!isPlaying) {

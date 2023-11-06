@@ -6,6 +6,7 @@ const useGigStore = create((set) => ({
   object: null,
   loading: false,
   error: null,
+  store: gig => set({ object: gig, loading: false, error: null }),
   get: async (id, onSuccess = () => {}) => {
     set({ loading: true });
     const params = {

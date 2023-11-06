@@ -7,7 +7,7 @@ import ListAlbums from "./ListAlbums";
 
 function ShowAlbums(props) {
   const {
-    resource,  // resource can be a gig or profile object.
+    resourceId,  // resourceId can be a gig or profile.
     type,  // type must be one of "gig" or "profile".
     theme,
     navigation,
@@ -22,8 +22,13 @@ function ShowAlbums(props) {
 
   useFocusEffect(
     useCallback(() => {
-      getAlbums(`?${type}_id=${resource.id}`);
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+      getAlbums(`?${type}_id=${resourceId}`);
       return () => {
+        isActive = false;
         clearAlbums();
       };
     }, [])
@@ -31,7 +36,7 @@ function ShowAlbums(props) {
 
   return (
     <View>
-      <LoadingModal isLoading={loadingAlbums} />
+      <LoadingModal isLoading={loadingAlbums} debugMessage={"from @ShowAlbums"}/>
       <ListAlbums
         albums={albums}
         navigation={navigation}

@@ -1,5 +1,5 @@
 import {Dimensions, FlatList, Platform, SafeAreaView, StyleSheet, View} from "react-native";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import ShowGig from "./ShowGig";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import SearchGigs from "./SearchGigs";
@@ -13,6 +13,7 @@ import LoadingModal from "../loading/LoadingModal";
 import {useFocusEffect} from "@react-navigation/native";
 import {ScrollView} from "react-native-web";
 import useUserStore from "../../store/user";
+import useGigStore from "../../store/gig";
 
 function ListGigs(props) {
   const [showLoadMore, setShowLoadMore] = useState(false);
@@ -22,16 +23,19 @@ function ListGigs(props) {
     resultsListViewRef,
     user,
     gigs,
+    storeGig,
     resetResults,
     getNextPage,
     loading,
     windowWidth,
     theme,
   } = props;
+
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     const paddingToBottom = 2;
     return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
   };
+
   const onScroll = ({nativeEvent}) => {
     if (isCloseToBottom(nativeEvent) && !loading && gigs.next) {
       setShowLoadMore(true)
@@ -53,6 +57,7 @@ function ListGigs(props) {
               key={item.id}
               user={user}
               gig={item}
+              storeGig={storeGig}
               windowWidth={windowWidth}
               theme={theme}
               navigation={navigation}
@@ -91,6 +96,7 @@ function ListGigs(props) {
         <ShowGig
           user={user}
           gig={item}
+          storeGig={storeGig}
           windowWidth={windowWidth}
           theme={theme}
           navigation={navigation}
@@ -102,7 +108,7 @@ function ListGigs(props) {
   )
 }
 
-function ShowGigs({ navigation }) {
+function ShowGigs({ navigation, refreshGigs=false}) {
   const theme = useTheme()
   const resultsListViewRef = useRef();
   const isWeb = Boolean(Platform.OS === "web");
@@ -110,8 +116,22 @@ function ShowGigs({ navigation }) {
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
   const windowWidth = Dimensions.get("window").width;
-  const {object: gigs, error, loading, get, clear} = useGigsStore();
-  const { object: user } = useUserStore();
+
+  const {
+    object: gigs,
+    error,
+    loading,
+    get,
+    clear,
+  } = useGigsStore();
+
+  const {
+    store: storeGig,
+  } = useGigStore();
+
+  const {
+    object: user,
+  } = useUserStore();
 
   async function getGigsFromAPI(url=BACKEND_ENDPOINTS.gigs, doNotMergeResults=false) {
     if (url.includes("/api/")) {
@@ -134,17 +154,33 @@ function ShowGigs({ navigation }) {
     }
     setAdvancedSearch(false);
   }
+
   useFocusEffect(
     React.useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+
       getGigsFromAPI();
       return () => {
         setSearchFeedback(null);
         setAdvancedSearch(false);
         setLoadingNext(false);
+        isActive = false;
         clear();
       };
     }, [])
   );
+
+  // refreshGigs is needed if logging out while on the default page.
+  useEffect(() => {
+    if (refreshGigs) {
+      setSearchFeedback(null);
+      setAdvancedSearch(false);
+      getGigsFromAPI(BACKEND_ENDPOINTS.gigs);
+    }
+  }, [refreshGigs]);
 
   async function getNextPage() {
     if (gigs.next) {
@@ -165,6 +201,7 @@ function ShowGigs({ navigation }) {
     <>
       {!loading ? (
         <SearchGigs
+          user={user}
           advancedSearch={advancedSearch}
           setAdvancedSearch={setAdvancedSearch}
           getGigsFromAPI={getGigsFromAPI}
@@ -197,6 +234,7 @@ function ShowGigs({ navigation }) {
             resultsListViewRef={resultsListViewRef}
             user={user}
             gigs={gigs}
+            storeGig={storeGig}
             resetResults={resetResults}
             getNextPage={getNextPage}
             loading={loading}
@@ -212,9 +250,9 @@ function ShowGigs({ navigation }) {
           </View>
         ) : null
       )}
-      <LoadingModal isLoading={loading && !loadingNext} />
+      <LoadingModal isLoading={loading && !loadingNext} debugMessage={"from @ShowGigs"} />
       <Loading isLoading={loading && loadingNext} />
-      {!loading ? <AddGigButton navigation={navigation} theme={theme} /> : null}
+      {!loading && user ? <AddGigButton navigation={navigation} theme={theme} /> : null}
     </>
   )
 }

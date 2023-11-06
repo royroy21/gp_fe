@@ -8,12 +8,15 @@ import {formContainerPadding} from "../../helpers/padding";
 import LoadingModal from "../loading/LoadingModal";
 import useUserStore from "../../store/user";
 import useJWTStore from "../../store/jwt";
+import useLastRouteStore from "../../store/lastRoute";
 
 export default function EmailPassword({ action, navigation, children }) {
   const {
     loading,
     error,
   } = useJWTStore();
+
+  const { object: lastRoute } = useLastRouteStore();
 
   const {
     me,
@@ -35,7 +38,15 @@ export default function EmailPassword({ action, navigation, children }) {
 
   const onSuccess = async () => {
     await me();
-    navigation.navigate("DefaultScreen");
+    if (lastRoute) {
+      if (lastRoute.params) {
+        navigation.push(lastRoute.name, lastRoute.params);
+      } else {
+        navigation.navigate(lastRoute.name);
+      }
+    } else {
+      navigation.navigate("DefaultScreen");
+    }
     return () => {
       setShowPassword(false);
     };
@@ -45,7 +56,7 @@ export default function EmailPassword({ action, navigation, children }) {
   const parsedGetUserError = errorUser || {};
   return (
     <View style={styles.container}>
-      <LoadingModal isLoading={loading || loadingUser} />
+      <LoadingModal isLoading={loading || loadingUser} debugMessage={"from @EmailPassword"}/>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {(parsedGetUserError.detail) && <Errors errorMessages={parsedGetUserError.detail} />}

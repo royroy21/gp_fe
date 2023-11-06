@@ -53,7 +53,7 @@ function BaseAlbumForm(props) {
       buttonTitle={"submit"}
       buttonOnPress={handleSubmit(onSubmit)}
     >
-      <LoadingModal isLoading={loading} />
+      <LoadingModal isLoading={loading} debugMessage={"from @BaseAlbumForm"}/>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {parsedError.gig && <Errors errorMessages={parsedError.gig} />}

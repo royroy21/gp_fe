@@ -26,11 +26,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const CenteredModalWithOneButton = ({showModal, setModal, children, button=null}) => {
+const CenteredModalWithOneButton = ({showModal, setModal, children, forceWidth50Percent=true, button=null}) => {
   return (
     <BaseCenteredModal
       showModal={showModal}
       setModal={setModal}
+      forceWidth50Percent={forceWidth50Percent}
       buttons={button || <CloseButton showModal={showModal} setModal={setModal} />}
     >
       {children}

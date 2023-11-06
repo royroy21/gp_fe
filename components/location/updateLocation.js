@@ -14,19 +14,23 @@ async function updateLocation(userId) {
   }
   const location = await Location.getCurrentPositionAsync({});
   const reversed = await Location.reverseGeocodeAsync(location.coords)
+  const rawCountryCode = reversed[0].isoCountryCode
+  const countryCode = rawCountryCode === "GB" ? "UK" : rawCountryCode;
 
   const params = {
     resource: `${BACKEND_ENDPOINTS.user}${userId}/`,
-    successCallback: () => console.log("Successfully updated user's location."),
+    successCallback: () => console.log("Successfully updated user's location with country", countryCode),
     // TODO - Log this as sentry?
-    errorCallback: (json) => console.log("error @updateLocation: ", JSON.stringify(json)),
+    errorCallback: (json) => console.log(
+      `error with countryCode ${countryCode} @updateLocation`, JSON.stringify(json)
+    ),
     data: {
       location: {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       },
       country: {
-        code: reversed[0].isoCountryCode,
+        code: countryCode,
       }
     },
   }

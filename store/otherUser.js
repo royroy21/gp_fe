@@ -6,6 +6,7 @@ const useOtherUserStore = create((set) => ({
   object: null,
   loading: false,
   error: null,
+  store: user => set({ object: user, loading: false, error: null }),
   get: async (id, onSuccess = () => {}) => {
     set({ loading: true });
     const params = {

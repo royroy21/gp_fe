@@ -4,48 +4,57 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import LoadingModal from "../loading/LoadingModal";
 import Errors from "../forms/Errors";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import React from "react";
+import {ALLOW_LIGHT_THEME_OPTION} from "../../settings";
 
 function Settings({ navigation }) {
   const theme = useTheme();
-  const { object, patch, loading, error } = useUserStore();
+  const { object: user, patch, loading, error } = useUserStore();
 
   const themeOnPress = () => {
     const data = {
-      theme: object.theme === "dark" ? "light" : "dark",
+      theme: user.theme === "dark" ? "light" : "dark",
     }
-    patch(object.id, data);
+    patch(user.id, data);
   }
 
   const getPreferredUnits = () => {
-    if (object.preferred_units) {
-      return object.preferred_units;
+    if (user.preferred_units) {
+      return user.preferred_units;
     } else {
-      return object.units;
+      return user.units;
     }
   }
 
   const MILES = "miles";
   const KM = "kilometers";
   const setPreferredUnits = () => {
-    if (object.units && !object.preferred_units) {
-      return object.units === MILES ? KM : MILES;
-    } else if (object.preferred_units) {
-      return object.preferred_units === MILES ? KM : MILES;
+    if (user.units && !user.preferred_units) {
+      return user.units === MILES ? KM : MILES;
+    } else if (user.preferred_units) {
+      return user.preferred_units === MILES ? KM : MILES;
     }
   }
 
   const preferredUnitsOnPress = () => {
     const data = {
-      preferred_units: setPreferredUnits(object),
+      preferred_units: setPreferredUnits(user),
     }
-    patch(object.id, data);
+    patch(user.id, data);
   }
 
   const subscribeToEmailOnPress = () => {
     const data = {
-      subscribed_to_emails: !object.subscribed_to_emails,
+      subscribed_to_emails: !user.subscribed_to_emails,
     }
-    patch(object.id, data);
+    patch(user.id, data);
+  }
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
   }
 
   const parsedError = error || {};
@@ -54,18 +63,20 @@ function Settings({ navigation }) {
       <LoadingModal isLoading={loading} />
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
-      <ListItem
-        title={<Text>{`theme: ${object.theme}`}</Text>}
-        onPress={themeOnPress}
-        trailing={
-          <Icon
-            name="theme-light-dark"
-            size={25}
-            color={object.theme === "light" ? theme.palette.secondary.main : "grey"}
-            onPress={themeOnPress}
-          />
-        }
-      />
+      {ALLOW_LIGHT_THEME_OPTION ? (
+        <ListItem
+          title={<Text>{`theme: ${user.theme}`}</Text>}
+          onPress={themeOnPress}
+          trailing={
+            <Icon
+              name="theme-light-dark"
+              size={25}
+              color={user.theme === "light" ? theme.palette.secondary.main : "grey"}
+              onPress={themeOnPress}
+            />
+          }
+        />
+      ) : null}
       {parsedError.theme && <Errors errorMessages={parsedError.theme} />}
       <ListItem
         title={<Text>{`your preferred units are ${getPreferredUnits()}`}</Text>}
@@ -87,7 +98,7 @@ function Settings({ navigation }) {
           <Icon
             name={"email"}
             size={25}
-            color={object.subscribed_to_emails ? theme.palette.secondary.main : "grey"}
+            color={user.subscribed_to_emails ? theme.palette.secondary.main : "grey"}
             onPress={subscribeToEmailOnPress}
           />
         }

@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet} from "react-native";
+import {Dimensions, Platform, StyleSheet} from "react-native";
 import CalendarPicker from "react-native-calendar-picker";
 import {useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
@@ -6,12 +6,14 @@ import CenteredModalWithOneButton from "../centeredModal/CenteredModalWithOneBut
 import {View} from "react-native";
 
 function CalendarModal({visible, date, setDate, onRequestClose}) {
-  const theme = useTheme()
-  const now = new Date()
+  const theme = useTheme();
+  const now = new Date();
+  const isWeb = Boolean(Platform.OS === "web");
   const windowWidth = Dimensions.get("window").width;
+  const containerHeight = isWeb ? Dimensions.get("window").height - 200 : 300;
   return (
-    <CenteredModalWithOneButton showModal={visible} setModal={onRequestClose}>
-      <View style={styles.container}>
+    <CenteredModalWithOneButton showModal={visible} setModal={onRequestClose} forceWidth50Percent={false}>
+      <View style={{ height: containerHeight }}>
         <CalendarPicker
           initialDate={now}
           selectedDate={date ? new Date(date) : undefined}
@@ -56,9 +58,6 @@ function CalendarModal({visible, date, setDate, onRequestClose}) {
 export default CalendarModal;
 
 const styles = StyleSheet.create({
-  container: {
-    height: 300,
-  },
   closeButtonContainer: {
     justifyContent: "center",
     alignItems: "center",

@@ -7,17 +7,17 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import LoadingModal from "../loading/LoadingModal";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import usePreviousMessagesStore from "../../store/previousMessages";
-import {BACKEND_ENDPOINTS, DEFAULT_ERROR_MESSAGE} from "../../settings";
+import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../../settings";
 import useJWTStore from "../../store/jwt";
 import Errors from "../forms/Errors";
-import {useFocusEffect} from "@react-navigation/native";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import getWebSocket, {readyStates} from "./index";
 import Loading from "../loading/Loading";
 import RoomOptionsModal from "./RoomOptionsModal";
 import unreadMessagesStore from "../../store/unreadMessages";
 import {ScrollView} from "react-native-web";
-
-const DEBUG = true;
+import useRoomStore from "../../store/room";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 
 function ListMessages(props) {
   const messagesContentRef = useRef(null);
@@ -139,7 +139,8 @@ function ListMessages(props) {
   )
 }
 
-function Room(props) {
+function Room({ route }) {
+  const isFocused = useIsFocused();
   // If isWeb we get last PAGE_SIZE messages, but the user cannot get anymore.
   // This is a way to solve the `snap to top` on content change problem.
   // EG we just don't ever change the content size. Boom.
@@ -147,14 +148,14 @@ function Room(props) {
   // TODO - could come back to this problem later.
   const PAGE_SIZE = 150;
   const showLoadMoreButton = false;
+  const { id } = route.params;
+  const { object: room, get: getRoom } = useRoomStore();
+  const [roomInState, setRoomInState] = useState(room);
 
   const {remove: removeRoomFromUnReadMessages} = unreadMessagesStore();
   const theme = useTheme();
   const isWeb = Boolean(Platform.OS === "web");
-  const { navigation, route } = props;
-  const room = route.params.room;
   const { object: user } = useUserStore();
-
   const messagesRef = useRef(null);
   const [webSocket, setWebSocket] = useState(null);
   const [loadingPreviousPage, setLoadingPreviousPage] = useState(false);
@@ -164,16 +165,13 @@ function Room(props) {
   const [alert, setAlert] = useState(null);
   const [showOptions, setOptions] = useState(false);
 
-  const {object: jwt} = useJWTStore();
-  if (!jwt) {
-    navigation.navigate("DefaultScreen");
-  }
-  const accessToken = JSON.parse(jwt).access;
+  const { object: jwt } = useJWTStore();
+  const accessToken = jwt ? JSON.parse(jwt).access : null;
 
   const {object: previousMessages, loading, get, clear} = usePreviousMessagesStore();
   const getPreviousMessages = async () => {
     clear();
-    let params = `?room_id=${room.id}`
+    let params = `?room_id=${roomInState.id}`
     if (isWeb && PAGE_SIZE) {
       params += `&page_size=${PAGE_SIZE}`
     }
@@ -187,7 +185,7 @@ function Room(props) {
       setWebSocket(null)
     }
     const webSocketParams = {
-      room: room.id,
+      room: roomInState.id,
       accessToken: accessToken,
       closeOtherWebSockets: true,
     }
@@ -202,14 +200,14 @@ function Room(props) {
       executeMessageReceivedBehavior(e);
     }
     setWebSocket(ws);
-    removeRoomFromUnReadMessages(room.id);
+    removeRoomFromUnReadMessages(roomInState.id);
     callback();
     setAlert(null);
   }
 
-  if (DEBUG) {
+  if (DEBUG && user && roomInState) {
     // because sockets are flaky..
-    console.log("\n\n==> starting room.", room.id);
+    console.log("\n\n==> starting room.", roomInState.id);
     console.log("==> ready state of socket client: ", webSocket ? readyStates[webSocket.readyState] : "no socket found");
     console.log("==> messages length: ", messages.results ? messages.results.length : "no messages");
     console.log("==> loading from usePreviousMessagesStore (on first page load): ", loading);
@@ -237,10 +235,25 @@ function Room(props) {
     }
   }
 
+  const correctRoomInState = () => {
+    const formattedRoom = roomInState || {id: null};
+    return parseInt(formattedRoom.id) === parseInt(id);
+  }
+
   useFocusEffect(
     useCallback(() => {
-      setUpWebSocket(getPreviousMessages);
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+
+      if (!correctRoomInState()) {
+        getRoom(id, setRoomInState);
+      } else {
+        setUpWebSocket(getPreviousMessages);
+      }
       return () => {
+        isActive = false;
         setMessage("");
         setMessages([]);
         setError(null);
@@ -248,7 +261,7 @@ function Room(props) {
         setAlert(null);
         setOptions(false);
       };
-    }, [room])
+    }, [id, roomInState])
   );
 
   const send = () => {
@@ -273,12 +286,22 @@ function Room(props) {
     return webSocket.readyState === 0;
   }
 
+  if (!isFocused) {
+    return null
+  }
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
+  }
+
   const parsedError = error || {};
   return (
     <>
       <Loading isLoading={loadingPreviousPage} positionTop={true} />
       <RoomOptionsModal
-        room={room}
+        room={roomInState}
         user={user}
         showOptions={showOptions}
         setOptions={setOptions}
@@ -374,7 +397,10 @@ function Room(props) {
         )}
         {
           webSocket ? (
-            <LoadingModal isLoading={(loading || waitingForSocket()) && !loadingPreviousPage} />
+            <LoadingModal
+              isLoading={(loading || waitingForSocket()) && !loadingPreviousPage}
+              debugMessage={`from @Room loading:${loading} waitingForSocket:${waitingForSocket()} loadingPreviousPage:${loadingPreviousPage}`}
+            />
           ) : null
         }
       </View>

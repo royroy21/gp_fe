@@ -1,9 +1,14 @@
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useGigStore from "../../store/gig";
-import {ListItem, Text} from "@react-native-material/core";
+import {Text} from "@react-native-material/core";
+import {Pressable, StyleSheet, View} from "react-native";
+import BaseFavourite from "../Favourite/index/BaseFavourite";
 
-function FavoriteGig({navigation, gig, isFavorite}) {
+function FavoriteGig({navigation, gig, isFavorite, theme}) {
   const {get, addFavorite, removeFavorite} = useGigStore();
+  const {
+    store: storeGig,
+  } = useGigStore();
 
   const onPress = async () => {
     if (isFavorite) {
@@ -18,21 +23,15 @@ function FavoriteGig({navigation, gig, isFavorite}) {
   }
 
   const navigateToGig = (data) => {
-    navigation.navigate("GigDetail", {gig: data})
+    storeGig(data);
+    navigation.push("GigDetail", {id: data.id})
   }
 
   return (
-    <ListItem
-      title={<Text style={{color: "grey"}}>{isFavorite ? "un-favorite" : "favorite"}</Text>}
+    <BaseFavourite
       onPress={onPress}
-      trailing={
-        <Icon
-          name="star"
-          size={25}
-          color={isFavorite ? "orange" : "grey"}
-          onPress={onPress}
-        />
-      }
+      isFavorite={isFavorite}
+      theme={theme}
     />
   )
 }

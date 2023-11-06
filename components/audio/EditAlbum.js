@@ -1,13 +1,89 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {useForm} from "react-hook-form";
 import BaseAlbumForm from "./BaseAlbumForm";
 import {Platform} from "react-native";
 import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
 import useAlbumStore from "../../store/album";
+import {useFocusEffect, useIsFocused} from "@react-navigation/native";
+import useUserStore from "../../store/user";
+import LoadingModal from "../loading/LoadingModal";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import {useTheme} from "@react-native-material/core";
+import {DEBUG} from "../../settings";
 
-function EditAlbum({navigation, route}) {
-  const { album } = route.params;
+function EditAlbum({ navigation, route }) {
+  const isFocused = useIsFocused();
+  const theme = useTheme();
+  const { id } = route.params;
+  const { object: user } = useUserStore();
 
+  const {
+    object: album,
+    get,
+    store,
+    loading,
+    error,
+    patch,
+    clear,
+  } = useAlbumStore();
+  const [albumInState, setAlbumInState] = useState(album);
+
+  const correctAlbumInState = () => {
+    const formattedGig = albumInState || {id: null};
+    return parseInt(formattedGig.id) === parseInt(id);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+      const formattedAlbum = album || {id: null};
+      if (!correctAlbumInState()) {
+        get(id, setAlbumInState);
+      }
+
+      return () => {
+        isActive = false;
+      };
+    }, [id])
+  );
+
+  if (!isFocused) {
+    return null
+  }
+
+  if (!user) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
+  }
+
+  if (!correctAlbumInState()) {
+    return (
+      <LoadingModal
+        isLoading={loading}
+        debugMessage={"from @EditAlbum"}
+      />
+    )
+  }
+
+  return (
+    <InnerEditAlbum
+      album={albumInState}
+      get={get}
+      store={store}
+      loading={loading}
+      error={error}
+      patch={patch}
+      clear={clear}
+      navigation={navigation}
+    />
+  )
+}
+
+function InnerEditAlbum({ album, get, store, loading, error, patch, clear, navigation }) {
   const isWeb = Boolean(Platform.OS === "web");
   const [numberOfGenres, setNumberOfGenres] = useState(album.genres.length);
 
@@ -31,10 +107,7 @@ function EditAlbum({navigation, route}) {
     defaultValues: getDefaultValues(),
   });
 
-  const { get, loading, error, patch, clear } = useAlbumStore();
-
   let image = null;
-
   const onSubmit = async (data) => {
     /*
     NOTE! If an image is present first we upload string data using react-hook-form's
@@ -70,7 +143,8 @@ function EditAlbum({navigation, route}) {
   }
 
   const onSuccess = (album) => {
-    navigation.navigate("AlbumDetail", {albumId: album.id});
+    store(album);
+    navigation.push("AlbumDetail", {id: album.id});
     return () => {
       setNumberOfGenres(0);
       image = null;

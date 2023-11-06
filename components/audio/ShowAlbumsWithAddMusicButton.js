@@ -8,7 +8,7 @@ import SquarePlusButton from "../buttons/SquarePlusButton";
 
 function ShowAlbumsWithAddMusicButton(props) {
   const {
-    resource,  // resource can be a gig or profile object.
+    resourceId,  // resourceId can be a gig or profile.
     type,  // type must be one of "gig" or "profile".
     theme,
     navigation,
@@ -23,20 +23,25 @@ function ShowAlbumsWithAddMusicButton(props) {
 
   useFocusEffect(
     useCallback(() => {
-      getAlbums(`?${type}_id=${resource.id}`);
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
+      getAlbums(`?${type}_id=${resourceId}`);
       return () => {
+        isActive = false;
         clearAlbums();
       };
     }, [])
   );
 
   const navigateToAddMusic = () => {
-    navigation.navigate("AddMusic", {resource: resource, type: type});
+    navigation.push("AddMusic", {resourceId: resourceId, type: type});
   }
 
   return (
     <View>
-      <LoadingModal isLoading={loadingAlbums} />
+      <LoadingModal isLoading={loadingAlbums} debugMessage={"from @ShowAlbumsWithAddMusicButton"}/>
       <ListAlbums
         albums={albums}
         navigation={navigation}

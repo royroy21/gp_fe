@@ -33,9 +33,9 @@ function LogOut({navigation, setMainMenu, theme}) {
   const { clear: clearRooms } = useRoomsStore();
   const { clear: clearUnreadMessages } = unreadMessagesStore();
   const { clear: clearUser } = useUserStore();
+
   const logOut = async () => {
     setLoading(true);
-    navigation.navigate("DefaultScreen");
     await AsyncStorage.clear();
     clearCountries();
     clearCountry();
@@ -50,13 +50,13 @@ function LogOut({navigation, setMainMenu, theme}) {
     clearUser();
     closeAndDeleteOtherWebSockets();
     setMainMenu(false);
-    return () => {
-      setLoading(false);
-    }
+    navigation.push("DefaultScreen", {refreshGigs: true});
+    setLoading(false);
   }
+
   return (
     <>
-      <LoadingModal isLoading={loading}/>
+      <LoadingModal isLoading={loading} debugMessage={"from @LogOut"}/>
       <ListItem
         title={<Text>{"Log out"}</Text>}
         onPress={logOut}

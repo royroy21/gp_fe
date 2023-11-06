@@ -5,18 +5,44 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {useNavigation} from "@react-navigation/native";
 import CenteredModalWithOneButton from "../centeredModal/CenteredModalWithOneButton";
 import EditRoomMembership from "./EditRoomMembership";
+import useGigStore from "../../store/gig";
+import useOtherUserStore from "../../store/otherUser";
 
 const RoomOptionsModal = ({room, user, showOptions, setOptions, theme}) => {
   const navigation = useNavigation();
-  const isRoomOwner = user.id === room.user.id;
+
+  const getIsRoomOwner = () => {
+    if (!room || ! user) {
+      return false
+    }
+    return user.id === room.user.id
+  }
+  const isRoomOwner = getIsRoomOwner();
+
+  const { store: storeOtherUser } = useOtherUserStore();
+
+  const {
+    store: storeGig,
+  } = useGigStore();
 
   const onListItemPress = (member) => {
     if (user.id === member.id) {
       navigation.navigate("ProfilePage")
     } else {
-      navigation.navigate("OtherUser", {user: member});
+      storeOtherUser(member);
+      navigation.push("OtherUser", {id: member.id});
     }
     setOptions(!showOptions);
+  }
+
+  const navigateToGig = (gig) => {
+    storeGig(gig);
+    navigation.push("GigDetail", {id: room.gig.id});
+    setOptions(!showOptions);
+  }
+
+  if (!room) {
+    return null
   }
 
   return (
@@ -29,16 +55,10 @@ const RoomOptionsModal = ({room, user, showOptions, setOptions, theme}) => {
           </Text>
           <ListItem
             title={<Text>{"Go to Gig"}</Text>}
-            onPress={() => {
-              navigation.navigate("GigDetail", {gig: room.gig});
-              setOptions(!showOptions);
-            }}
+            onPress={() => navigateToGig(room.gig)}
             trailing={
               <IconButton
-                onPress={() => {
-                  navigation.navigate("GigDetail", {gig: room.gig});
-                  setOptions(!showOptions);
-                }}
+                onPress={() => navigateToGig(room.gig)}
                 icon={
                   <Icon
                     color={theme.palette.secondary.main}

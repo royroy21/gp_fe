@@ -24,9 +24,10 @@ class ShowUser extends Component {
   }
 
   render() {
-    const { user, windowWidth, theme, navigation } = this.props;
+    const { user, storeOtherUser, windowWidth, theme, navigation } = this.props;
     const navigateToUser = () => {
-      navigation.navigate("OtherUser", {user: user});
+      storeOtherUser(user);
+      navigation.push("OtherUser", {id: user.id});
     }
     return (
       <Surface elevation={2} category="medium" style={{padding: 5, margin: 5}}>

@@ -3,6 +3,13 @@ import {BACKEND_URL as LOCAL_BACKEND_URL} from "./local_settings";
 import {BACKEND_SOCKET_URL as LOCAL_BACKEND_SOCKET_URL} from "./local_settings";
 import {EXPO_PROJECT_ID as LOCAL_EXPO_PROJECT_ID} from "./local_settings";
 
+// DEBUG - displays extra debug messages at console.
+export const DEBUG = true;
+
+// Domain
+export const DOMAIN_NAME = 'gigpig.fm'
+export const DOMAIN_NAME_WITH_PREFIX = `https://${DOMAIN_NAME}`
+
 // Keys, Ids, access_codes..
 export const EXPO_PROJECT_ID = LOCAL_EXPO_PROJECT_ID;
 
@@ -36,10 +43,16 @@ export const BACKEND_SOCKET_ENDPOINTS = {
 
 // Used if country cannot be obtained from User object.
 // TODO - currently not being used :/
-export const DEFAULT_COUNTRY_CODE = "GB";
+export const DEFAULT_COUNTRY = {
+  country: "United Kingdom",
+  code: "UK",
+};
 
 export const DEFAULT_ERROR_MESSAGE = "Sorry an unexpected error has occurred."
 
 // Screen size
 // Defines what counts as a small screen for web app.
 export const smallScreenWidth = 500;
+
+// Display options
+export const ALLOW_LIGHT_THEME_OPTION = false;
