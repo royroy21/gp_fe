@@ -16,3 +16,6 @@ web-build/
 # Other local files
 local_settings.js
 google-services.json
+
+# IDE
+.idea
