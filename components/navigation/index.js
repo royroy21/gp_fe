@@ -77,6 +77,10 @@ export default function Navigation() {
       linking={linking}
       onStateChange={onStateChange}
       theme={theme}
+      documentTitle={{
+        formatter: (options, route) =>
+          "gigpig.fm",
+      }}
     >
       <Routes
         user={user || {}}
