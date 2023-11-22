@@ -10,7 +10,7 @@ export const DEBUG = true;
 export const DOMAIN_NAME = 'gigpig.fm'
 export const DOMAIN_NAME_WITH_PREFIX = `https://${DOMAIN_NAME}`
 
-// Keys, Ids, access_codes..
+// Keys, Ids, access_codes.
 export const EXPO_PROJECT_ID = LOCAL_EXPO_PROJECT_ID;
 
 // GENERAL
@@ -20,6 +20,7 @@ export const LOGIN_REQUIRED = false;
 export const BACKEND_URL = LOCAL_BACKEND_URL;
 export const BACKEND_ENDPOINTS = {
   token: BACKEND_URL + "/api/token/",
+  refreshToken: BACKEND_URL + "/api/token/refresh/",
   user: BACKEND_URL + "/api/user/",
   me: BACKEND_URL + "/api/user/me/",
   album: BACKEND_URL + "/api/album/",
