@@ -9,6 +9,7 @@ export default function SignUpForm({ navigation }) {
       <EmailPassword
         action={create}
         navigation={navigation}
+        isSignUp={true}
       />
     </View>
   );

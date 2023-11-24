@@ -1,7 +1,7 @@
 import {View, StyleSheet} from "react-native";
 import { useForm, Controller }   from "react-hook-form";
 import {Button, Switch} from "@react-native-material/core";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import Errors from "../forms/Errors";
 import TextInput from "../forms/TextInput";
 import {formContainerPadding} from "../../helpers/padding";
@@ -9,8 +9,9 @@ import LoadingModal from "../loading/LoadingModal";
 import useUserStore from "../../store/user";
 import useJWTStore from "../../store/jwt";
 import useLastRouteStore from "../../store/lastRoute";
+import {useFocusEffect} from "@react-navigation/native";
 
-export default function EmailPassword({ action, navigation, children }) {
+export default function EmailPassword({ action, navigation, children, isSignUp=false }) {
   const {
     loading,
     error,
@@ -25,12 +26,18 @@ export default function EmailPassword({ action, navigation, children }) {
   } = useUserStore();
 
   const [showPassword, setShowPassword] = useState(false);
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, clearErrors } = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      clearErrors();
+    }, [])
+  );
 
   const onSubmit = async (data) => {
     await action(data, onSuccess);
@@ -38,6 +45,10 @@ export default function EmailPassword({ action, navigation, children }) {
 
   const onSuccess = async () => {
     await me();
+    if (isSignUp) {
+      return navigation.navigate("DefaultScreen");
+    }
+
     if (lastRoute) {
       if (lastRoute.params) {
         navigation.push(lastRoute.name, lastRoute.params);
