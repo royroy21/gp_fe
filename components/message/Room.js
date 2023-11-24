@@ -237,7 +237,7 @@ function Room({ route }) {
 
   const correctRoomInState = () => {
     const formattedRoom = roomInState || {id: null};
-    return parseInt(formattedRoom.id) === parseInt(id);
+    return formattedRoom.id === id;
   }
 
   useFocusEffect(

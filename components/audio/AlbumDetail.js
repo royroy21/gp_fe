@@ -106,7 +106,7 @@ function AlbumDetail({ navigation, route }) {
 
   const correctAlbumInState = () => {
     const formattedAlbum = albumInState || {id: null};
-    return parseInt(formattedAlbum.id) === parseInt(id);
+    return formattedAlbum.id === id;
   }
 
   useFocusEffect(

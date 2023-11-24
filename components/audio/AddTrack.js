@@ -28,7 +28,7 @@ function AddTrack({ navigation, route }) {
 
   const correctAlbumInState = () => {
     const formattedAlbum = albumInState || {id: null};
-    return parseInt(formattedAlbum.id) === parseInt(albumId);
+    return formattedAlbum.id === albumId;
   }
 
   useFocusEffect(

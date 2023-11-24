@@ -30,7 +30,7 @@ function AddAlbum({ navigation, route }) {
       }
       if (type === "gig") {
         const formattedGig = gig || {id: null};
-        if (parseInt(resourceId) !== parseInt(formattedGig.id)) {
+        if (resourceId !== formattedGig.id) {
           getGig(resourceId, setResource);
         } else {
           setResource(resource);

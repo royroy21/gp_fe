@@ -15,6 +15,7 @@ import {useTheme} from "@react-native-material/core";
 import ShowAlbums from "../audio/ShowAlbums";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import useRoomStore from "../../store/room";
+import {DEBUG} from "../../settings";
 
 function OtherUser({ navigation, route }) {
   const isFocused = useIsFocused();
@@ -28,16 +29,20 @@ function OtherUser({ navigation, route }) {
 
   const correctOtherUserInState = () => {
     const formattedOtherUser = otherUserInState || {id: null};
-    return parseInt(formattedOtherUser.id) === parseInt(id);
+    DEBUG && console.log("@OtherUser hits correctOtherUserInState ", formattedOtherUser, id);
+    return formattedOtherUser.id === id;
   }
 
   useFocusEffect(
     useCallback(() => {
+      DEBUG && console.log("@OtherUser hits 0");
       let isActive = true;
       if (!isActive) {
+        DEBUG && console.log("@OtherUser hits 1 - not active");
         return
       }
       if (!correctOtherUserInState()) {
+        DEBUG && console.log("@OtherUser hits 1 - not active");
         getOtherUser(id, setOtherUserInState);
       }
       return () => {
@@ -47,9 +52,11 @@ function OtherUser({ navigation, route }) {
   );
 
   if (!isFocused) {
+    DEBUG && console.log("@OtherUser hits 3 - not focused");
     return null
   }
 
+  DEBUG && console.log("@OtherUser hits 4 - incorrect gig in state ", otherUserInState);
   if (!correctOtherUserInState()) {
     return (
       <LoadingModal
@@ -102,10 +109,7 @@ function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
   const getUserIsViewingOwnPage = () => {
     const formattedUser = user || {id: null};
     const formattedThisUser = thisUser || {id: null};
-    return (
-      (formattedThisUser.id && formattedUser.id)
-      && (parseInt(formattedThisUser.id) === parseInt(formattedUser.id))
-    )
+    return (formattedThisUser.id && formattedUser.id) && (formattedThisUser.id === formattedUser.id)
   }
 
   const getButtonTitle = () => {

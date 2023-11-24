@@ -31,7 +31,7 @@ function EditTrack({ navigation, route }) {
 
   const correctTrackInState = () => {
     const formattedTrack = trackInState || {id: null};
-    return parseInt(formattedTrack.id) === parseInt(id);
+    return formattedTrack.id === id;
   }
 
   useFocusEffect(

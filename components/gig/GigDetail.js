@@ -30,8 +30,8 @@ function GigDetail({ navigation, route }) {
 
   const correctGigInState = () => {
     const formattedGig = gigInState || {id: null};
-    DEBUG && console.log("@GigDetail correctGigInState ", formattedGig, id);
-    return parseInt(formattedGig.id) === parseInt(id);
+    DEBUG && console.log("@GigDetail hits correctGigInState ", formattedGig, id);
+    return formattedGig.id === id;
   }
 
   useFocusEffect(

@@ -29,7 +29,7 @@ function EditGig({ navigation, route }) {
   const correctGigInState = () => {
     const formattedGig = gigInState || {id: null};
     DEBUG && console.log("@EditGig correctGigInState ", formattedGig, id);
-    return parseInt(formattedGig.id) === parseInt(id);
+    return formattedGig.id === id;
   }
 
   useFocusEffect(
