@@ -20,6 +20,7 @@ import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton"
 import ShowAlbums from "../audio/ShowAlbums";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import useRoomStore from "../../store/room";
+import GigRepliesButton from "./GigRepliesButton";
 
 function GigDetail({ navigation, route }) {
   const isFocused = useIsFocused();
@@ -153,26 +154,20 @@ function InnerGigDetail({ user, gig, loading, navigation }) {
           />
         </View>
         {isGigOwner && gig.replies ? (
-          <TextFieldWithTitle
-            title={"replies"}
-            text={gig.replies}
-            trailing={
-              <Icon
-                onPress={() => {
-                  navigation.push(
-                    "RoomsScreen",
-                    {"initialQuery": BACKEND_ENDPOINTS.room + `?gig_id=${gig.id}`})
-                }}
-                name={"speaker-wireless"}
-                size={25}
-                color={"orange"}
-              />
-            }
+          <GigRepliesButton
+            gig={gig}
+            navigation={navigation}
+            theme={theme}
+            containerStyle={{marginTop: 10}}
           />
         ) : null}
         <TextFieldWithTitle
           title={"gig"}
           text={gig.title}
+        />
+        <TextFieldWithTitle
+          title={"location"}
+          text={gig.location}
         />
         {gig.description ? (
           <TextFieldWithTitle
@@ -180,10 +175,6 @@ function InnerGigDetail({ user, gig, loading, navigation }) {
             text={gig.description}
           />
         ) : null}
-        <TextFieldWithTitle
-          title={"location"}
-          text={gig.location}
-        />
         <TextFieldWithTitle
           title={"country"}
           text={gig.country.country}
