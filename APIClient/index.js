@@ -2,6 +2,8 @@ import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-s
 import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../settings";
 import useJWTStore from "../store/jwt";
 
+const TIMEOUT_MS = 10000;
+
 const defaultParams = {
   resource: "",
   successCallback: () => {},
@@ -13,6 +15,7 @@ class APIClient {
     const headers = await this.getHeaders();
     const requestOptions = {
       method: "GET",
+      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
     }
     await this.makeRequestHandleResponse(params, requestOptions, [200]);
@@ -22,6 +25,7 @@ class APIClient {
     const headers = await this.getHeaders();
     const requestOptions = {
       method: "DELETE",
+      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
     }
     await this.makeRequestHandleResponse(
@@ -33,6 +37,7 @@ class APIClient {
     const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "POST",
+      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
       // If isMultipartFormData using FormData so no need to stringify.
       body: isMultipartFormData ? params.data : JSON.stringify(params.data),
@@ -44,6 +49,7 @@ class APIClient {
     const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "PUT",
+      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
       // If isMultipartFormData using FormData so no need to stringify.
       body: isMultipartFormData ? params.data : JSON.stringify(params.data),
@@ -55,6 +61,7 @@ class APIClient {
     const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "PATCH",
+      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
       // If isMultipartFormData using FormData so no need to stringify.
       body: isMultipartFormData ? params.data : JSON.stringify(params.data),
@@ -100,9 +107,13 @@ class APIClient {
         params.successCallback(json);
       }
     } catch (error) {
-      // TODO - Sentry logging here
-      DEBUG && console.error("unknown error @ APIClient.handleResponse: ", error, params);
-      params.errorCallback({"unExpectedError": DEFAULT_ERROR_MESSAGE});
+      DEBUG && console.error(`API ERROR: "${error.message}"`, params);
+      switch(error.message) {
+        case "The user aborted a request.":
+          return params.errorCallback({"unExpectedError": "Sorry. The request timed out."});
+        default:
+          return params.errorCallback({"unExpectedError": DEFAULT_ERROR_MESSAGE});
+      }
     }
   }
 
