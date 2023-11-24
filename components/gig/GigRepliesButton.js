@@ -10,31 +10,36 @@ function GigRepliesButton({gig, navigation, theme, containerStyle={}}) {
   }
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={{
-        backgroundColor: theme.palette.background.main,
-        ...styles.repliesContainer,
-        ...containerStyle,
-      }}
-    >
-      <View style={styles.repliesTextContainer}>
-        <Text style={styles.repliesTitle}>{"replies"}</Text>
-        <Text style={styles.repliesNumberOfReplies}>{gig.replies}</Text>
-      </View>
-      <Icon
+    <View style={styles.outerContainer}>
+      <Pressable
         onPress={onPress}
-        name={"speaker-wireless"}
-        size={25}
-        color={"orange"}
-        style={styles.Icon}
-      />
-    </Pressable>
+        style={{
+          backgroundColor: theme.palette.background.main,
+          ...styles.container,
+          ...containerStyle,
+        }}
+      >
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{"replies"}</Text>
+          <Text style={styles.numberOfReplies}>{gig.replies}</Text>
+        </View>
+        <Icon
+          onPress={onPress}
+          name={"speaker-wireless"}
+          size={25}
+          color={"orange"}
+          style={styles.icon}
+        />
+      </Pressable>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  repliesContainer: {
+  outerContainer: {
+    height: 60,
+  },
+  container: {
     flex: 1,
     flexDirection: "row",
     paddingTop: 5,
@@ -46,22 +51,22 @@ const styles = StyleSheet.create({
     width: "98%",
     borderRadius: 15,
   },
-  repliesTitle: {
+  title: {
     fontSize: 12,
     width: 100,
     color: "gray",
   },
-  repliesTextContainer: {
+  textContainer: {
     flex: 1,
     flexDirection: "column",
     width: "80%",
   },
-  repliesNumberOfReplies: {
+  numberOfReplies: {
     fontSize: 16,
     width: "90%",
   },
-  Icon: {
-    paddingTop: 5,
+  icon: {
+    paddingTop: 7,
   },
 })
 
