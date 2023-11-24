@@ -3,7 +3,7 @@ import LoadingModal from "../loading/LoadingModal";
 import Errors from "../forms/Errors";
 import {Controller, useForm} from "react-hook-form";
 import TextInput from "../forms/TextInput";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import DisplayGenres from "../gig/DisplayGenres";
 import ImagePickerMobile from "../Image/ImagePickerMobile";
 import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
@@ -12,20 +12,56 @@ import {Platform} from "react-native";
 import ImagePickerWeb from "../Image/ImagePickerWeb";
 import SelectGenres from "../selectors/SelectGenres";
 import {useTheme} from "@react-native-material/core";
+import {useIsFocused} from "@react-navigation/native";
+import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 
 function EditProfile({ navigation }) {
+  const isFocused = useIsFocused();
   const theme = useTheme();
-  const { object, patch, loading, error } = useUserStore();
-  const [numberOfGenres, setNumberOfGenres] = useState(object.genres.length);
+  const { object: user, patch, loading, error } = useUserStore();
+
+  if (!user && !loading) {
+    return (
+      <PleaseLoginMessage theme={theme} />
+    )
+  }
+
+  if (!isFocused) {
+    return null
+  }
+
+  if (!user && loading) {
+    return (
+      <LoadingModal
+        isLoading={loading}
+        debugMessage={"from @EditProfile"}
+      />
+    )
+  }
+
+  return (
+    <InnerEditProfile
+      user={user}
+      patch={patch}
+      loading={loading}
+      error={error}
+      theme={theme}
+      navigation={navigation}
+    />
+  )
+}
+
+function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
+  const [numberOfGenres, setNumberOfGenres] = useState(user.genres.length);
   const isWeb = Boolean(Platform.OS === "web");
 
   const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
     defaultValues: {
-      username: object.username,
-      email: object.email,
-      bio: object.bio,
-      genres: object.genres,
-      image: object.image,
+      username: user.username,
+      email: user.email,
+      bio: user.bio,
+      genres: user.genres,
+      image: user.image,
     },
   });
 
@@ -45,34 +81,34 @@ function EditProfile({ navigation }) {
   const onSubmit = async (data) => {
     /*
     NOTE! If an image is present first we upload string data using react-hook-form's
-    data object then we upload image data separately afterwards using FormData.
+    data user then we upload image data separately afterwards using FormData.
      */
 
     if (typeof data.image === "string") {
       // Assume image has not been changed by user as URL from server.
       // EG: http://192.168.77.206:8000/media/user/6da64...
-      return await patch(object.id, getDataWithOutImage(data), onSuccess)
+      return await patch(user.id, getDataWithOutImage(data), onSuccess)
     }
 
     image = data.image;
     if (image) {
       // Upload new image.
-      await patch(object.id, getDataWithOutImage(data), upLoadImage)
+      await patch(user.id, getDataWithOutImage(data), upLoadImage)
     } else {
       // User wants to remove the image.
-      await patch(object.id, data, onSuccess)
+      await patch(user.id, data, onSuccess)
     }
   }
 
-  const upLoadImage = async (object) => {
+  const upLoadImage = async (user) => {
     const formData = new FormData();
     if (isWeb) {
       formData.append("image", image);
-      await patch(object.id, formData, onSuccess, true);
+      await patch(user.id, formData, onSuccess, true);
     } else {
       const formattedImage = formatImageForForm(image.uri);
       formData.append("image", formattedImage);
-      await patch(object.id, formData, onSuccess, true);
+      await patch(user.id, formData, onSuccess, true);
     }
   }
 
@@ -113,6 +149,7 @@ function EditProfile({ navigation }) {
           existingImage={getValues("image")}
         />
         )}
+      {parsedError.image && <Errors errorMessages={parsedError.image} />}
       <Controller
         control={control}
         rules={{
