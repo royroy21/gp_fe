@@ -154,6 +154,14 @@ function ShowUsers({ navigation }) {
     }, [])
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (error) {
+        setSearchFeedback(null);
+      }
+    }, [error])
+  );
+
   async function getNextPage() {
     if (users.next) {
       setLoadingNext(true);

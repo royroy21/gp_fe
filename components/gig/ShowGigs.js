@@ -185,6 +185,14 @@ function ShowGigs({ navigation, refreshGigs=false}) {
     }, [refreshGigs])
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (error) {
+        setSearchFeedback(null);
+      }
+    }, [error])
+  );
+
   async function getNextPage() {
     if (gigs.next) {
       setLoadingNext(true);

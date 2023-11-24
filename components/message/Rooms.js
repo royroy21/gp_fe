@@ -180,6 +180,14 @@ function Rooms({ route, navigation }) {
     }, [])
   );
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (error) {
+        setSearchFeedback(null);
+      }
+    }, [error])
+  );
+
   async function getNextPage() {
     if (rooms.next) {
       setLoadingNext(true);
