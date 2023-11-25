@@ -5,14 +5,13 @@ import DisplayGenres from "../gig/DisplayGenres";
 import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import useUserStore from "../../store/user";
 import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
-import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
 import React, {useCallback, useState} from "react";
-import {Button, Text} from "@react-native-material/core";
 import useAlbumStore from "../../store/album";
 import LoadingModal from "../loading/LoadingModal";
 import ShowTracks from "./ShowTracks";
 import SquarePlusButton from "../buttons/SquarePlusButton";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
+import DeleteModal from "../delete/DeleteModal";
 
 function AlbumDetailContent({ album, isOwner }) {
   return (
@@ -61,20 +60,15 @@ function AlbumDetailIfOwner(props) {
   } = props;
   return (
     <>
-      <CenteredModalWithTwoButton
+      <DeleteModal
         showModal={deleteAlbumModal}
         setModal={setDeleteAlbumModal}
-        actionButton={
-          <Button
-            style={AlbumDetailStyles.deleteButton}
-            title={"delete"}
-            onPress={deleteAlbumAction}
-          />
-        }
-      >
-        <Text style={AlbumDetailStyles.areYouSureMessage}>{"Are you sure?"}</Text>
-      </CenteredModalWithTwoButton>
-      <AlbumDetailContent album={album} isOwner={isOwner} />
+        action={deleteAlbumAction}
+      />
+      <AlbumDetailContent
+        album={album}
+        isOwner={isOwner}
+      />
     </>
   )
 }
@@ -255,16 +249,9 @@ function InnerAlbumDetail({ album, store, deleteAlbum, loading, navigation }) {
 }
 
 const AlbumDetailStyles = StyleSheet.create({
-  deleteButton: {
-    width: 100,
-  },
   addTrackButton: {
     width: 120,
     margin: 15,
-  },
-  areYouSureMessage: {
-    width: "100%",
-    textAlign: "center",
   },
   navigateToAddMusic: {
     marginLeft: 16,

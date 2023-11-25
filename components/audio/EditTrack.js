@@ -1,17 +1,17 @@
 import React, {useCallback, useState} from "react";
 import {useForm} from "react-hook-form";
-import {Platform, StyleSheet} from "react-native";
+import {Platform} from "react-native";
 import {formatImageForForm} from "../Image/helpers";
 import useTrackStore from "../../store/track";
 import BaseTrackForm from "./BaseTrackForm";
 import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
-import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
-import {Button, Text, useTheme} from "@react-native-material/core";
+import {useTheme} from "@react-native-material/core";
 import {getDataWithOutFile, getDataWithOutImageAndFile} from "./helpers";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import LoadingModal from "../loading/LoadingModal";
 import useUserStore from "../../store/user";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import DeleteModal from "../delete/DeleteModal";
 
 function EditTrack({ navigation, route }) {
   const isFocused = useIsFocused();
@@ -169,19 +169,11 @@ function InnerEditTrack(props) {
       actionButton2Title={"delete"}
       actionButton2OnPress={() => {setDeleteTrackModal(true)}}
     >
-      <CenteredModalWithTwoButton
+      <DeleteModal
         showModal={deleteTrackModal}
         setModal={setDeleteTrackModal}
-        actionButton={
-          <Button
-            style={styles.deleteButton}
-            title={"delete"}
-            onPress={deleteTrackAction}
-          />
-        }
-      >
-        <Text style={styles.areYouSureMessage}>{"Are you sure?"}</Text>
-      </CenteredModalWithTwoButton>
+        action={deleteTrackAction}
+      />
       <BaseTrackForm
         isWeb={isWeb}
         control={control}
@@ -199,16 +191,5 @@ function InnerEditTrack(props) {
     </CustomScrollViewWithTwoButtons>
   )
 }
-
-const styles = StyleSheet.create({
-  deleteButton: {
-    width: 100,
-  },
-  areYouSureMessage: {
-    width: "100%",
-    textAlign: "center",
-  },
-})
-
 
 export default EditTrack;

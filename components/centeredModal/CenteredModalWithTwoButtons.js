@@ -36,6 +36,7 @@ const CenteredModalWithTwoButton = (props) => {
     children,
     actionButton,
     otherButton=null,
+    forceWidth50Percent=true,
   } = props;
   return (
     <BaseCenteredModal
@@ -47,6 +48,7 @@ const CenteredModalWithTwoButton = (props) => {
           setModal={setModal}
           actionButton={actionButton}
           otherButton={otherButton}
+          forceWidth50Percent={forceWidth50Percent}
         />
       }
     >
