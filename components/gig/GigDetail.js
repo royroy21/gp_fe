@@ -111,17 +111,30 @@ function InnerGigDetail({ user, gig, loading, navigation }) {
   const isGigOwner = getIsGigOwner();
 
   const getButtonTitle = () => {
+    if (!gig.active) {
+      return null;
+    }
     if (!user) {
-      return null
+      return null;
     }
     return isGigOwner ? "edit" : "respond";
   }
 
   const buttonOnPress = () => {
+    if (!gig.active) {
+      return null;
+    }
     if (!user) {
-      return null
+      return null;
     }
     return isGigOwner ? edit : respond;
+  }
+
+  const bottomMessageText = () => {
+    if (!gig.active) {
+      return "This gig has been deleted.";
+    }
+    return !user && "Login to respond"
   }
 
   const parsedError = error || {};
@@ -132,7 +145,7 @@ function InnerGigDetail({ user, gig, loading, navigation }) {
       <CustomScrollViewWithOneButton
         buttonTitle={getButtonTitle()}
         buttonOnPress={buttonOnPress()}
-        bottomMessage={!user && "Login to respond"}
+        bottomMessage={bottomMessageText()}
       >
         {user && !isGigOwner ? (
           <FavoriteGig
@@ -196,7 +209,7 @@ function InnerGigDetail({ user, gig, loading, navigation }) {
           theme={theme}
           containerStyle={styles.userProfileLink}
         />
-        {isGigOwner ? (
+        {isGigOwner && gig.active ? (
           <ShowAlbumsWithAddMusicButton
             resourceId={gig.id}
             type={"gig"}
