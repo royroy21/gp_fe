@@ -1,13 +1,14 @@
 import {ScrollView, StyleSheet, View} from "react-native";
-import {Button} from "@react-native-material/core";
+import {Button, Text} from "@react-native-material/core";
 
 function CustomScrollViewWithTwoButtons(props) {
   const {
     children,
-    actionButton1Title,
-    actionButton1OnPress,
-    actionButton2Title,
-    actionButton2OnPress,
+    actionButton1Title=null,
+    actionButton1OnPress=null,
+    actionButton2Title=null,
+    actionButton2OnPress=null,
+    bottomMessage=null,
   } = props;
   return (
     <View style={styles.container}>
@@ -16,18 +17,25 @@ function CustomScrollViewWithTwoButtons(props) {
           {children}
         </ScrollView>
       </View>
-      <View style={styles.buttonsContainer}>
-        <Button
-          title={actionButton1Title}
-          onPress={actionButton1OnPress}
-          style={styles.button}
-        />
-        <Button
-          title={actionButton2Title}
-          onPress={actionButton2OnPress}
-          style={styles.button}
-        />
-      </View>
+      {actionButton1Title && actionButton1OnPress && actionButton2Title && actionButton2OnPress ? (
+        <View style={styles.buttonsContainer}>
+          <Button
+            title={actionButton1Title}
+            onPress={actionButton1OnPress}
+            style={styles.button}
+          />
+          <Button
+            title={actionButton2Title}
+            onPress={actionButton2OnPress}
+            style={styles.button}
+          />
+        </View>
+        ) : null}
+      {bottomMessage ? (
+        <View style={styles.bottomMessageContainer}>
+          <Text style={styles.bottomMessage}>{bottomMessage}</Text>
+        </View>
+        ) : null}
     </View>
   )
 }
@@ -47,8 +55,19 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
   },
+  bottomMessageContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    marginTop: 10,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
   button: {
     minWidth: 110,
+  },
+  bottomMessage: {
+    color: "grey",
   },
 })
 

@@ -21,12 +21,14 @@ import ShowAlbums from "../audio/ShowAlbums";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import useRoomStore from "../../store/room";
 import GigRepliesButton from "./GigRepliesButton";
+import CustomScrollViewWithTwoButtons from "../views/CustomScrollViewWithTwoButtons";
+import DeleteModal from "../delete/DeleteModal";
 
 function GigDetail({ navigation, route }) {
   const isFocused = useIsFocused();
   const { id } = route.params;
   const { object: user } = useUserStore();
-  const {object: gig, get: getGig, loading} = useGigStore();
+  const {object: gig, loading, error, get: getGig, delete: deleteGig } = useGigStore();
   const [gigInState, setGigInState] = useState(gig);
 
   const correctGigInState = () => {
@@ -73,22 +75,123 @@ function GigDetail({ navigation, route }) {
     <InnerGigDetail
       user={user}
       gig={gigInState}
+      loading={loading}
+      error={error}
+      deleteGig={deleteGig}
       navigation={navigation}
     />
   )
 }
 
-function InnerGigDetail({ user, gig, loading, navigation }) {
-  const { store: storeRoom } = useRoomStore();
-  const theme = useTheme();
-  const [loadingMessageWS, setLoadingMessageWS] = useState(false);
-  const [error, setError] = useState(null);
-  const {object: jwt} = useJWTStore();
-  const accessToken = jwt ? JSON.parse(jwt).access : null;
+function InnerGigDetail({ user, gig, loading, error, deleteGig, navigation }) {
+
+  const getIsGigOwner = () => {
+    if (!user || !gig) {
+      return false
+    }
+    return user.id === gig.user.id;
+  }
+  const isGigOwner = getIsGigOwner();
+
+  const getBottomMessageText = () => {
+    if (!gig.active) {
+      return "This gig has been deleted.";
+    }
+    return !user && "Login to respond"
+  }
+  const bottomMessageText = getBottomMessageText();
+
+  return (
+    <>
+    {isGigOwner ? (
+      <DetailIfGigOwner
+        user={user}
+        isGigOwner={isGigOwner}
+        gig={gig}
+        bottomMessageText={bottomMessageText}
+        loading={loading}
+        error={error}
+        deleteGig={deleteGig}
+        navigation={navigation}
+      />
+      ) : (
+      <DetailIfNotGigOwner
+        user={user}
+        isGigOwner={isGigOwner}
+        gig={gig}
+        bottomMessageText={bottomMessageText}
+        navigation={navigation}
+      />
+    )}
+    </>
+  )
+}
+
+function DetailIfGigOwner({ user, isGigOwner, gig, loading, error, deleteGig, navigation, bottomMessageText }) {
+  const [deleteModal, setDeleteModal] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setDeleteModal(false);
+      }
+    }, [])
+  );
 
   const edit = () => {
     navigation.push("EditGig", {id: gig.id});
   }
+
+  const onSuccess = () => {
+    navigation.navigate("MyGigs");
+    return () => {
+      setDeleteModal(false);
+    };
+  }
+
+  const openDeleteModal = () => {
+    setDeleteModal(true)
+  }
+
+  const deleteGigAction = () => {
+    deleteGig(gig.id, onSuccess);
+  }
+
+  const parsedError = error || {};
+  return (
+    <>
+      <CustomScrollViewWithTwoButtons
+        actionButton1Title={user && gig.active ? "edit" : null}
+        actionButton1OnPress={user && gig.active ? edit : null}
+        actionButton2Title={user && gig.active ? "delete" : null}
+        actionButton2OnPress={user && gig.active ? openDeleteModal : null}
+        bottomMessage={bottomMessageText}
+      >
+        <DeleteModal
+          showModal={deleteModal}
+          setModal={setDeleteModal}
+          action={deleteGigAction}
+        />
+        {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
+        {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
+        <LoadingModal isLoading={loading} debugMessage={"from @DetailIfGigOwner 2"} />
+        <Detail
+          user={user}
+          isGigOwner={isGigOwner}
+          gig={gig}
+          navigation={navigation}
+        />
+      </CustomScrollViewWithTwoButtons>
+  </>
+  );
+}
+
+function DetailIfNotGigOwner({ user, isGigOwner, gig, navigation, bottomMessageText }) {
+  const { store: storeRoom } = useRoomStore();
+  const [loadingMessageWS, setLoadingMessageWS] = useState(false);
+  const [error, setError] = useState(null);
+  const {object: jwt} = useJWTStore();
+  const accessToken = jwt ? JSON.parse(jwt).access : null;
 
   const respond = () => {
     const newMessageArguments = {
@@ -102,129 +205,109 @@ function InnerGigDetail({ user, gig, loading, navigation }) {
     newMessage(newMessageArguments);
   }
 
-  const getIsGigOwner = () => {
-    if (!user || !gig) {
-      return false
-    }
-    return user.id === gig.user.id;
-  }
-  const isGigOwner = getIsGigOwner();
-
-  const getButtonTitle = () => {
-    if (!gig.active) {
-      return null;
-    }
-    if (!user) {
-      return null;
-    }
-    return isGigOwner ? "edit" : "respond";
-  }
-
-  const buttonOnPress = () => {
-    if (!gig.active) {
-      return null;
-    }
-    if (!user) {
-      return null;
-    }
-    return isGigOwner ? edit : respond;
-  }
-
-  const bottomMessageText = () => {
-    if (!gig.active) {
-      return "This gig has been deleted.";
-    }
-    return !user && "Login to respond"
-  }
-
   const parsedError = error || {};
   return (
     <>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
-      <LoadingModal isLoading={loading || loadingMessageWS} debugMessage={"from @GigDetail 2"} />
+      {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
+      <LoadingModal isLoading={loadingMessageWS} debugMessage={"from @DetailIfNotGigOwner 2"} />
       <CustomScrollViewWithOneButton
-        buttonTitle={getButtonTitle()}
-        buttonOnPress={buttonOnPress()}
-        bottomMessage={bottomMessageText()}
+        buttonTitle={user && gig.active ? "respond": null}
+        buttonOnPress={user && gig.active ? respond : null}
+        bottomMessage={bottomMessageText}
       >
-        {user && !isGigOwner ? (
-          <FavoriteGig
-            navigation={navigation}
-            gig={gig}
-            isFavorite={gig.is_favorite}
-            theme={theme}
-          />
-        ) : null}
-        <View style={styles.imageAndGenresContainer}>
-          <Image
-            imageUri={gig.image}
-            thumbnailUri={gig.thumbnail}
-            containerStyle={styles.image}
-          />
-          <DisplayGenres
-            genres={gig.genres}
-            containerStyle={styles.genres}
-          />
-        </View>
-        {isGigOwner && gig.replies ? (
-          <GigRepliesButton
-            gig={gig}
-            navigation={navigation}
-            theme={theme}
-            containerStyle={{marginTop: 10}}
-          />
-        ) : null}
-        <TextFieldWithTitle
-          title={"gig"}
-          text={gig.title}
+        <Detail
+          user={user}
+          isGigOwner={isGigOwner}
+          gig={gig}
+          navigation={navigation}
         />
-        <TextFieldWithTitle
-          title={"location"}
-          text={gig.location}
+      </CustomScrollViewWithOneButton>
+  </>
+  )
+}
+
+function Detail({ user, isGigOwner, gig, navigation }) {
+  const theme = useTheme();
+  return (
+    <>
+      {user && !isGigOwner ? (
+        <FavoriteGig
+          navigation={navigation}
+          gig={gig}
+          isFavorite={gig.is_favorite}
+          theme={theme}
         />
-        {gig.description ? (
-          <TextFieldWithTitle
-            title={"description"}
-            text={gig.description}
-          />
-        ) : null}
-        <TextFieldWithTitle
-          title={"country"}
-          text={gig.country.country}
+      ) : null}
+      <View style={styles.imageAndGenresContainer}>
+        <Image
+          imageUri={gig.image}
+          thumbnailUri={gig.thumbnail}
+          containerStyle={styles.image}
         />
-        {gig.has_spare_ticket ? (
-          <TextFieldWithTitle
-            title={"has spare ticket"}
-            text={"yes"}
-          />
-        ) : null}
-        <TextFieldWithTitle
-          title={"gig date"}
-          text={`${dateFormat(gig.start_date, "fullDate")}`}
+        <DisplayGenres
+          genres={gig.genres}
+          containerStyle={styles.genres}
         />
-        <UserProfileLink
-          user={gig.user}
-          title={"posted by"}
+      </View>
+      {isGigOwner && gig.replies ? (
+        <GigRepliesButton
+          gig={gig}
           navigation={navigation}
           theme={theme}
-          containerStyle={styles.userProfileLink}
+          containerStyle={{marginTop: 10}}
         />
-        {isGigOwner && gig.active ? (
-          <ShowAlbumsWithAddMusicButton
-            resourceId={gig.id}
-            type={"gig"}
-            theme={theme}
-            navigation={navigation}
-          />
-        ) : (
-          <ShowAlbums
-            resourceId={gig.id}
-            type={"gig"}
-            theme={theme}
-            navigation={navigation}
-          />
-        )}
-      </CustomScrollViewWithOneButton>
+      ) : null}
+      <TextFieldWithTitle
+        title={"gig"}
+        text={gig.title}
+      />
+      <TextFieldWithTitle
+        title={"location"}
+        text={gig.location}
+      />
+      {gig.description ? (
+        <TextFieldWithTitle
+          title={"description"}
+          text={gig.description}
+        />
+      ) : null}
+      <TextFieldWithTitle
+        title={"country"}
+        text={gig.country.country}
+      />
+      {gig.has_spare_ticket ? (
+        <TextFieldWithTitle
+          title={"has spare ticket"}
+          text={"yes"}
+        />
+      ) : null}
+      <TextFieldWithTitle
+        title={"gig date"}
+        text={`${dateFormat(gig.start_date, "fullDate")}`}
+      />
+      <UserProfileLink
+        user={gig.user}
+        title={"posted by"}
+        navigation={navigation}
+        theme={theme}
+        containerStyle={styles.userProfileLink}
+      />
+      {isGigOwner && gig.active ? (
+        <ShowAlbumsWithAddMusicButton
+          resourceId={gig.id}
+          type={"gig"}
+          theme={theme}
+          navigation={navigation}
+        />
+      ) : (
+        <ShowAlbums
+          resourceId={gig.id}
+          type={"gig"}
+          theme={theme}
+          navigation={navigation}
+        />
+      )}
     </>
   )
 }

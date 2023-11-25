@@ -4,8 +4,8 @@ import {Button, Text} from "@react-native-material/core";
 function CustomScrollViewWithOneButton(props) {
   const {
     children,
-    buttonTitle,
-    buttonOnPress,
+    buttonTitle=null,
+    buttonOnPress=null,
     bottomMessage=null,
   } = props;
   return (

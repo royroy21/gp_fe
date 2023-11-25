@@ -71,6 +71,18 @@ const useGigStore = create((set) => ({
     }
     await client.post(params);
   },
+  delete: async (id, onSuccess) => {
+    set({ loading: true });
+    const params = {
+      resource: BACKEND_ENDPOINTS.gigs + id.toString() + "/",
+      successCallback: (json) => {
+        set({object: json, loading: false, error: null});
+        onSuccess();
+      },
+      errorCallback: (json) => set({ loading: false, error: json }),
+    }
+    await client.delete(params);
+  },
   clear: () => set({object: null, loading: false, error: null}),
 }));
 
