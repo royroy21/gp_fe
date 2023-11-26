@@ -5,6 +5,7 @@ import {useCallback, useState} from "react";
 import CenteredModalWithOneButton from "../centeredModal/CenteredModalWithOneButton";
 import {useFocusEffect} from "@react-navigation/native";
 import useGenresStore from "../../store/genres";
+import DisplayGenres from "../gig/DisplayGenres";
 
 function ShowGenre({genre, onSelect, isSelected, theme}) {
   const onPress = () => {onSelect(genre)}
@@ -30,6 +31,7 @@ function SelectGenresModal(props) {
     showModal,
     setModal,
     genres,
+    genresForDisplayGenres,
     searchGenres,
     onGenresSelect,
     selectedGenres,
@@ -37,6 +39,7 @@ function SelectGenresModal(props) {
   } = props;
   return (
     <CenteredModalWithOneButton showModal={showModal} setModal={setModal} >
+      <DisplayGenres genres={genresForDisplayGenres}/>
       <TextInput
         variant={"outlined"}
         trailing={
@@ -51,6 +54,7 @@ function SelectGenresModal(props) {
           />
         }
         onChangeText={searchGenres}
+        style={{paddingTop: 5}}
       />
       {genres ? (
       <ScrollView
@@ -72,7 +76,7 @@ function SelectGenresModal(props) {
   )
 }
 
-function SelectGenres({onSelect, selectedGenres, theme}) {
+function SelectGenres({onSelect, genresForDisplayGenres, selectedGenres, theme}) {
   const [showModal, setModal] = useState(false);
 
   const {
@@ -120,6 +124,7 @@ function SelectGenres({onSelect, selectedGenres, theme}) {
         showModal={showModal}
         setModal={setModal}
         genres={genres}
+        genresForDisplayGenres={genresForDisplayGenres}
         searchGenres={searchGenres}
         onGenresSelect={onSelect}
         selectedGenres={selectedGenres}
