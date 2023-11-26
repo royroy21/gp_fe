@@ -1,7 +1,11 @@
 import {Button, Icon, IconButton, Text} from "@react-native-material/core";
 import {StyleSheet, View} from "react-native";
 
-function LoginOrMenuButton(navigation, user, mainMenu, setMainMenu, isWeb, isSmallScreen) {
+function LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb, isSmallScreen) {
+  if (route.name === "LoginScreen") {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       {user && isWeb && !isSmallScreen && <Text style={styles.username}>{user.username}</Text>}

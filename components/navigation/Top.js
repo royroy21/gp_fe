@@ -78,8 +78,16 @@ function TopNavigation(props) {
   } = props;
   const Stack = createNativeStackNavigator();
   const [mainMenu, setMainMenu] = useState(false);
+  const extraContainerStyle = isWeb && !isSmallScreen ? {
+    borderWidth: 2,
+    borderColor: "grey",
+    marginTop: 20,
+    marginBottom: 20,
+    marginLeft: 150,
+    marginRight: 150,
+  } : {}
   return (
-    <View style={styles.container}>
+    <View style={{...extraContainerStyle, ...styles.container}}>
       <MainMenu
         showMainMenu={mainMenu}
         setMainMenu={setMainMenu}
@@ -115,7 +123,7 @@ function TopNavigation(props) {
                     isSmallScreen={isSmallScreen}
                   />
                 ),
-                headerRight: () => LoginOrMenuButton(navigation, user, mainMenu, setMainMenu, isWeb, isSmallScreen,),
+                headerRight: () => LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb, isSmallScreen,),
               })
             }
           />

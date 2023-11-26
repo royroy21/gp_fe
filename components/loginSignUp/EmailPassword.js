@@ -1,6 +1,6 @@
-import {View, StyleSheet} from "react-native";
+import {View, StyleSheet, Platform, Dimensions} from "react-native";
 import { useForm, Controller }   from "react-hook-form";
-import {Button, Switch} from "@react-native-material/core";
+import {Button, Switch, Text, useTheme} from "@react-native-material/core";
 import {useCallback, useState} from "react";
 import Errors from "../forms/Errors";
 import TextInput from "../forms/TextInput";
@@ -10,8 +10,15 @@ import useUserStore from "../../store/user";
 import useJWTStore from "../../store/jwt";
 import useLastRouteStore from "../../store/lastRoute";
 import {useFocusEffect} from "@react-navigation/native";
+import {smallScreenWidth} from "../../settings";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-export default function EmailPassword({ action, navigation, children, isSignUp=false }) {
+export default function EmailPassword({ action, navigation, route, children, isSignUp=false }) {
+  const theme = useTheme();
+  const isWeb = Boolean(Platform.OS === "web");
+  const windowWidth = Dimensions.get('window').width;
+  const isSmallScreen = windowWidth < smallScreenWidth;
+
   const {
     loading,
     error,
@@ -66,7 +73,15 @@ export default function EmailPassword({ action, navigation, children, isSignUp=f
   const parsedError = error || {};
   const parsedGetUserError = errorUser || {};
   return (
-    <View style={styles.container}>
+    <View style={isWeb && !isSmallScreen ? {...styles.container, paddingLeft: "35%", paddingRight: "35%"} : styles.container}>
+      <View style={styles.welcome}>
+        <Text styles={styles.welcomeMessage}>{"The GigPig welcomes you "}</Text>
+        <Icon
+          name={"pig"}
+          size={25}
+          color={theme.palette.secondary.main}
+        />
+      </View>
       <LoadingModal isLoading={loading || loadingUser} debugMessage={"from @EmailPassword"}/>
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
@@ -111,7 +126,7 @@ export default function EmailPassword({ action, navigation, children, isSignUp=f
         name="password"
       />
       {parsedError.password && <Errors errorMessages={parsedError.password} />}
-      <Button title={"submit"} onPress={handleSubmit(onSubmit)} />
+      <Button title={isSignUp ? "signup" : "login"} onPress={handleSubmit(onSubmit)} />
       <View style={styles.children} >
         { children }
       </View>
@@ -123,6 +138,16 @@ const styles = StyleSheet.create({
   container: {
     paddingLeft: formContainerPadding,
     paddingRight: formContainerPadding,
+  },
+  welcome: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 50,
+  },
+  welcomeMessage: {
+    color: "grey",
   },
   children: {
     marginTop: 40,

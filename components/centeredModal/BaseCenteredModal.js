@@ -1,11 +1,13 @@
 import React from 'react';
 import {Modal, StyleSheet, View, Dimensions, Platform} from "react-native";
 import {useTheme} from "@react-native-material/core";
+import {smallScreenWidth} from "../../settings";
 
 const BaseCenteredModal = ({showModal, setModal, children, buttons, forceWidth50Percent=true}) => {
   const theme = useTheme();
   const windowWidth = Dimensions.get('window').width;
   const isWeb = Boolean(Platform.OS === "web");
+  const isSmallScreen = windowWidth < smallScreenWidth;
   const backgroundColor = theme.palette.background.main;
 
   const contentStyle = !(isWeb && windowWidth > 1000) ? (
@@ -13,16 +15,26 @@ const BaseCenteredModal = ({showModal, setModal, children, buttons, forceWidth50
   ) : (
     {
       ...styles.modalContent,
-      width: forceWidth50Percent ? "50%" : undefined,
+      width: forceWidth50Percent ? "35%" : undefined,
       marginLeft: "auto",
       marginRight: "auto",
     }
   )
 
+ const containerStyle = isWeb && !isSmallScreen ? {
+    borderWidth: 2,
+    borderColor: "grey",
+    marginTop: 20,
+    marginBottom: 20,
+    marginLeft: 150,
+    marginRight: 150,
+   backgroundColor: "black",
+ } : {backgroundColor: backgroundColor}
+
   return (
     <Modal visible={showModal} animationType={"slide"} transparent={true}>
       <View
-        style={{...styles.modalContainer, backgroundColor: backgroundColor}}
+        style={{...containerStyle, ...styles.modalContainer, }}
         onPress={() => setModal(!showModal)}
       >
         <View style={{...contentStyle, backgroundColor: backgroundColor}}>
