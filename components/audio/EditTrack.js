@@ -173,6 +173,7 @@ function InnerEditTrack(props) {
         showModal={deleteTrackModal}
         setModal={setDeleteTrackModal}
         action={deleteTrackAction}
+        error={error}
       />
       <BaseTrackForm
         isWeb={isWeb}

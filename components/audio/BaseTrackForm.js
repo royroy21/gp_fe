@@ -129,46 +129,48 @@ function BaseTrackForm(props) {
         name="title"
       />
       {parsedError.title && <Errors errorMessages={parsedError.title} />}
-      <>
-        <CenteredModalWithOneButton
-          showModal={showSetPosition}
-          setModal={setShowSetPosition}
-        >
-          <ScrollView>
-          {Array.from({length: numberOfExistingTracks}, (_, i) => i + 1).map(position => (
-            <ListItem
-              key={position}
-              leadingMode={"icon"}
-              leading={position === newPosition ? (
-                <Icon
-                  name={"music"}
-                  size={25}
-                  color={theme.palette.secondary.main}
+      {numberOfExistingTracks ? (
+        <>
+          <CenteredModalWithOneButton
+            showModal={showSetPosition}
+            setModal={setShowSetPosition}
+          >
+            <ScrollView>
+              {Array.from({length: numberOfExistingTracks}, (_, i) => i + 1).map(position => (
+                <ListItem
+                  key={position}
+                  leadingMode={"icon"}
+                  leading={position === newPosition ? (
+                    <Icon
+                      name={"music"}
+                      size={25}
+                      color={theme.palette.secondary.main}
+                    />
+                  ) : null}
+                  title={position}
+                  onPress={() => {
+                    setValue("position", position)
+                    setNewPosition(position);
+                  }}
                 />
-              ) : null }
-              title={position}
-              onPress={() => {
-                setValue("position", position)
-                setNewPosition(position);
-              }}
-            />
-          ))}
-          </ScrollView>
-        </CenteredModalWithOneButton>
-        <Text
-          style={{
-            color: theme.palette.secondary.main,
-            ...styles.setPositionText,
-          }}
-        >
-          {`track position: ${getValues("position")}`}
-        </Text>
-        <Button
-          title={"set position"}
-          onPress={() => setShowSetPosition(true)}
-          style={styles.setPositionButton}
-        />
-      </>
+              ))}
+            </ScrollView>
+          </CenteredModalWithOneButton>
+          <Text
+            style={{
+              color: theme.palette.secondary.main,
+              ...styles.setPositionText,
+            }}
+          >
+            {`track position: ${getValues("position")}`}
+          </Text>
+          <Button
+            title={"set position"}
+            onPress={() => setShowSetPosition(true)}
+            style={styles.setPositionButton}
+          />
+        </>
+      ) : null}
     </>
   )
 }

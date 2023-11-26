@@ -20,7 +20,7 @@ function CustomScrollViewWithOneButton(props) {
           <Button
             title={buttonTitle}
             onPress={buttonOnPress}
-            style={styles.button}
+            style={buttonTitle === "delete" ? {backgroundColor: "red", ...styles.button} : styles.button}
           />
         ) : null}
         {bottomMessage ? (

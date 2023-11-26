@@ -27,7 +27,7 @@ function CustomScrollViewWithTwoButtons(props) {
           <Button
             title={actionButton2Title}
             onPress={actionButton2OnPress}
-            style={styles.button}
+            style={actionButton2Title === "delete" ? {backgroundColor: "red", ...styles.button} : styles.button}
           />
         </View>
         ) : null}

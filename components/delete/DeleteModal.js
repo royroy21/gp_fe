@@ -2,9 +2,12 @@ import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoBut
 import {Button, Text, useTheme} from "@react-native-material/core";
 import {StyleSheet, View} from "react-native";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import Errors from "../forms/Errors";
 
-function DeleteModal({ showModal, setModal, action }) {
+function DeleteModal({ showModal, setModal, action, error }) {
   const theme = useTheme();
+
+  const parsedErrors = error || {};
   return (
     <CenteredModalWithTwoButton
       showModal={showModal}
@@ -19,7 +22,15 @@ function DeleteModal({ showModal, setModal, action }) {
       }
     >
       <View style={styles.container}>
-        <Text style={styles.message}>{"Are you sure?"}</Text>
+        <View style={styles.textAndErrorsContainer}>
+          {error ? (
+            Object.entries(parsedErrors).map(([key, value]) => {
+              return <Errors key={key} errorMessages={value} />
+            })
+          ) : (
+            <Text style={styles.message}>{"Are you sure?"}</Text>
+          )}
+        </View>
         <Icon
           name={"emoticon-frown"}
           size={25}
@@ -40,6 +51,9 @@ const styles = StyleSheet.create({
     width: 300,
     marginLeft: "auto",
     marginRight: "auto",
+  },
+  textAndErrorsContainer: {
+    flexDirection: "column",
   },
   button: {
     width: 100,

@@ -171,6 +171,7 @@ function DetailIfGigOwner({ user, isGigOwner, gig, loading, error, deleteGig, na
           showModal={deleteModal}
           setModal={setDeleteModal}
           action={deleteGigAction}
+          error={error}
         />
         {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
         {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}

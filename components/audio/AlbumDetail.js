@@ -57,6 +57,7 @@ function AlbumDetailIfOwner(props) {
     setDeleteAlbumModal,
     deleteAlbumAction,
     isOwner,
+    error,
   } = props;
   return (
     <>
@@ -64,6 +65,7 @@ function AlbumDetailIfOwner(props) {
         showModal={deleteAlbumModal}
         setModal={setDeleteAlbumModal}
         action={deleteAlbumAction}
+        error={error}
       />
       <AlbumDetailContent
         album={album}
@@ -95,6 +97,7 @@ function AlbumDetail({ navigation, route }) {
     get: getAlbum,
     delete: deleteAlbum,
     loading,
+    error: error,
   } = useAlbumStore();
   const [albumInState, setAlbumInState] = useState(refresh ? null : album);
 
@@ -138,13 +141,14 @@ function AlbumDetail({ navigation, route }) {
       setAlbumInState={setAlbumInState}
       deleteAlbum={deleteAlbum}
       loading={loading}
+      error={error}
       navigation={navigation}
     />
   )
 
 }
 
-function InnerAlbumDetail({ album, store, deleteAlbum, loading, navigation }) {
+function InnerAlbumDetail({ album, store, deleteAlbum, loading, error, navigation }) {
   // Album here could be an object or ID depending on if
   // coming from AddTrack (object) or EditTrack (ID) or other.
   // If album is ID we get fetch the object from BE database.
@@ -214,6 +218,7 @@ function InnerAlbumDetail({ album, store, deleteAlbum, loading, navigation }) {
           deleteAlbumModal={deleteAlbumModal}
           setDeleteAlbumModal={setDeleteAlbumModal}
           deleteAlbumAction={deleteAlbumAction}
+          error={error}
           isOwner={isOwner}
         />
         <SquarePlusButton
@@ -237,6 +242,7 @@ function InnerAlbumDetail({ album, store, deleteAlbum, loading, navigation }) {
         deleteAlbumModal={deleteAlbumModal}
         setDeleteAlbumModal={setDeleteAlbumModal}
         deleteAlbumAction={deleteAlbumAction}
+        error={error}
         isOwner={isOwner}
       />
       <SquarePlusButton
