@@ -112,7 +112,7 @@ class APIClient {
         case "The user aborted a request.":
           return params.errorCallback({"unExpectedError": APOLOGY_PREFIX + "The request timed out."});
         default:
-          return params.errorCallback({"unExpectedError": DEFAULT_ERROR_MESSAGE});
+          return params.errorCallback({"unExpectedError": APOLOGY_PREFIX + DEFAULT_ERROR_MESSAGE});
       }
     }
   }
