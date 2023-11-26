@@ -229,6 +229,7 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
                 setNumberOfGenres(selectedGenres.length)
               }
             }}
+            genresForDisplayGenres={getValues("genres")}
             selectedGenres={getValues("genres")}
             theme={theme}
           />

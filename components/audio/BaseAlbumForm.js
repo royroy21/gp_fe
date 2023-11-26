@@ -135,6 +135,7 @@ function BaseAlbumForm(props) {
                 setNumberOfGenres(selectedGenres.length)
               }
             }}
+            genresForDisplayGenres={getValues("genres")}
             selectedGenres={getValues("genres")}
             theme={theme}
           />
