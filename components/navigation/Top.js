@@ -1,20 +1,55 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import MainMenu from "../menu/MainMenu";
 import LoginOrMenuButton from "./LoginOrMenuButton";
 import {StatusBar, View, StyleSheet, Pressable} from "react-native";
 import BottomNavigation from "./Bottom";
 import {IconButton, Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import {Audio} from "expo-av";
+import {useFocusEffect} from "@react-navigation/native";
 
 function Title({title, navigation, route, initialRouteName, BottomNavigationProps, isWeb, isSmallScreen}){
+  const [color, setColor] = useState("white");
   const doNotShowBottomOnTheseRoutes = [
     "LoginScreen", "SignUpScreen",
   ];
+
+  const playOink = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../assets/oink.mp3"),
+    );
+    sound.playAsync();
+  }
+
+  const playOinkOink = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../assets/oink_oink.mp3"),
+    );
+    sound.playAsync();
+  }
+
+  const onPress = () => {
+    if (color === "white") {
+      playOink();
+      setColor("red");
+    } else {
+      playOinkOink();
+      setColor("white");
+    }
+    // navigation.navigate(initialRouteName)
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      setColor("white")
+    }, [])
+  );
+
   return (
     <View style={titleStyles.container}>
-      <Pressable onPress={() => navigation.navigate(initialRouteName)} style={titleStyles.textContainer}>
-        {!(isWeb && isSmallScreen) ? (<Text style={titleStyles.gigPigText}>{"GIGPIG"}</Text>) : null}
+      <Pressable onPress={onPress} style={titleStyles.textContainer}>
+        {!(isWeb && isSmallScreen) ? (<Text style={titleStyles.gigPigText} color={color}>{"GIGPIG"}</Text>) : null}
         <Text style={titleStyles.text}>{`/${title}`}</Text>
       </Pressable>
       {isWeb && !doNotShowBottomOnTheseRoutes.includes(route.name) && (
