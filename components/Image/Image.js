@@ -2,6 +2,18 @@ import {Dimensions, Image as ReactNativeImage, Modal, Platform, Pressable, Style
 import {useState} from "react";
 import {Button} from "@react-native-material/core";
 
+// Add default gigpig images at these paths if required.
+const DEFAULT_IMAGE = "../../assets/default_gigpig.jpeg";
+const DEFAULT_THUMBNAIL_IMAGE = "../../assets/default_gigpig_thumbnail.jpeg";
+
+function getModule (path) {
+    try {
+        return require(path);
+    } catch (e) {
+        return null;
+    }
+}
+
 function Image(props) {
   const {
     imageUri,
@@ -17,8 +29,8 @@ function Image(props) {
   const windowHeight = Dimensions.get("window").height;
   const dimensions = (windowWidth / 4);
   const isWeb = Boolean(Platform.OS === "web");
-  const defaultGigPigImage = require("../../assets/default_gigpig.jpeg");
-  const defaultGigPigThumbnail = require("../../assets/default_gigpig_thumbnail.jpeg");
+  const defaultGigPigImage = getModule(DEFAULT_IMAGE);
+  const defaultGigPigThumbnail = getModule(DEFAULT_THUMBNAIL_IMAGE);
   const largerThumbnailStyle = {
       width: dimensions,
       height: dimensions,

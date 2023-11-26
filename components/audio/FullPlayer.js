@@ -94,6 +94,7 @@ function FullPlayer(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "black",
+    borderLeftColor: "grep",
   },
   tracksContainer: {
     height: 375,
