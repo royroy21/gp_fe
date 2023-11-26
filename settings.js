@@ -48,11 +48,11 @@ export const DEFAULT_COUNTRY = {
   code: "UK",
 };
 
-export const DEFAULT_ERROR_MESSAGE = "Sorry an unexpected error has occurred."
-
 // Screen size
 // Defines what counts as a small screen for web app.
 export const smallScreenWidth = 500;
 
 // Display options
 export const ALLOW_LIGHT_THEME_OPTION = false;
+export const APOLOGY_PREFIX = "Apologies from GigPig. ";
+export const DEFAULT_ERROR_MESSAGE = APOLOGY_PREFIX + "An unexpected error has occurred."

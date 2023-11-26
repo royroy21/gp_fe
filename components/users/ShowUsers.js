@@ -1,7 +1,7 @@
 import {Dimensions, FlatList, Platform, SafeAreaView, StyleSheet, View} from "react-native";
 import React, {useRef, useState} from "react";
 import ShowUser from "./ShowUser";
-import {BACKEND_ENDPOINTS} from "../../settings";
+import {APOLOGY_PREFIX, BACKEND_ENDPOINTS} from "../../settings";
 import {Button, IconButton, Text, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import Errors from "../forms/Errors";
@@ -224,7 +224,7 @@ function ShowUsers({ navigation }) {
       ) : (
         !loading ? (
           <View style={styles.noUsersFoundContainer}>
-            <Text>{"Sorry no users found "}</Text>
+            <Text>{"None found "}</Text>
             <Icon name="emoticon-sad" size={25} color={theme.palette.secondary.main}/>
           </View>
         ) : null

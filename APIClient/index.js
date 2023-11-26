@@ -1,5 +1,5 @@
 import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-storage";
-import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../settings";
+import {APOLOGY_PREFIX, BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../settings";
 import useJWTStore from "../store/jwt";
 
 const TIMEOUT_MS = 10000;
@@ -110,7 +110,7 @@ class APIClient {
       DEBUG && console.error(`API ERROR: "${error.message}"`, params);
       switch(error.message) {
         case "The user aborted a request.":
-          return params.errorCallback({"unExpectedError": "Sorry. The request timed out."});
+          return params.errorCallback({"unExpectedError": APOLOGY_PREFIX + "The request timed out."});
         default:
           return params.errorCallback({"unExpectedError": DEFAULT_ERROR_MESSAGE});
       }
