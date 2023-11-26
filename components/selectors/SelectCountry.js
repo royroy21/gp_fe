@@ -1,6 +1,6 @@
 import {IconButton, ListItem, TextInput} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {Dimensions, ScrollView, View} from "react-native";
+import {Dimensions, ScrollView, StyleSheet, View} from "react-native";
 import useCountriesStore from "../../store/countries";
 import {useCallback, useState} from "react";
 import CenteredModalWithOneButton from "../centeredModal/CenteredModalWithOneButton";
@@ -92,7 +92,7 @@ function SelectCountry({defaultCountry, onSelect, theme}) {
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       <ListItem
         title={`select country: ${selectedCountry.country}`}
         onPress={() => setModal(true)}
@@ -121,5 +121,11 @@ function SelectCountry({defaultCountry, onSelect, theme}) {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 2,
+  },
+});
 
 export default SelectCountry;
