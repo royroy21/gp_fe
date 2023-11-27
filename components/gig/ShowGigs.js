@@ -257,7 +257,7 @@ function ShowGigs({ navigation, refreshGigs=false}) {
         !loading ? (
           <View style={styles.noGigsFoundContainer}>
             <Text>{"None found "}</Text>
-            <Icon name="emoticon-sad" size={25} color={theme.palette.secondary.main}/>
+            <Icon name="pig" size={25} color={theme.palette.secondary.main}/>
           </View>
         ) : null
       )}

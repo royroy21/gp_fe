@@ -32,7 +32,7 @@ function DeleteModal({ showModal, setModal, action, error }) {
           )}
         </View>
         <Icon
-          name={"emoticon-frown"}
+          name={"pig"}
           size={25}
           color={theme.palette.secondary.main}
         />

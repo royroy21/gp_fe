@@ -50,7 +50,7 @@ function Title({title, navigation, route, initialRouteName, BottomNavigationProp
     <View style={titleStyles.container}>
       <Pressable onPress={onPress} style={titleStyles.textContainer}>
         {!(isWeb && isSmallScreen) ? (<Text style={titleStyles.gigPigText} color={color}>{"GIGPIG"}</Text>) : null}
-        <Text style={titleStyles.text}>{`/${title}`}</Text>
+        <Text style={titleStyles.text}>{color === "red" ? "/oink" : `/${title}`}</Text>
       </Pressable>
       {isWeb && !doNotShowBottomOnTheseRoutes.includes(route.name) && (
         <BottomNavigation

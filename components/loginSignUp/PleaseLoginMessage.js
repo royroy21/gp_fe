@@ -8,7 +8,7 @@ function PleaseLoginMessage({ theme }) {
     <View style={styles.container}>
       <Text>{"please log in "}</Text>
       <Icon
-        name={"emoticon-happy"}
+        name={"pig"}
         size={25}
         color={theme.palette.secondary.main}
       />

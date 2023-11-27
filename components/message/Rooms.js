@@ -257,7 +257,7 @@ function Rooms({ route, navigation }) {
         !loading ? (
           <View style={styles.noRoomsFoundContainer}>
             <Text>{"No messages yet "}</Text>
-            <Icon name="emoticon-confused" size={25} color={theme.palette.secondary.main}/>
+            <Icon name="pig" size={25} color={theme.palette.secondary.main}/>
           </View>
         ) : null
       )}

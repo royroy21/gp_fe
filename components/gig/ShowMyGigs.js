@@ -252,7 +252,7 @@ function ShowMyGigs({ navigation }) {
         !loading ? (
           <View style={styles.noGigsFoundContainer}>
             <Text>{"Add some gigs "}</Text>
-            <Icon name="emoticon-happy" size={25} color={theme.palette.secondary.main}/>
+            <Icon name="pig" size={25} color={theme.palette.secondary.main}/>
           </View>
         ) : null
       )}
