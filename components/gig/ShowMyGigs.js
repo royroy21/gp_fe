@@ -251,8 +251,8 @@ function ShowMyGigs({ navigation }) {
       ) : (
         !loading ? (
           <View style={styles.noGigsFoundContainer}>
-            <Text>{"None found "}</Text>
-            <Icon name="emoticon-sad" size={25} color={theme.palette.secondary.main}/>
+            <Text>{"Add some gigs "}</Text>
+            <Icon name="emoticon-happy" size={25} color={theme.palette.secondary.main}/>
           </View>
         ) : null
       )}
