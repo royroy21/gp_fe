@@ -4,21 +4,27 @@ import {useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import CenteredModalWithOneButton from "../centeredModal/CenteredModalWithOneButton";
 import {View} from "react-native";
+import {smallScreenWidth} from "../../settings";
 
 function CalendarModal({visible, date, setDate, onRequestClose}) {
   const theme = useTheme();
   const now = new Date();
   const isWeb = Boolean(Platform.OS === "web");
   const windowWidth = Dimensions.get("window").width;
-  const containerHeight = isWeb ? Dimensions.get("window").height - 200 : 300;
+  const isSmallScreen = windowWidth < smallScreenWidth;
+  const containerStyle = isWeb && !isSmallScreen ?  {height: 600} : {height: 300};
+  const extraCalendarPickerAttributes = isWeb && !isSmallScreen ? {width: 1000, scaleFactor: 500} : {};
   return (
-    <CenteredModalWithOneButton showModal={visible} setModal={onRequestClose} forceWidth50Percent={false}>
-      <View style={{ height: containerHeight }}>
+    <CenteredModalWithOneButton
+      showModal={visible}
+      setModal={onRequestClose}
+      forceWidth50Percent={isSmallScreen}
+    >
+      <View style={containerStyle}>
         <CalendarPicker
           initialDate={now}
           selectedDate={date ? new Date(date) : undefined}
           minDate={now}
-          width={Math.round(windowWidth*0.9)}  // 90% of screen
           textStyle={{
             color: theme.palette.primary.main,
           }}
@@ -49,6 +55,7 @@ function CalendarModal({visible, date, setDate, onRequestClose}) {
             setDate(date)
             onRequestClose()
           }}
+          {...extraCalendarPickerAttributes}
         />
       </View>
     </CenteredModalWithOneButton>
@@ -66,9 +73,4 @@ const styles = StyleSheet.create({
     width: "40%",
     marginBottom: 10,
   },
-  calendar: {
-    borderWidth: 1,
-    borderColor: "pink",
-    borderStyle: "solid",
-  }
 })
