@@ -114,7 +114,7 @@ function SearchGigs(props) {
   function submitSearchRequest() {
     // If searchString is empty send query to return all results
     let searchFeedBack = "Showing results for ";
-    const getAllQuery = "*:*";
+    const getAllQuery = "";
     let search = (searchString.trim() === "") ? getAllQuery : searchString;
     if (search === getAllQuery) {
       searchFeedBack += `everything, `;
@@ -134,7 +134,7 @@ function SearchGigs(props) {
       search += "&start_date__gte=" + formattedDate + "&order_by=start_date";
       searchFeedBack += `starting on ${dateFormat(startDate, "fullDate")}`;
     }
-    getGigsFromAPI(BACKEND_ENDPOINTS.searchGigs + "?search=" + search, true);
+    getGigsFromAPI(BACKEND_ENDPOINTS.searchGigs + "?q=" + search, true);
 
     searchFeedBack = searchFeedBack.trim()
     if (searchFeedBack[searchFeedBack.length - 1] === ",") {

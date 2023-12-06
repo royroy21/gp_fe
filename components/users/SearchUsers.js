@@ -75,7 +75,7 @@ function SearchUsers(props) {
   function submitSearchRequest() {
     // If searchString is empty send query to return all results
     let searchFeedBack = "Showing results for ";
-    const getAllQuery = "*:*";
+    const getAllQuery = "";
     let search = (searchString.trim() === "") ? getAllQuery : searchString;
     if (search === getAllQuery) {
       searchFeedBack += `everything, `;
@@ -86,7 +86,7 @@ function SearchUsers(props) {
       search += "&is_favorite=true"
       searchFeedBack += "my favorites, "
     }
-    getUsersFromAPI(BACKEND_ENDPOINTS.searchUsers + "?search=" + search, true);
+    getUsersFromAPI(BACKEND_ENDPOINTS.searchUsers + "?q=" + search, true);
     searchFeedBack = searchFeedBack.trim()
     if (searchFeedBack[searchFeedBack.length - 1] === ",") {
       searchFeedBack = searchFeedBack.slice(0, searchFeedBack.length - 1)

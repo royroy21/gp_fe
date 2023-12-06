@@ -57,14 +57,14 @@ function SearchRooms(props) {
   function submitSearchRequest() {
     // If searchString is empty send query to return all results
     let searchFeedBack = "Showing results for ";
-    const getAllQuery = "*:*";
+    const getAllQuery = "";
     let search = (searchString.trim() === "") ? getAllQuery : searchString;
     if (search === getAllQuery) {
       searchFeedBack += `everything, `;
     } else {
       searchFeedBack += `${search}, `;
     }
-    getRoomsFromAPI(BACKEND_ENDPOINTS.searchRooms + "?search=" + search, true);
+    getRoomsFromAPI(BACKEND_ENDPOINTS.searchRooms + "?q=" + search, true);
     searchFeedBack = searchFeedBack.trim()
     if (searchFeedBack[searchFeedBack.length - 1] === ",") {
       searchFeedBack = searchFeedBack.slice(0, searchFeedBack.length - 1)

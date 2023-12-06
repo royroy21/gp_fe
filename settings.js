@@ -29,11 +29,11 @@ export const BACKEND_ENDPOINTS = {
   country: BACKEND_URL + "/api/country/?code=",
   message: BACKEND_URL + "/api/message/",
   room: BACKEND_URL + "/api/room/",
-  searchGigs: BACKEND_URL + "/search/gig/",
+  searchGigs: BACKEND_URL + "/api/gig/search/",
   searchCountries: BACKEND_URL + "/search/country/suggest/?country_suggest__completion=",
   searchGenres: BACKEND_URL + "/search/genre/suggest/?genre_suggest__completion=",
-  searchRooms: BACKEND_URL + "/search/room/",
-  searchUsers: BACKEND_URL + "/search/user/",
+  searchRooms: BACKEND_URL + "/api/room/search/",
+  searchUsers: BACKEND_URL + "/api/user/search/",
 };
 export const BACKEND_SOCKET_URL = LOCAL_BACKEND_SOCKET_URL;
 export const BACKEND_SOCKET_ENDPOINTS = {
@@ -55,4 +55,4 @@ export const smallScreenWidth = 500;
 // Display options
 export const ALLOW_LIGHT_THEME_OPTION = false;
 export const APOLOGY_PREFIX = "Apologies from GigPig. ";
-export const DEFAULT_ERROR_MESSAGE = APOLOGY_PREFIX + "An unexpected error has occurred."
+export const DEFAULT_ERROR_MESSAGE = "An unexpected error has occurred."

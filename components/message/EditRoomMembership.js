@@ -138,7 +138,7 @@ function AddUsersModal(props) {
           />
         }
         onChangeText={(text) => {
-          searchUsers(text + "*")
+          searchUsers(text)
         }}
       />
       {users ? (
@@ -175,14 +175,14 @@ function EditRoomMembership({ room, navigation, theme }) {
   } = useUsersStore();
   const initialSearchUsers = async () => {
     await get(
-      BACKEND_ENDPOINTS.searchUsers + "?search=*:*&is_favorite=true",
+      BACKEND_ENDPOINTS.searchUsers + "?is_favorite=true",
       [],
       true
     );
   }
   const searchUsers = async (query) => {
     await get(
-      BACKEND_ENDPOINTS.searchUsers + "?search_using_wildcard=" + query + "&is_favorite=true",
+      BACKEND_ENDPOINTS.searchUsers + "?is_favorite=true&q=" + query,
       [],
       true
     );
