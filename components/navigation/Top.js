@@ -120,50 +120,53 @@ function TopNavigation(props) {
     marginBottom: 20,
     marginLeft: 150,
     marginRight: 150,
+    backgroundColor: "#000000",
   } : {}
   return (
-    <View style={{...extraContainerStyle, ...styles.container}}>
-      <MainMenu
-        showMainMenu={mainMenu}
-        setMainMenu={setMainMenu}
-      />
-      {(!user || user.theme === "dark") ? (<StatusBar barStyle="light-content" />) : null}
-      <Stack.Navigator
-        initialRouteName={initialRouteName}
-        screenOptions={{animation: "none"}}
-      >
-        {screens.map(options => (
-          <Stack.Screen
-            key={options.key}
-            name={options.name}
-            component={options.component}
-            options={({ navigation, route }) =>
-              ({
-                headerLeft: ()=> (
-                  <GoBackButton
-                    navigation={navigation}
-                    route={route}
-                    isWeb={isWeb}
-                  />
-                ),
-                headerBackVisible: false,
-                headerTitle: () => (
-                  <Title
-                    title={options.title}
-                    navigation={navigation}
-                    route={route}
-                    initialRouteName={initialRouteName}
-                    BottomNavigationProps={BottomNavigationProps}
-                    isWeb={isWeb}
-                    isSmallScreen={isSmallScreen}
-                  />
-                ),
-                headerRight: () => LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb, isSmallScreen,),
-              })
-            }
-          />
-        ))}
-      </Stack.Navigator>
+    <View style={styles.outerContainer}>
+      <View style={{...extraContainerStyle, ...styles.container}}>
+        <MainMenu
+          showMainMenu={mainMenu}
+          setMainMenu={setMainMenu}
+        />
+        {(!user || user.theme === "dark") ? (<StatusBar barStyle="light-content" />) : null}
+        <Stack.Navigator
+          initialRouteName={initialRouteName}
+          screenOptions={{animation: "none"}}
+        >
+          {screens.map(options => (
+            <Stack.Screen
+              key={options.key}
+              name={options.name}
+              component={options.component}
+              options={({ navigation, route }) =>
+                ({
+                  headerLeft: ()=> (
+                    <GoBackButton
+                      navigation={navigation}
+                      route={route}
+                      isWeb={isWeb}
+                    />
+                  ),
+                  headerBackVisible: false,
+                  headerTitle: () => (
+                    <Title
+                      title={options.title}
+                      navigation={navigation}
+                      route={route}
+                      initialRouteName={initialRouteName}
+                      BottomNavigationProps={BottomNavigationProps}
+                      isWeb={isWeb}
+                      isSmallScreen={isSmallScreen}
+                    />
+                  ),
+                  headerRight: () => LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb, isSmallScreen,),
+                })
+              }
+            />
+          ))}
+        </Stack.Navigator>
+      </View>
     </View>
   )
 }
@@ -171,6 +174,10 @@ function TopNavigation(props) {
 export default TopNavigation;
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: "#000000",
+  },
   container: {
     flex: 1,
     zIndex: 3,
