@@ -65,7 +65,7 @@ function AdvancedSearchModal(props) {
           }
         />
         <ListItem
-          title={<Text>{"With past gigs?"}</Text>}
+          title={<Text>{"Show past gigs?"}</Text>}
           onPress={() => setShowPastGigs(!showPastGigs)}
           trailing={
             showPastGigs ? (
@@ -122,7 +122,7 @@ function SearchMyGigs(props) {
     }
     if (showPastGigs) {
       search += "&past_gigs=true"
-      searchFeedBack += "with past gigs, "
+      searchFeedBack += "show past gigs, "
     }
     if (startDate) {
       const formattedDate = dateFormat(startDate, "isoDate");
