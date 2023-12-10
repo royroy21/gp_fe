@@ -1,5 +1,17 @@
 import {Button, Icon, IconButton, Text} from "@react-native-material/core";
-import {StyleSheet, View} from "react-native";
+import {Pressable, StyleSheet, View} from "react-native";
+
+function UserNameButton({ username, navigation }) {
+  const onPress = () => {
+    navigation.navigate("ProfilePage")
+  }
+  return (
+    <Pressable onPress={onPress}>
+      <Text style={styles.username}>{username}</Text>
+    </Pressable>
+  )
+}
+
 
 function LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb, isSmallScreen) {
   if (route.name === "LoginScreen") {
@@ -8,7 +20,7 @@ function LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb
 
   return (
     <View style={styles.container}>
-      {user && isWeb && !isSmallScreen && <Text style={styles.username}>{user.username}</Text>}
+      {user && isWeb && !isSmallScreen && <UserNameButton username={user.username} navigation={navigation} />}
       {user.id ? (
       <IconButton
         icon={<Icon name="menu" size={30} />}
