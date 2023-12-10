@@ -14,6 +14,7 @@ import {useFocusEffect} from "@react-navigation/native";
 import {ScrollView} from "react-native-web";
 import useUserStore from "../../store/user";
 import useGigStore from "../../store/gig";
+import settings from "../settings";
 
 function ListGigs(props) {
   const [showLoadMore, setShowLoadMore] = useState(false);
@@ -108,7 +109,7 @@ function ListGigs(props) {
   )
 }
 
-function ShowGigs({ navigation, refreshGigs=false}) {
+function ShowGigs({ navigation, route, refreshGigs=false}) {
   const theme = useTheme()
   const resultsListViewRef = useRef();
   const isWeb = Boolean(Platform.OS === "web");
@@ -159,10 +160,16 @@ function ShowGigs({ navigation, refreshGigs=false}) {
     React.useCallback(() => {
       let isActive = true;
       if (!isActive) {
-        return
+        return;
       }
 
-      getGigsFromAPI();
+      const params = route.params || {};
+      const { userId } = params;
+      if (userId) {
+        getGigsFromAPI(BACKEND_ENDPOINTS.gigs + "?user_id=" + userId);
+      } else {
+        getGigsFromAPI();
+      }
       return () => {
         setSearchFeedback(null);
         setAdvancedSearch(false);

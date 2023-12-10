@@ -15,6 +15,8 @@ function AdvancedSearchModal(props) {
     setAdvancedSearch,
     showFavorites,
     setShowFavorites,
+    hasActiveGigs,
+    setHasActiveGigs,
     submitSearchRequest,
     theme,
   } = props
@@ -39,6 +41,17 @@ function AdvancedSearchModal(props) {
             />
           }
           onChangeText={setSearchString}
+        />
+        <ListItem
+          title={<Text>{"Has active gigs?"}</Text>}
+          onPress={() => setHasActiveGigs(!hasActiveGigs)}
+          trailing={
+            hasActiveGigs ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
         />
         {user ? (
           <ListItem
@@ -71,6 +84,7 @@ function SearchUsers(props) {
 
   const [searchString, setSearchString] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
+  const [hasActiveGigs, setHasActiveGigs] = useState(false);
 
   function submitSearchRequest() {
     // If searchString is empty send query to return all results
@@ -81,6 +95,10 @@ function SearchUsers(props) {
       searchFeedBack += `everything, `;
     } else {
       searchFeedBack += `${search}, `;
+    }
+    if (hasActiveGigs) {
+      search += "&has_active_gigs=true"
+      searchFeedBack += "has active gigs, "
     }
     if (showFavorites) {
       search += "&is_favorite=true"
@@ -107,6 +125,8 @@ function SearchUsers(props) {
         advancedSearch={advancedSearch}
         setAdvancedSearch={setAdvancedSearch}
         showFavorites={showFavorites}
+        hasActiveGigs={hasActiveGigs}
+        setHasActiveGigs={setHasActiveGigs}
         setShowFavorites={setShowFavorites}
         submitSearchRequest={submitSearchRequest}
         theme={theme}

@@ -20,6 +20,7 @@ export default function DefaultScreen({ navigation, route }) {
       <View style={styles.container}>
         <ShowGigs
           navigation={navigation}
+          route={route}
           refreshGigs={refreshGigs}
         />
       </View>
@@ -33,6 +34,7 @@ export default function DefaultScreen({ navigation, route }) {
       {user ? (
         <ShowGigs
           navigation={navigation}
+          route={route}
           refreshGigs={refreshGigs}
         />
       ) : (

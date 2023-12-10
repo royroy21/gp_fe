@@ -80,6 +80,13 @@ class ShowUser extends Component {
                 style={styles.chip}
               />
             ) : null}
+            {user.number_of_active_gigs ? (
+              <Chip
+                key={"number_of_active_gigs"}
+                label={`${user.number_of_active_gigs} active ${user.number_of_active_gigs === 1 ? "gig" : "gigs"}`}
+                style={styles.chip}
+              />
+            ) : null}
             {user.genres.map((genre, key) => (
               <Chip
                 key={key}

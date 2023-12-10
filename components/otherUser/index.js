@@ -16,6 +16,7 @@ import ShowAlbums from "../audio/ShowAlbums";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import useRoomStore from "../../store/room";
 import {DEBUG} from "../../settings";
+import ActiveUserGigsButton from "../gig/ActiveUserGigsButton";
 
 function OtherUser({ navigation, route }) {
   const isFocused = useIsFocused();
@@ -176,6 +177,7 @@ function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
           title={"last seen"}
           text={user.distance_from_user ? user.distance_from_user : "last seen unknown"}
         />
+        <ActiveUserGigsButton user={user} navigation={navigation} theme={theme} />
         <ShowAlbums
           resourceId={user.id}
           type={"profile"}

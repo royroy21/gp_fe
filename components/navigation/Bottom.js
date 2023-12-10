@@ -74,19 +74,39 @@ function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
   const buttonStyle = isWeb ? {paddingLeft: 10, ...styles.button} : styles.button;
   return (
     <View style={{backgroundColor: navigationTheme.colors.card, ...containerStyle}}>
-      {navigationItems.map((item) => (
-        <Pressable
-          style={buttonStyle}
-          key={item.name}
-          onPress={() => navigation.navigate(item.navigateTo)}
-        >
-          <Icon
-            key={item.name}
-            name={item.name}
-            {...iconStyle(item.navigateTo, item.navigateTo === currentRouteName)}
-          />
-        </Pressable>
-      ))}
+      <Pressable
+        style={buttonStyle}
+        key={"pig"}
+        onPress={() => navigation.push("DefaultScreen", {refreshGigs : true})}
+      >
+        <Icon
+          key={"pig"}
+          name={"pig"}
+          {...iconStyle("DefaultScreen", "DefaultScreen" === currentRouteName)}
+        />
+      </Pressable>
+      <Pressable
+        style={buttonStyle}
+        key={"account-multiple"}
+        onPress={() => navigation.navigate("UsersScreen")}
+      >
+        <Icon
+          key={"account-multiple"}
+          name={"account-multiple"}
+          {...iconStyle("UsersScreen", "UsersScreen" === currentRouteName)}
+        />
+      </Pressable>
+      <Pressable
+        style={buttonStyle}
+        key={messageIcon}
+        onPress={() => navigation.navigate("RoomsScreen")}
+      >
+        <Icon
+          key={messageIcon}
+          name={messageIcon}
+          {...iconStyle("RoomsScreen", "RoomsScreen" === currentRouteName)}
+        />
+      </Pressable>
     </View>
   );
 }
