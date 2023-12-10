@@ -8,6 +8,7 @@ import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButto
 import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton";
 import {useTheme} from "@react-native-material/core";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import MyGigsButton from "./MyGigsButton";
 
 function ProfilePage({ navigation }) {
   const theme = useTheme();
@@ -50,6 +51,7 @@ function ProfilePage({ navigation }) {
         title={"bio"}
         text={user.bio}
       />
+      <MyGigsButton user={user} navigation={navigation} theme={theme} />
       <ShowAlbumsWithAddMusicButton
         resourceId={user.id}
         type={"profile"}
