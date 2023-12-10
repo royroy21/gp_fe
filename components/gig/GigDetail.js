@@ -1,5 +1,5 @@
 import {StyleSheet, View} from "react-native";
-import {useTheme} from "@react-native-material/core";
+import {Chip, Text, useTheme} from "@react-native-material/core";
 import DisplayGenres from "./DisplayGenres";
 import dateFormat from "dateformat";
 import useUserStore from "../../store/user";
@@ -283,10 +283,18 @@ function Detail({ user, isGigOwner, gig, navigation }) {
           text={"yes"}
         />
       ) : null}
-      <TextFieldWithTitle
-        title={"gig date"}
-        text={`${dateFormat(gig.start_date, "fullDate")}`}
-      />
+      {gig.is_past_gig ? (
+        <TextFieldWithTitle
+          title={"gig date"}
+          text={`${dateFormat(gig.start_date, "fullDate")} - date has passed`}
+          redText={true}
+        />
+      ) : (
+        <TextFieldWithTitle
+          title={"gig date"}
+          text={`${dateFormat(gig.start_date, "fullDate")}`}
+        />
+      )}
       <UserProfileLink
         user={gig.user}
         title={"posted by"}

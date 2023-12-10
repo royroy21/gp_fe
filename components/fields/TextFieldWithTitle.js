@@ -6,13 +6,14 @@ function TextFieldWithTitle(props) {
     title,
     text=null,
     trailing=null,
+    redText=false,
     style={},
   } = props;
   return (
     <View style={{...styles.container, ...style}}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.textContainer}>
-        {text ? <Text style={styles.text}>{text}</Text>: null}
+        {text ? <Text style={{"color": redText ? "red" : undefined, ...styles.text}}>{text}</Text>: null}
         {trailing ? trailing : null}
       </View>
     </View>

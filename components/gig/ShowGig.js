@@ -98,11 +98,23 @@ class ShowGig extends Component {
                 style={styles.chip}
               />
             ) : null}
-            <Chip
-              key={"date"}
-              label={dateFormat(gig.start_date, "fullDate")}
-              style={styles.chip}
-            />
+            {gig.is_past_gig ? (
+              <Chip
+                key={"is_past_gig"}
+                label={
+                  <Text style={styles.isPastGigText}>
+                    {`${dateFormat(gig.start_date, "fullDate")} - date has passed`}
+                  </Text>
+                }
+                style={styles.isPastGigChip}
+              />
+            ) : (
+              <Chip
+                key={"date"}
+                label={dateFormat(gig.start_date, "fullDate")}
+                style={styles.chip}
+              />
+            )}
             {gig.has_spare_ticket ? (
               <Chip
                 key={"has_spare_ticket"}
@@ -142,6 +154,10 @@ const styles = StyleSheet.create({
   },
   chip: {
     margin: 2,
+  },
+  isPastGigText: {
+    color: "red",
+    fontSize: 14,
   },
   description: {
     fontSize: 14,
