@@ -2,18 +2,6 @@ import {Dimensions, Image as ReactNativeImage, Modal, Platform, Pressable, Style
 import {useState} from "react";
 import {Button} from "@react-native-material/core";
 
-// Add default gigpig images at these paths if required.
-const DEFAULT_IMAGE = "../../assets/default_gigpig.jpeg";
-const DEFAULT_THUMBNAIL_IMAGE = "../../assets/default_gigpig_thumbnail.jpeg";
-
-function getModule (path) {
-    try {
-        return require(path);
-    } catch (e) {
-        return null;
-    }
-}
-
 function Image(props) {
   const {
     imageUri,
@@ -24,19 +12,21 @@ function Image(props) {
     containerStyle={},
     thumbnailStyle={},
   } = props;
+
   const [modalVisible, setModalVisible] = useState(false);
+
+  const isWeb = Boolean(Platform.OS === "web");
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const dimensions = (windowWidth / 4);
-  const isWeb = Boolean(Platform.OS === "web");
-  const defaultGigPigImage = getModule(DEFAULT_IMAGE);
-  const defaultGigPigThumbnail = getModule(DEFAULT_THUMBNAIL_IMAGE);
+
   const largerThumbnailStyle = {
       width: dimensions,
       height: dimensions,
       borderRadius: 15,
       ...styles.image,
   };
+
   const smallerThumbnailStyle = {
       width: isWeb ? 100 : 50,
       height: isWeb ? 100 : 50,
@@ -44,6 +34,7 @@ function Image(props) {
       borderRadius: 5,
       ...styles.image,
   };
+
   const getThumbnailStyle = () => {
     if (Object.keys(thumbnailStyle).length) {
       return {
@@ -63,19 +54,23 @@ function Image(props) {
     height: windowWidth,
     resizeMode: "stretch",
   };
+
   const webModalImageStyle = {
     width: windowHeight - 100,
     height: windowHeight - 100,
     resizeMode: "stretch",
   };
+
   const modalImageStyle = isWeb ? webModalImageStyle : mobileModalImageStyle;
 
   const getImageSrc = () => {
     if (imageUri) {
       return {uri: imageUri}
+    } else {
+      return null;
     }
-    return defaultGigPigImage
   }
+
   const getThumbnailSrc = () => {
     if (thumbnailUri) {
       return {uri: thumbnailUri}
@@ -83,7 +78,7 @@ function Image(props) {
     if (imageUri) {
       return {uri: imageUri}
     }
-    return defaultGigPigThumbnail
+    return null;
   }
 
   return (
