@@ -18,8 +18,13 @@ function AddAlbum({ navigation, route }) {
   } = route.params;
 
   const theme = useTheme();
-  const { object: user } = useUserStore();
-  const { object: gig, get: getGig, loading: loadingGig } = useGigStore();
+
+  const user = useUserStore((state) => state.object);
+
+  const gig = useGigStore((state) => state.object);
+  const getGig = useGigStore((state) => state.get);
+  const loadingGig = useGigStore((state) => state.loading);
+
   const [ resource, setResource ] = useState(null);
 
   useFocusEffect(
@@ -94,7 +99,12 @@ function InnerAddAlbum({ resource, type, navigation }) {
     defaultValues: getDefaultValues(),
   });
 
-  const { store, loading, error, post, patch, clear } = useAlbumStore();
+  const store = useAlbumStore((state) => state.store);
+  const loading = useAlbumStore((state) => state.loading);
+  const error = useAlbumStore((state) => state.error);
+  const post = useAlbumStore((state) => state.post);
+  const patch = useAlbumStore((state) => state.patch);
+  const clear = useAlbumStore((state) => state.clear);
 
   let image = null;
   const onSubmit = async (data) => {

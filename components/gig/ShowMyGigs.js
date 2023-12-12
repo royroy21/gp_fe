@@ -1,5 +1,5 @@
 import {Dimensions, FlatList, Platform, SafeAreaView, StyleSheet, View} from "react-native";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import ShowGig from "./ShowGig";
 import {BACKEND_ENDPOINTS} from "../../settings";
 import AddGigButton from "./AddGigButton";
@@ -109,26 +109,27 @@ function ListGigs(props) {
 
 function ShowMyGigs({ navigation }) {
   const theme = useTheme()
+
   const resultsListViewRef = useRef();
+
   const isWeb = Boolean(Platform.OS === "web");
-  const [searchFeedback, setSearchFeedback] = useState(null);
-  const [advancedSearch, setAdvancedSearch] = useState(false);
-  const [loadingNext, setLoadingNext] = useState(false);
   const windowWidth = Dimensions.get("window").width;
 
-  const {
-    object: gigs,
-    error,
-    loading,
-    get,
-    clear,
-  } = useMyGigsStore();
+  const [advancedSearch, setAdvancedSearch] = useState(false);
+  const [loadingNext, setLoadingNext] = useState(false);
 
-  const {
-    store: storeGig,
-  } = useGigStore();
+  const gigs = useMyGigsStore((state) => state.object);
+  const searchFeedback = useMyGigsStore((state) => state.searchFeedback);
+  const setSearchFeedback = useMyGigsStore((state) => state.setSearchFeedback);
+  const setLastURL = useMyGigsStore((state) => state.setLastURL);
+  const error = useMyGigsStore((state) => state.error);
+  const loading = useMyGigsStore((state) => state.loading);
+  const get = useMyGigsStore((state) => state.get);
+  const clear = useMyGigsStore((state) => state.clear);
 
-  const { object: user } = useUserStore();
+  const storeGig = useGigStore((state) => state.store);
+
+  const user = useUserStore((state) => state.object);
 
   async function getGigsFromAPI(url=BACKEND_ENDPOINTS.gigs, doNotMergeResults=false) {
     if (url.includes("/api/")) {
@@ -139,6 +140,7 @@ function ShowMyGigs({ navigation }) {
     } else {
       url += "?my_gigs=true"
     }
+    setLastURL(url);
 
     if (gigs) {
       await get(url, gigs.results, doNotMergeResults);
@@ -157,6 +159,18 @@ function ShowMyGigs({ navigation }) {
     }
     setAdvancedSearch(false);
   }
+
+  useEffect(() => {
+    // Get gigs when user first lands on page only.
+    // Will not get gigs on subsequent visits to page.
+    if (!gigs) {
+      getGigsFromAPI();
+    }
+    return () => {
+      setAdvancedSearch(advancedSearch);
+    }
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       let isActive = true;
@@ -164,22 +178,13 @@ function ShowMyGigs({ navigation }) {
         return
       }
 
-      getGigsFromAPI();
-      return () => {
-        setSearchFeedback(null);
-        setAdvancedSearch(false);
-        setLoadingNext(false);
-        isActive = false;
-        clear();
-      };
-    }, [])
-  );
-
-  useFocusEffect(
-    React.useCallback(() => {
       if (error) {
         setSearchFeedback(null);
       }
+      return () => {
+        setLoadingNext(false);
+        isActive = false;
+      };
     }, [error])
   );
 
@@ -266,8 +271,8 @@ function ShowMyGigs({ navigation }) {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   container: {
     width: "100%",

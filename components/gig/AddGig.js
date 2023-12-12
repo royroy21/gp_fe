@@ -8,12 +8,12 @@ import {Platform} from "react-native";
 import {DEFAULT_COUNTRY} from "../../settings";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 import {useTheme} from "@react-native-material/core";
-import {useNavigation} from "@react-navigation/native";
+import useGigsStore from "../../store/gigs";
+import useMyGigsStore from "../../store/myGigs";
 
 function AddGig({ navigation }) {
-  const { object: user } = useUserStore();
   const theme = useTheme();
-
+  const user = useUserStore((state) => state.object);
   if (!user) {
     return (
       <PleaseLoginMessage theme={theme} />
@@ -30,14 +30,15 @@ function AddGig({ navigation }) {
 }
 
 function InnerAddGig({ user, navigation }) {
-
-  // const navigate = useNavigation();
-
   const isWeb = Boolean(Platform.OS === "web");
 
-  const {
-    store: storeGig,
-  } = useGigStore();
+  const storeGig = useGigStore((state) => state.store);
+
+  const getGigs = useGigsStore((state) => state.get);
+  const lastGigsURL = useGigsStore((state) => state.lastURL);
+  
+  const getMyGigs = useMyGigsStore((state) => state.get);
+  const lastMyGigsURL = useMyGigsStore((state) => state.lastURL);
 
   const { control, handleSubmit, getValues, setValue, resetField, clearErrors } = useForm({
     defaultValues: {
@@ -53,7 +54,13 @@ function InnerAddGig({ user, navigation }) {
   });
 
   let image = null;
-  const { loading, error, post, patch, clear } = useGigStore();
+
+  const loading = useGigStore((state) => state.loading);
+  const error = useGigStore((state) => state.error);
+  const post = useGigStore((state) => state.post);
+  const patch = useGigStore((state) => state.patch);
+  const clear = useGigStore((state) => state.clear);
+
   const onSubmit = async (data) => {
     /*
     NOTE! If an image is present first we upload string data using react-hook-form's
@@ -85,6 +92,12 @@ function InnerAddGig({ user, navigation }) {
 
   const onSuccess = (gig) => {
     storeGig(gig);
+    if (lastGigsURL) {
+      getGigs(lastGigsURL, [], true);
+    }
+    if (lastMyGigsURL) {
+      getMyGigs(lastMyGigsURL, [], true);
+    }
     navigation.push("GigDetail", {id: gig.id});
     return () => {
       setNumberOfGenres(0);

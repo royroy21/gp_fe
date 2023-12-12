@@ -11,6 +11,7 @@ const onSuccess = (set, json, previousRooms, doNotMergeResults) => {
 
 const useRoomsStore = create((set) => ({
   object: null,
+  searchFeedback: null,
   loading: false,
   error: null,
   get: async (url, previousRooms, doNotMergeResults=false) => {
@@ -24,7 +25,13 @@ const useRoomsStore = create((set) => ({
     }
     await client.get(params);
   },
-  clear: () => set({object: null, loading: false, error: null}),
+  setSearchFeedback: searchFeedback => set({searchFeedback}),
+  clear: () => set({
+    object: null,
+    searchFeedback: null,
+    loading: false,
+    error: null,
+  }),
 }));
 
 export default useRoomsStore;

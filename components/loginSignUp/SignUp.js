@@ -3,7 +3,7 @@ import {StyleSheet, View} from "react-native";
 import useJWTStore from "../../store/jwt";
 
 export default function SignUpForm({ navigation }) {
-  const { create } = useJWTStore();
+  const create = useJWTStore((state) => state.create);
   return (
     <View style={styles.container}>
       <EmailPassword

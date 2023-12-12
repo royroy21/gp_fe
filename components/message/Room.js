@@ -149,14 +149,26 @@ function Room({ route }) {
   const PAGE_SIZE = 150;
   const showLoadMoreButton = false;
   const { id } = route.params;
-  const { object: room, get: getRoom } = useRoomStore();
-  const [roomInState, setRoomInState] = useState(room);
-
-  const {remove: removeRoomFromUnReadMessages} = unreadMessagesStore();
+  const messagesRef = useRef(null);
   const theme = useTheme();
   const isWeb = Boolean(Platform.OS === "web");
-  const { object: user } = useUserStore();
-  const messagesRef = useRef(null);
+
+  const room = useRoomStore((state) => state.object);
+  const getRoom = useRoomStore((state) => state.get);
+  const [roomInState, setRoomInState] = useState(room);
+
+  const removeRoomFromUnReadMessages = unreadMessagesStore((state) => state.remove);
+
+  const user = useUserStore((state) => state.object);
+
+  const jwt = useJWTStore((state) => state.object);
+  const accessToken = jwt ? JSON.parse(jwt).access : null;
+
+  const previousMessages = usePreviousMessagesStore((state) => state.object);
+  const loading = usePreviousMessagesStore((state) => state.loading);
+  const get = usePreviousMessagesStore((state) => state.get);
+  const clear = usePreviousMessagesStore((state) => state.clear);
+
   const [webSocket, setWebSocket] = useState(null);
   const [loadingPreviousPage, setLoadingPreviousPage] = useState(false);
   const [message, setMessage] = useState("");
@@ -165,10 +177,6 @@ function Room({ route }) {
   const [alert, setAlert] = useState(null);
   const [showOptions, setOptions] = useState(false);
 
-  const { object: jwt } = useJWTStore();
-  const accessToken = jwt ? JSON.parse(jwt).access : null;
-
-  const {object: previousMessages, loading, get, clear} = usePreviousMessagesStore();
   const getPreviousMessages = async () => {
     clear();
     let params = `?room_id=${roomInState.id}`

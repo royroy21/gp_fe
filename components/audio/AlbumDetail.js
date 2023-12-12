@@ -91,14 +91,14 @@ const AlbumDetailContentStyles = StyleSheet.create({
 function AlbumDetail({ navigation, route }) {
   const isFocused = useIsFocused();
   const { id, refresh } = route.params;
-  const {
-    object: album,
-    store,
-    get: getAlbum,
-    delete: deleteAlbum,
-    loading,
-    error: error,
-  } = useAlbumStore();
+
+  const album = useAlbumStore((state) => state.object);
+  const store = useAlbumStore((state) => state.store);
+  const getAlbum = useAlbumStore((state) => state.get);
+  const deleteAlbum = useAlbumStore((state) => state.delete);
+  const loading = useAlbumStore((state) => state.loading);
+  const error = useAlbumStore((state) => state.error);
+
   const [albumInState, setAlbumInState] = useState(refresh ? null : album);
 
   const correctAlbumInState = () => {
@@ -152,7 +152,7 @@ function InnerAlbumDetail({ album, store, deleteAlbum, loading, error, navigatio
   // Album here could be an object or ID depending on if
   // coming from AddTrack (object) or EditTrack (ID) or other.
   // If album is ID we get fetch the object from BE database.
-  const { object: user } = useUserStore();
+  const user = useUserStore((state) => state.object);
   const [deleteAlbumModal, setDeleteAlbumModal] = useState(false);
 
   useFocusEffect(

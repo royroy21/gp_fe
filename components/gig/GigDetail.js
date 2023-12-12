@@ -1,5 +1,5 @@
 import {StyleSheet, View} from "react-native";
-import {Chip, Text, useTheme} from "@react-native-material/core";
+import {useTheme} from "@react-native-material/core";
 import DisplayGenres from "./DisplayGenres";
 import dateFormat from "dateformat";
 import useUserStore from "../../store/user";
@@ -14,8 +14,7 @@ import UserProfileLink from "../profile/UserProfileLink";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 import FavoriteGig from "./FavoriteGig";
 import useGigStore from "../../store/gig";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {BACKEND_ENDPOINTS, DEBUG} from "../../settings";
+import {DEBUG} from "../../settings";
 import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton";
 import ShowAlbums from "../audio/ShowAlbums";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
@@ -27,8 +26,15 @@ import DeleteModal from "../delete/DeleteModal";
 function GigDetail({ navigation, route }) {
   const isFocused = useIsFocused();
   const { id } = route.params;
-  const { object: user } = useUserStore();
-  const {object: gig, loading, error, get: getGig, delete: deleteGig } = useGigStore();
+
+  const user = useUserStore((state) => state.object);
+
+  const gig = useGigStore((state) => state.object);
+  const getGig = useGigStore((state) => state.get);
+  const loading = useGigStore((state) => state.loading);
+  const error = useGigStore((state) => state.error);
+  const deleteGig = useGigStore((state) => state.delete);
+
   const [gigInState, setGigInState] = useState(gig);
 
   const correctGigInState = () => {
@@ -143,7 +149,7 @@ function DetailIfGigOwner({ user, isGigOwner, gig, loading, error, deleteGig, na
   }
 
   const onSuccess = () => {
-    navigation.navigate("MyGigs");
+    navigation.push("MyGigs");
     return () => {
       setDeleteModal(false);
     };
@@ -188,11 +194,13 @@ function DetailIfGigOwner({ user, isGigOwner, gig, loading, error, deleteGig, na
 }
 
 function DetailIfNotGigOwner({ user, isGigOwner, gig, navigation, bottomMessageText }) {
-  const { store: storeRoom } = useRoomStore();
+  const storeRoom = useRoomStore((state) => state.store);
+
+  const jwt = useJWTStore((state) => state.object);
+  const accessToken = jwt ? JSON.parse(jwt).access : null;
+
   const [loadingMessageWS, setLoadingMessageWS] = useState(false);
   const [error, setError] = useState(null);
-  const {object: jwt} = useJWTStore();
-  const accessToken = jwt ? JSON.parse(jwt).access : null;
 
   const respond = () => {
     const newMessageArguments = {

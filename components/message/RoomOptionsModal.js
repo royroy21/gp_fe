@@ -19,15 +19,12 @@ const RoomOptionsModal = ({room, user, showOptions, setOptions, theme}) => {
   }
   const isRoomOwner = getIsRoomOwner();
 
-  const { store: storeOtherUser } = useOtherUserStore();
-
-  const {
-    store: storeGig,
-  } = useGigStore();
+  const storeOtherUser = useOtherUserStore((state) => state.store);
+  const storeGig = useGigStore((state) => state.store);
 
   const onListItemPress = (member) => {
     if (user.id === member.id) {
-      navigation.navigate("ProfilePage")
+      navigation.push("ProfilePage")
     } else {
       storeOtherUser(member);
       navigation.push("OtherUser", {id: member.id});

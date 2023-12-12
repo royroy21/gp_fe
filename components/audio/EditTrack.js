@@ -17,16 +17,17 @@ function EditTrack({ navigation, route }) {
   const isFocused = useIsFocused();
   const { id, numberOfExistingTracks } = route.params;
   const theme = useTheme();
-  const { object: user } = useUserStore();
-  const {
-    object: track,
-    get,
-    loading,
-    error,
-    patch,
-    delete: deleteTrack,
-    clear,
-  } = useTrackStore();
+
+  const user = useUserStore((state) => state.object);
+
+  const track = useTrackStore((state) => state.object);
+  const get = useTrackStore((state) => state.get);
+  const loading = useTrackStore((state) => state.loading);
+  const error = useTrackStore((state) => state.error);
+  const patch = useTrackStore((state) => state.patch);
+  const deleteTrack = useTrackStore((state) => state.delete);
+  const clear = useTrackStore((state) => state.clear);
+
   const [trackInState, setTrackInState] = useState(track);
 
   const correctTrackInState = () => {

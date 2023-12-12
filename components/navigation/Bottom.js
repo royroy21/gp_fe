@@ -43,7 +43,7 @@ function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
   const navigation = useNavigation();
   const theme = useTheme()
 
-  const {unreadMessages} = unreadMessagesStore();
+  const unreadMessages = unreadMessagesStore((state) => state.unreadMessages);
   const noNewMessagesIcon = "message";
   const unReadMessagesIcon = "message-badge";
   const [messageIcon, setMessageIcon] = useState(noNewMessagesIcon);
@@ -77,7 +77,7 @@ function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
       <Pressable
         style={buttonStyle}
         key={"pig"}
-        onPress={() => navigation.push("DefaultScreen", {refreshGigs : true})}
+        onPress={() => navigation.push("DefaultScreen")}
       >
         <Icon
           key={"pig"}
@@ -88,7 +88,7 @@ function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
       <Pressable
         style={buttonStyle}
         key={"account-multiple"}
-        onPress={() => navigation.navigate("UsersScreen")}
+        onPress={() => navigation.push("UsersScreen")}
       >
         <Icon
           key={"account-multiple"}
@@ -99,7 +99,7 @@ function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
       <Pressable
         style={buttonStyle}
         key={messageIcon}
-        onPress={() => navigation.navigate("RoomsScreen")}
+        onPress={() => navigation.push("RoomsScreen")}
       >
         <Icon
           key={messageIcon}

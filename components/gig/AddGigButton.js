@@ -12,7 +12,7 @@ function AddGigButton({ navigation, theme }) {
         backgroundColor: "gray",
         borderColor: color,
       }}
-      onPress={() => navigation.navigate("AddGig")}
+      onPress={() => navigation.push("AddGig")}
       icon={
         <Icon
           name={"plus"}

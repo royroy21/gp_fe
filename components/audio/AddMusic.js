@@ -15,12 +15,10 @@ function AddMusic({navigation, route}) {
     type,  // type must be one of "gig" or "profile".
   } = route.params;
 
-  const {
-    get: getAlbums,
-    loading: loadingAlbums,
-    object: albums,
-    clear: clearAlbums,
-  }= useAlbumsStore();
+  const albums = useAlbumsStore((state) => state.object);
+  const getAlbums = useAlbumsStore((state) => state.get);
+  const loadingAlbums = useAlbumsStore((state) => state.loading);
+  const clearAlbums = useAlbumsStore((state) => state.clear);
 
   useFocusEffect(
     useCallback(() => {

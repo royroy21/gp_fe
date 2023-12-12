@@ -11,6 +11,8 @@ const onSuccess = (set, json, previousGigs, doNotMergeResults) => {
 
 const useMyGigsStore = create((set) => ({
   object: null,
+  searchFeedback: null,
+  lastURL: null,
   loading: false,
   error: null,
   get: async (url, previousGigs, doNotMergeResults=false) => {
@@ -24,7 +26,15 @@ const useMyGigsStore = create((set) => ({
     }
     await client.get(params);
   },
-  clear: () => set({object: null, loading: false, error: null}),
+  setSearchFeedback: searchFeedback => set({searchFeedback}),
+  setLastURL: lastURL => set({lastURL}),
+  clear: () => set({
+    object: null,
+    searchFeedback: null,
+    lastURL: null,
+    loading: false,
+    error: null,
+  }),
 }));
 
 export default useMyGigsStore;

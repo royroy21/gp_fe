@@ -21,11 +21,11 @@ import ActiveUserGigsButton from "../gig/ActiveUserGigsButton";
 function OtherUser({ navigation, route }) {
   const isFocused = useIsFocused();
   const { id } = route.params;
-  const {
-    object: otherUser,
-    get: getOtherUser,
-    loading: loadingFromOtherUser,
-  } = useOtherUserStore();
+
+  const otherUser = useOtherUserStore((state) => state.object);
+  const getOtherUser = useOtherUserStore((state) => state.get);
+  const loadingFromOtherUser = useOtherUserStore((state) => state.loading);
+
   const [otherUserInState, setOtherUserInState] = useState(otherUser);
 
   const correctOtherUserInState = () => {
@@ -79,12 +79,17 @@ function OtherUser({ navigation, route }) {
 
 function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
   const theme = useTheme();
+
+  const jwt = useJWTStore((state) => state.object);
+  const accessToken = jwt ? JSON.parse(jwt).access : null;
+
+  const thisUser = useUserStore((state) => state.object);
+  const loadingFromUser = useUserStore((state) => state.loading);
+
+  const storeRoom = useRoomStore((state) => state.store);
+
   const [loadingMessageWS, setLoadingMessageWS] = useState(false);
   const [ error, setError] = useState(null);
-  const { object: jwt } = useJWTStore();
-  const accessToken = jwt ? JSON.parse(jwt).access : null;
-  const { object: thisUser, loading: loadingFromUser } = useUserStore();
-  const { store: storeRoom } = useRoomStore();
 
   const directMessage = () => {
     const newMessageArguments = {
@@ -122,7 +127,7 @@ function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
 
   const getButtonAction = () => {
     if (getUserIsViewingOwnPage()) {
-      return () => navigation.navigate("ProfilePage");
+      return () => navigation.push("ProfilePage");
     }
     return thisUser ? directMessage: null
   }

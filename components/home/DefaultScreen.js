@@ -8,12 +8,12 @@ import RegisterNotifications from "../notifications";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 
 export default function DefaultScreen({ navigation, route }) {
-  const params = route.params || {refreshGigs: false};
-  const { refreshGigs } = params;
   const theme = useTheme();
-  const { object: user, loading: loadingUser } = useUserStore();
-  const { loading: loadingJWT } = useJWTStore()
   const isWeb = Boolean(Platform.OS === "web");
+
+  const user = useUserStore((state) => state.object);
+  const loadingUser = useUserStore((state) => state.loading);
+  const loadingJWT = useJWTStore((state) => state.loading);
 
   if (isWeb) {
     return (
@@ -21,7 +21,6 @@ export default function DefaultScreen({ navigation, route }) {
         <ShowGigs
           navigation={navigation}
           route={route}
-          refreshGigs={refreshGigs}
         />
       </View>
     )
@@ -35,7 +34,6 @@ export default function DefaultScreen({ navigation, route }) {
         <ShowGigs
           navigation={navigation}
           route={route}
-          refreshGigs={refreshGigs}
         />
       ) : (
         !loadingUser && !loadingJWT ? (
@@ -49,7 +47,5 @@ export default function DefaultScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   }
 });

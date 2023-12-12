@@ -1,5 +1,5 @@
 import {Dimensions, FlatList, Platform, SafeAreaView, StyleSheet, View} from "react-native";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import ShowUser from "./ShowUser";
 import {APOLOGY_PREFIX, BACKEND_ENDPOINTS} from "../../settings";
 import {Button, IconButton, Text, useTheme} from "@react-native-material/core";
@@ -107,15 +107,27 @@ function ShowUsers({ navigation }) {
   const theme = useTheme()
   const resultsListViewRef = useRef();
   const isWeb = Boolean(Platform.OS === "web");
-  const [searchFeedback, setSearchFeedback] = useState(null);
+  const windowWidth = Dimensions.get("window").width;
+
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
-  const windowWidth = Dimensions.get("window").width;
-  const { object: users, error, loading, get, clear } = useUsersStore();
-  const { object: user } = useUserStore();
-  const { store: storeOtherUser } = useOtherUserStore();
+
+  const users = useUsersStore((state) => state.object);
+  const searchFeedback = useUsersStore((state) => state.searchFeedback);
+  const setSearchFeedback = useUsersStore((state) => state.setSearchFeedback);
+  const setLastURL = useUsersStore((state) => state.setLastURL);
+  const error = useUsersStore((state) => state.error);
+  const loading = useUsersStore((state) => state.loading);
+  const get = useUsersStore((state) => state.get);
+  const clear = useUsersStore((state) => state.clear);
+
+  const user = useUserStore((state) => state.object);
+
+  const storeOtherUser = useOtherUserStore((state) => state.store);
 
   async function getUsersFromAPI(url=BACKEND_ENDPOINTS.user, doNotMergeResults=false) {
+    setLastURL(url);
+
     if (url.includes("/api/")) {
       setSearchFeedback(null);
     }
@@ -136,6 +148,17 @@ function ShowUsers({ navigation }) {
     }
     setAdvancedSearch(false);
   }
+  useEffect(() => {
+    // Get users when user first lands on page only.
+    // Will not get users on subsequent visits to page.
+    if (!users) {
+      getUsersFromAPI();
+    }
+    return () => {
+      setAdvancedSearch(advancedSearch);
+    }
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       let isActive = true;
@@ -143,22 +166,13 @@ function ShowUsers({ navigation }) {
         return
       }
 
-      getUsersFromAPI();
-      return () => {
-        setSearchFeedback(null);
-        setAdvancedSearch(false);
-        setLoadingNext(false);
-        isActive = false;
-        clear();
-      };
-    }, [])
-  );
-
-  useFocusEffect(
-    React.useCallback(() => {
       if (error) {
         setSearchFeedback(null);
       }
+      return () => {
+        setLoadingNext(false);
+        isActive = false;
+      };
     }, [error])
   );
 
@@ -238,8 +252,6 @@ function ShowUsers({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   listContainer: {
     width: "100%",

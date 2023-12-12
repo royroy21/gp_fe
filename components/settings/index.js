@@ -10,7 +10,11 @@ import {ALLOW_LIGHT_THEME_OPTION} from "../../settings";
 
 function Settings({ navigation }) {
   const theme = useTheme();
-  const { object: user, patch, loading, error } = useUserStore();
+
+  const user = useUserStore((state) => state.object);
+  const patch = useUserStore((state) => state.patch);
+  const loading = useUserStore((state) => state.loading);
+  const error = useUserStore((state) => state.error);
 
   const themeOnPress = () => {
     const data = {

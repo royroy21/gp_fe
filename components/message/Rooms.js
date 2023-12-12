@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import useRoomsStore from "../../store/rooms";
 import Errors from "../forms/Errors";
 import {Dimensions, FlatList, Platform, SafeAreaView, StyleSheet, View} from "react-native";
@@ -123,16 +123,27 @@ function ListRooms(props) {
 
 function Rooms({ route, navigation }) {
   const theme = useTheme()
-  const {unreadMessages} = unreadMessagesStore();
+  const initialQuery = route.params ? route.params.initialQuery : null;
   const resultsListViewRef = useRef();
   const isWeb = Boolean(Platform.OS === "web");
-  const [searchFeedback, setSearchFeedback] = useState(null);
+  const windowWidth = Dimensions.get("window").width;
+
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
-  const windowWidth = Dimensions.get("window").width;
-  const {object: rooms, error, loading, get, clear} = useRoomsStore();
-  const { store: storeRoom } = useRoomStore();
-  const { object: user } = useUserStore();
+
+  const unreadMessages = unreadMessagesStore((state) => state.unreadMessages);
+
+  const rooms = useRoomsStore((state) => state.object);
+  const searchFeedback = useRoomsStore((state) => state.searchFeedback);
+  const setSearchFeedback = useRoomsStore((state) => state.setSearchFeedback);
+  const error = useRoomsStore((state) => state.error);
+  const loading = useRoomsStore((state) => state.loading);
+  const get = useRoomsStore((state) => state.get);
+  const clear = useRoomsStore((state) => state.clear);
+
+  const storeRoom = useRoomStore((state) => state.store);
+
+  const user = useUserStore((state) => state.object);
 
   async function getRoomsFromAPI(url=BACKEND_ENDPOINTS.room, doNotMergeResults=false) {
     if (url.includes("/api/")) {
@@ -156,36 +167,37 @@ function Rooms({ route, navigation }) {
     setAdvancedSearch(false);
   }
 
+  useEffect(() => {
+    // Get rooms when user first lands on page only.
+    // Will not get rooms on subsequent visits to page.
+    if (!rooms) {
+      getRoomsFromAPI();
+    }
+    return () => {
+      setAdvancedSearch(advancedSearch);
+    }
+  }, []);
+
   useFocusEffect(
-    useCallback(() => {
+    React.useCallback(() => {
       let isActive = true;
       if (!isActive) {
         return
       }
 
-      const initialQuery = route.params ? route.params.initialQuery : null;
       if (initialQuery) {
-        getRoomsFromAPI(initialQuery);
         route.params = null;
-      } else {
-        getRoomsFromAPI();
+        return getRoomsFromAPI(initialQuery);
+
+      }
+      if (error) {
+        return setSearchFeedback(null);
       }
       return () => {
-        setSearchFeedback(null);
-        setAdvancedSearch(false);
         setLoadingNext(false);
         isActive = false;
-        clear();
       };
-    }, [])
-  );
-
-  useFocusEffect(
-    React.useCallback(() => {
-      if (error) {
-        setSearchFeedback(null);
-      }
-    }, [error])
+    }, [initialQuery, error])
   );
 
   async function getNextPage() {
@@ -270,8 +282,6 @@ function Rooms({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   listContainer: {
     width: "100%",

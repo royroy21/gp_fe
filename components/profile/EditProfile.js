@@ -18,7 +18,11 @@ import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 function EditProfile({ navigation }) {
   const isFocused = useIsFocused();
   const theme = useTheme();
-  const { object: user, patch, loading, error } = useUserStore();
+
+  const user = useUserStore((state) => state.object);
+  const patch = useUserStore((state) => state.patch);
+  const loading = useUserStore((state) => state.loading);
+  const error = useUserStore((state) => state.error);
 
   if (!user && !loading) {
     return (
@@ -113,7 +117,7 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
   }
 
   const onSuccess = () => {
-    navigation.navigate("ProfilePage")
+    navigation.push("ProfilePage")
     return () => {
       image = null
     }

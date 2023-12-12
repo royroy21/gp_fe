@@ -7,7 +7,7 @@ function MyGigsButton({ user, navigation, theme }) {
     return null;
   }
   const onPress = () => {
-    navigation.navigate("MyGigs");
+    navigation.push("MyGigs");
   }
   return (
     <View style={styles.outerContainer}>

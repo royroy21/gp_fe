@@ -25,22 +25,25 @@ const getLinkingConfigScreens = () => {
 const linkingConfigScreens = getLinkingConfigScreens();
 
 export default function Navigation() {
-  const { object: user, me } = useUserStore();
-  const { store: storeLastRoute } = useLastRouteStore();
-  const { object: jwt, setExisting } = useJWTStore()
-  const { tracks: audioTracks } = audioPlayerStore();
-  const theme = user && user.theme === "light" ? DefaultTheme : DarkTheme;
-  const [currentRouteName, setCurrentRouteName] = useState("DefaultScreen");
   const isWeb = Boolean(Platform.OS === "web");
   const windowWidth = Dimensions.get('window').width;
   const isSmallScreen = windowWidth < smallScreenWidth;
+
+  const [currentRouteName, setCurrentRouteName] = useState("DefaultScreen");
+
+  const user = useUserStore((state) => state.object);
+  const me = useUserStore((state) => state.me);
+  const storeLastRoute = useLastRouteStore((state) => state.store);
+  const jwt = useJWTStore((state) => state.object);
+  const setExisting = useJWTStore((state) => state.setExisting);
+  const audioTracks = audioPlayerStore((state) => state.tracks);
+
+  const theme = user && user.theme === "light" ? DefaultTheme : DarkTheme;
 
   const getUserAndSetJWT = async () => {
     if (!user) {
       const unparsedJWT  = await AsyncStorage.getItem("jwt");
       if (!unparsedJWT) {
-        // TODO - remove this??
-        // navigation.navigate("LoginScreen");
         return null;
       }
       setExisting(unparsedJWT);

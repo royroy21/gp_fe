@@ -4,7 +4,7 @@ import {StyleSheet, View} from "react-native";
 import useJWTStore from "../../store/jwt";
 
 export default function LoginForm({ navigation }) {
-  const { login } = useJWTStore();
+  const login = useJWTStore((state) => state.login);
   return (
     <View style={styles.container}>
       <EmailPassword action={login} navigation={navigation}>
@@ -12,7 +12,7 @@ export default function LoginForm({ navigation }) {
           title={"sign up"}
           uppercase={false}
           variant={"text"}
-          onPress={() => navigation.navigate("SignUpScreen")}
+          onPress={() => navigation.push("SignUpScreen")}
         />
       </EmailPassword>
     </View>

@@ -65,10 +65,8 @@ function SelectCountry({defaultCountry, onSelect, theme}) {
   const [selectedCountry, setSelectedCountry] = useState(defaultCountry);
   const [showModal, setModal] = useState(false);
 
-  const {
-    object: countries,
-    search: searchCountries,
-  } = useCountriesStore();
+  const countries = useCountriesStore((state) => state.object);
+  const searchCountries = useCountriesStore((state) => state.search);
 
   const onCountrySelect = (country) => {
     onSelect(country);
