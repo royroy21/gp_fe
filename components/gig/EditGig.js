@@ -10,20 +10,23 @@ import LoadingModal from "../loading/LoadingModal";
 import {useTheme} from "@react-native-material/core";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 import {DEBUG} from "../../settings";
+import useGigsStore from "../../store/gigs";
+import useMyGigsStore from "../../store/myGigs";
 
 function EditGig({ navigation, route }) {
   const isFocused = useIsFocused();
   const theme = useTheme();
   const { id } = route.params;
-  const { object: user } = useUserStore();
-  const {
-    object: gig,
-    get,
-    store,
-    loading,
-    error,
-    patch,
-  } = useGigStore();
+
+  const user = useUserStore((state) => state.object);
+
+  const gig = useGigStore((state) => state.object);
+  const get = useGigStore((state) => state.get);
+  const store = useGigStore((state) => state.store);
+  const loading = useGigStore((state) => state.loading);
+  const error = useGigStore((state) => state.error);
+  const patch = useGigStore((state) => state.patch);
+
   const [gigInState, setGigInState] = useState(gig);
 
   const correctGigInState = () => {
@@ -91,6 +94,12 @@ function EditGig({ navigation, route }) {
 function InnerEditGig({ gig, get, store, loading, error, patch, navigation }) {
   const isWeb = Boolean(Platform.OS === "web");
 
+  const getGigs = useGigsStore((state) => state.get);
+  const lastGigsURL = useGigsStore((state) => state.lastURL);
+
+  const getMyGigs = useMyGigsStore((state) => state.get);
+  const lastMyGigsURL = useMyGigsStore((state) => state.lastURL);
+
   const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
     defaultValues: {
       "title": gig.title,
@@ -146,6 +155,12 @@ function InnerEditGig({ gig, get, store, loading, error, patch, navigation }) {
 
   const onSuccess = (gig) => {
     store(gig);
+    if (lastGigsURL) {
+      getGigs(lastGigsURL, [], true);
+    }
+    if (lastMyGigsURL) {
+      getMyGigs(lastMyGigsURL, [], true);
+    }
     navigation.push("GigDetail", {id: gig.id});
     return () => {
       setNumberOfGenres(0);

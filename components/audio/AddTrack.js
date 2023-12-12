@@ -16,14 +16,15 @@ import {useTheme} from "@react-native-material/core";
 function AddTrack({ navigation, route }) {
   const isFocused = useIsFocused();
   const theme = useTheme();
-  const { object: user } = useUserStore();
   const { albumId } = route.params;
-  const {
-    object: album,
-    get: getAlbum,
-    store: storeAlbum,
-    loading,
-  } = useAlbumStore();
+
+  const user = useUserStore((state) => state.object);
+
+  const album = useAlbumStore((state) => state.object);
+  const getAlbum = useAlbumStore((state) => state.get);
+  const storeAlbum = useAlbumStore((state) => state.store);
+  const loading = useAlbumStore((state) => state.loading);
+
   const [albumInState, setAlbumInState] = useState(album);
 
   const correctAlbumInState = () => {
@@ -96,7 +97,11 @@ function InnerAddTrack({ album, storeAlbum, navigation }) {
     },
   });
 
-  const { loading, error, post, patch, clear } = useTrackStore();
+  const loading = useTrackStore((state) => state.loading);
+  const error = useTrackStore((state) => state.error);
+  const post = useTrackStore((state) => state.post);
+  const patch = useTrackStore((state) => state.patch);
+  const clear = useTrackStore((state) => state.clear);
 
   let image = null;
   let file = null;

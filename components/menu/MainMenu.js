@@ -2,25 +2,23 @@ import React from 'react';
 import {Text} from "react-native";
 import {IconButton, ListItem, useTheme} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {useNavigation} from "@react-navigation/native";
 import LogOut from "../loginSignUp/LogOut";
 import CenteredModalWithOneButton from "../centeredModal/CenteredModalWithOneButton";
 
-const MainMenu = ({showMainMenu, setMainMenu}) => {
+const MainMenu = ({ showMainMenu, setMainMenu, navigation }) => {
   const theme = useTheme()
-  const navigation = useNavigation();
   return (
     <CenteredModalWithOneButton showModal={showMainMenu} setModal={setMainMenu}>
       <ListItem
         title={<Text>{"Profile"}</Text>}
         onPress={() => {
-          navigation.navigate("ProfilePage");
+          navigation.push("ProfilePage");
           setMainMenu(!showMainMenu);
         }}
         trailing={
           <IconButton
             onPress={() => {
-              navigation.navigate("ProfilePage");
+              navigation.push("ProfilePage");
               setMainMenu(!showMainMenu);
             }}
             icon={
@@ -36,13 +34,13 @@ const MainMenu = ({showMainMenu, setMainMenu}) => {
       <ListItem
         title={<Text>{"My Gigs"}</Text>}
         onPress={() => {
-          navigation.navigate("MyGigs");
+          navigation.push("MyGigs");
           setMainMenu(!showMainMenu);
         }}
         trailing={
           <IconButton
             onPress={() => {
-              navigation.navigate("MyGigs");
+              navigation.push("MyGigs");
               setMainMenu(!showMainMenu);
             }}
             icon={
@@ -74,13 +72,13 @@ const MainMenu = ({showMainMenu, setMainMenu}) => {
       <ListItem
         title={<Text>{"Settings"}</Text>}
         onPress={() => {
-          navigation.navigate("Settings");
+          navigation.push("Settings");
           setMainMenu(!showMainMenu);
         }}
         trailing={
           <IconButton
             onPress={() => {
-              navigation.navigate("Settings");
+              navigation.push("Settings");
               setMainMenu(!showMainMenu);
             }}
             icon={

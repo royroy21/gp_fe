@@ -79,10 +79,8 @@ function SelectGenresModal(props) {
 function SelectGenres({onSelect, genresForDisplayGenres, selectedGenres, theme}) {
   const [showModal, setModal] = useState(false);
 
-  const {
-    object: genres,
-    search: searchGenres,
-  } = useGenresStore();
+  const genres = useGenresStore((state) => state.object);
+  const searchGenres = useGenresStore((state) => state.search);
 
   useFocusEffect(
     useCallback(() => {

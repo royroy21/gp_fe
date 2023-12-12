@@ -1,9 +1,10 @@
 import {Button, Icon, IconButton, Text} from "@react-native-material/core";
 import {Pressable, StyleSheet, View} from "react-native";
+import MainMenu from "../menu/MainMenu";
 
 function UserNameButton({ username, navigation }) {
   const onPress = () => {
-    navigation.navigate("ProfilePage")
+    navigation.push("ProfilePage")
   }
   return (
     <Pressable onPress={onPress}>
@@ -20,6 +21,11 @@ function LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb
 
   return (
     <View style={styles.container}>
+      <MainMenu
+        showMainMenu={mainMenu}
+        setMainMenu={setMainMenu}
+        navigation={navigation}
+      />
       {user && isWeb && !isSmallScreen && <UserNameButton username={user.username} navigation={navigation} />}
       {user.id ? (
       <IconButton
@@ -29,7 +35,7 @@ function LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb
     ) : (
       <Button
         title={"login"}
-        onPress={() => navigation.navigate("LoginScreen")}
+        onPress={() => navigation.push("LoginScreen")}
         style={styles.loginButton}
       />
     )}

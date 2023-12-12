@@ -99,7 +99,9 @@ function AddUsersModal(props) {
     }, [])
   );
 
-  const { store, patch, loading } = useRoomStore();
+  const store = useRoomStore((state) => state.store);
+  const patch = useRoomStore((state) => state.patch);
+  const loading = useRoomStore((state) => state.loading);
 
   const onSuccess = (json) => {
     store(json);
@@ -169,10 +171,10 @@ const modalStyles = StyleSheet.create({
 
 function EditRoomMembership({ room, navigation, theme }) {
   const [showModal, setModal] = useState(false);
-  const {
-    object: users,
-    get: get,
-  } = useUsersStore();
+
+  const users = useUsersStore((state) => state.object);
+  const get = useUsersStore((state) => state.get);
+
   const initialSearchUsers = async () => {
     await get(
       BACKEND_ENDPOINTS.searchUsers + "?is_favorite=true",

@@ -9,23 +9,22 @@ import useUserStore from "../../store/user";
 import LoadingModal from "../loading/LoadingModal";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 import {useTheme} from "@react-native-material/core";
-import {DEBUG} from "../../settings";
 
 function EditAlbum({ navigation, route }) {
   const isFocused = useIsFocused();
   const theme = useTheme();
   const { id } = route.params;
-  const { object: user } = useUserStore();
 
-  const {
-    object: album,
-    get,
-    store,
-    loading,
-    error,
-    patch,
-    clear,
-  } = useAlbumStore();
+  const user = useUserStore((state) => state.object);
+
+  const album = useAlbumStore((state) => state.object);
+  const get = useAlbumStore((state) => state.get);
+  const store = useAlbumStore((state) => state.store);
+  const loading = useAlbumStore((state) => state.loading);
+  const error = useAlbumStore((state) => state.error);
+  const patch = useAlbumStore((state) => state.patch);
+  const clear = useAlbumStore((state) => state.clear);
+
   const [albumInState, setAlbumInState] = useState(album);
 
   const correctAlbumInState = () => {

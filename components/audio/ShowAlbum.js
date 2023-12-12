@@ -7,7 +7,7 @@ import DisplayGenres from "../gig/DisplayGenres";
 import useAlbumStore from "../../store/album";
 
 function ShowAlbum({album, navigation, theme}) {
-  const { store } = useAlbumStore();
+  const store = useAlbumStore((state) => state.store);
 
   const goToAlbum = () => {
     store(album);

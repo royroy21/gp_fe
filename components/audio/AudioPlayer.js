@@ -6,22 +6,21 @@ import FullPlayer from "./FullPlayer";
 
 function AudioPlayer({ isWeb, isSmallScreen }) {
   const theme = useTheme();
-  const {
-    tracks,
-    playingTrack,
-    isPlaying,
-    duration,
-    position,
-    finished,
-    paused,
-    playAudio,
-    playFromPaused,
-    pauseAudio,
-    skipBackward,
-    skipForward,
-    playFromPositionAsync,
-    clear,
-  } = audioPlayerStore();
+
+  const tracks = audioPlayerStore((state) => state.tracks);
+  const playingTrack = audioPlayerStore((state) => state.playingTrack);
+  const isPlaying = audioPlayerStore((state) => state.isPlaying);
+  const duration = audioPlayerStore((state) => state.duration);
+  const position = audioPlayerStore((state) => state.position);
+  const finished = audioPlayerStore((state) => state.finished);
+  const paused = audioPlayerStore((state) => state.paused);
+  const playAudio = audioPlayerStore((state) => state.playAudio);
+  const playFromPaused = audioPlayerStore((state) => state.playFromPaused);
+  const pauseAudio = audioPlayerStore((state) => state.pauseAudio);
+  const skipBackward = audioPlayerStore((state) => state.skipBackward);
+  const skipForward = audioPlayerStore((state) => state.skipForward);
+  const playFromPositionAsync = audioPlayerStore((state) => state.playFromPositionAsync);
+  const clear = audioPlayerStore((state) => state.clear);
 
   useEffect(() => {
     // If song is finished skip to next track.

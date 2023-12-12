@@ -78,7 +78,7 @@ const NotificationClickedOnBehaviour = {
 }
 
 function RegisterNotifications({ navigation }) {
-  const {add: addUnReadMessage} = unreadMessagesStore();
+  const addUnReadMessage = unreadMessagesStore((state) => state.add);
 
   useNavigationState(state => {
     const {name, params} = state.routes[state.index];

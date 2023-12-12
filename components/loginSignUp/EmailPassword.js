@@ -19,18 +19,14 @@ export default function EmailPassword({ action, navigation, route, children, isS
   const windowWidth = Dimensions.get('window').width;
   const isSmallScreen = windowWidth < smallScreenWidth;
 
-  const {
-    loading,
-    error,
-  } = useJWTStore();
+  const loading = useJWTStore((state) => state.loading);
+  const error = useJWTStore((state) => state.error);
 
-  const { object: lastRoute } = useLastRouteStore();
+  const lastRoute = useLastRouteStore((state) => state.object);
 
-  const {
-    me,
-    loading: loadingUser,
-    error: errorUser,
-  } = useUserStore();
+  const me = useUserStore((state) => state.me);
+  const loadingUser = useUserStore((state) => state.loading);
+  const errorUser = useUserStore((state) => state.error);
 
   const [showPassword, setShowPassword] = useState(false);
   const { control, handleSubmit, clearErrors } = useForm({
@@ -53,17 +49,17 @@ export default function EmailPassword({ action, navigation, route, children, isS
   const onSuccess = async () => {
     await me();
     if (isSignUp) {
-      return navigation.navigate("DefaultScreen");
+      return navigation.push("DefaultScreen");
     }
 
     if (lastRoute) {
       if (lastRoute.params) {
         navigation.push(lastRoute.name, lastRoute.params);
       } else {
-        navigation.navigate(lastRoute.name);
+        navigation.push(lastRoute.name);
       }
     } else {
-      navigation.navigate("DefaultScreen");
+      navigation.push("DefaultScreen");
     }
     return () => {
       setShowPassword(false);

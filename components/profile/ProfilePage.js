@@ -12,7 +12,8 @@ import MyGigsButton from "./MyGigsButton";
 
 function ProfilePage({ navigation }) {
   const theme = useTheme();
-  const { object: user } = useUserStore();
+
+  const user = useUserStore((state) => state.object);
 
   if (!user) {
     return (
@@ -21,7 +22,7 @@ function ProfilePage({ navigation }) {
   }
 
   const edit = () => {
-    navigation.navigate("EditProfile");
+    navigation.push("EditProfile");
   }
   return (
     <CustomScrollViewWithOneButton

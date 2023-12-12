@@ -1,14 +1,15 @@
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import useGigStore from "../../store/gig";
-import {Text} from "@react-native-material/core";
-import {Pressable, StyleSheet, View} from "react-native";
 import BaseFavourite from "../Favourite/index/BaseFavourite";
+import useGigsStore from "../../store/gigs";
 
 function FavoriteGig({navigation, gig, isFavorite, theme}) {
-  const {get, addFavorite, removeFavorite} = useGigStore();
-  const {
-    store: storeGig,
-  } = useGigStore();
+  const get = useGigStore((state) => state.get);
+  const addFavorite = useGigStore((state) => state.addFavorite);
+  const removeFavorite = useGigStore((state) => state.removeFavorite);
+  const storeGig = useGigStore((state) => state.store);
+
+  const getGigs = useGigsStore((state) => state.get);
+  const lastGigsURL = useGigsStore((state) => state.lastURL);
 
   const onPress = async () => {
     if (isFavorite) {
@@ -19,6 +20,9 @@ function FavoriteGig({navigation, gig, isFavorite, theme}) {
   }
 
   const onSuccess = async () => {
+    if (lastGigsURL) {
+      getGigs(lastGigsURL, [], true);
+    }
     await get(gig.id, navigateToGig);
   }
 

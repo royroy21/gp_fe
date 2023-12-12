@@ -7,11 +7,15 @@ import {useNavigation} from "@react-navigation/native";
 import useTrackStore from "../../store/track";
 
 function ShowTracks({tracks, forceNoEditButton=false}) {
-  const { object: user } = useUserStore();
-  const { store: storeTrack } = useTrackStore();
   const navigation = useNavigation();
   const theme = useTheme();
-  const { setTracksAndPlayTrack, playingTrack, paused } = audioPlayerStore();
+
+  const user = useUserStore((state) => state.object);
+  const storeTrack = useTrackStore((state) => state.store);
+
+  const setTracksAndPlayTrack = audioPlayerStore((state) => state.setTracksAndPlayTrack);
+  const playingTrack = audioPlayerStore((state) => state.playingTrack);
+  const paused = audioPlayerStore((state) => state.paused);
 
   const getIsOwner = (track) => {
     if (!user) {

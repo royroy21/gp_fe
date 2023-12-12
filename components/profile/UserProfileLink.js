@@ -5,8 +5,8 @@ import useUserStore from "../../store/user";
 import useOtherUserStore from "../../store/otherUser";
 
 function UserProfileLink({user, title="user", navigation, theme, containerStyle={}}) {
-  const {object} = useUserStore();
-  const { store: storeOtherUser } = useOtherUserStore();
+  const object = useUserStore((state) => state.object);
+  const storeOtherUser = useOtherUserStore((state) => state.store);
   const thisUser = object || {id: null};
 
   const navigateToOwner = () => {
@@ -15,7 +15,7 @@ function UserProfileLink({user, title="user", navigation, theme, containerStyle=
   }
 
   const navigateToProfile = () => {
-    navigation.navigate("ProfilePage");
+    navigation.push("ProfilePage");
   }
 
   const onPress = thisUser.id === user.id ? navigateToProfile : navigateToOwner;
