@@ -1,12 +1,11 @@
 import {Pressable, StyleSheet, View} from "react-native";
 import {Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import {BACKEND_ENDPOINTS} from "../../settings";
 import React from "react";
 
 function GigRepliesButton({gig, navigation, theme, containerStyle={}}) {
   const onPress = () => {
-    navigation.push("RoomsScreen", {"initialQuery": BACKEND_ENDPOINTS.room + `?gig_id=${gig.id}`})
+    navigation.push("RoomsScreen", {"gigId": gig.id})
   }
 
   return (

@@ -121,9 +121,9 @@ function ListRooms(props) {
   )
 }
 
-function Rooms({ route, navigation }) {
+function Rooms({ navigation, route }) {
   const theme = useTheme()
-  const initialQuery = route.params ? route.params.initialQuery : null;
+  const gigId = route.params ? route.params.gigId : null;
   const resultsListViewRef = useRef();
   const isWeb = Boolean(Platform.OS === "web");
   const windowWidth = Dimensions.get("window").width;
@@ -170,7 +170,7 @@ function Rooms({ route, navigation }) {
   useEffect(() => {
     // Get rooms when user first lands on page only.
     // Will not get rooms on subsequent visits to page.
-    if (!rooms) {
+    if (!rooms && !gigId) {
       getRoomsFromAPI();
     }
     return () => {
@@ -185,19 +185,22 @@ function Rooms({ route, navigation }) {
         return
       }
 
-      if (initialQuery) {
+      if (gigId) {
         route.params = null;
-        return getRoomsFromAPI(initialQuery);
-
+        setSearchFeedback("Showing messages for gig " + gigId);
+        // Not using getRoomsFromAPI so we can set SearchFeedback.
+        get(BACKEND_ENDPOINTS.room + `?gig_id=${gigId}`, [], true);
+        return
       }
       if (error) {
-        return setSearchFeedback(null);
+        setSearchFeedback(null);
+        return
       }
       return () => {
         setLoadingNext(false);
         isActive = false;
       };
-    }, [initialQuery, error])
+    }, [gigId, error])
   );
 
   async function getNextPage() {
