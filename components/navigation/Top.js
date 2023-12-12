@@ -1,13 +1,13 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {useCallback, useState} from "react";
-import MainMenu from "../menu/MainMenu";
 import LoginOrMenuButton from "./LoginOrMenuButton";
-import {StatusBar, View, StyleSheet, Pressable} from "react-native";
+import {StatusBar, View, StyleSheet, Pressable, ImageBackground} from "react-native";
 import BottomNavigation from "./Bottom";
 import {IconButton, Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {Audio} from "expo-av";
 import {useFocusEffect} from "@react-navigation/native";
+import image from "../../assets/background.jpg";
 
 function Title({title, navigation, route, initialRouteName, BottomNavigationProps, isWeb, isSmallScreen}){
   const [color, setColor] = useState("white");
@@ -37,7 +37,6 @@ function Title({title, navigation, route, initialRouteName, BottomNavigationProp
       playOinkOink();
       setColor("white");
     }
-    // navigation.navigate(initialRouteName)
   }
 
   useFocusEffect(
@@ -122,51 +121,59 @@ function TopNavigation(props) {
     marginRight: 150,
     backgroundColor: "#000000",
   } : {}
+
+  const image = require("../../assets/background.jpg");
   return (
     <View style={styles.outerContainer}>
-      <View style={{...extraContainerStyle, ...styles.container}}>
-        <MainMenu
-          showMainMenu={mainMenu}
-          setMainMenu={setMainMenu}
-        />
-        {(!user || user.theme === "dark") ? (<StatusBar barStyle="light-content" />) : null}
-        <Stack.Navigator
-          initialRouteName={initialRouteName}
-          screenOptions={{animation: "none"}}
-        >
-          {screens.map(options => (
-            <Stack.Screen
-              key={options.key}
-              name={options.name}
-              component={options.component}
-              options={({ navigation, route }) =>
-                ({
-                  headerLeft: ()=> (
-                    <GoBackButton
-                      navigation={navigation}
-                      route={route}
-                      isWeb={isWeb}
-                    />
-                  ),
-                  headerBackVisible: false,
-                  headerTitle: () => (
-                    <Title
-                      title={options.title}
-                      navigation={navigation}
-                      route={route}
-                      initialRouteName={initialRouteName}
-                      BottomNavigationProps={BottomNavigationProps}
-                      isWeb={isWeb}
-                      isSmallScreen={isSmallScreen}
-                    />
-                  ),
-                  headerRight: () => LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb, isSmallScreen,),
-                })
-              }
-            />
-          ))}
-        </Stack.Navigator>
-      </View>
+      <ImageBackground source={image} resizeMode={"cover"} style={{flex: 1}}>
+        <View  style={{...extraContainerStyle, ...styles.container}}>
+          {(!user || user.theme === "dark") ? (<StatusBar barStyle="light-content" />) : null}
+          <Stack.Navigator
+            initialRouteName={initialRouteName}
+            screenOptions={{animation: "none"}}
+          >
+            {screens.map(options => (
+              <Stack.Screen
+                key={options.key}
+                name={options.name}
+                component={options.component}
+                options={({ navigation, route }) =>
+                  ({
+                    headerLeft: ()=> (
+                      <GoBackButton
+                        navigation={navigation}
+                        route={route}
+                        isWeb={isWeb}
+                      />
+                    ),
+                    headerBackVisible: false,
+                    headerTitle: () => (
+                      <Title
+                        title={options.title}
+                        navigation={navigation}
+                        route={route}
+                        initialRouteName={initialRouteName}
+                        BottomNavigationProps={BottomNavigationProps}
+                        isWeb={isWeb}
+                        isSmallScreen={isSmallScreen}
+                      />
+                    ),
+                    headerRight: () => LoginOrMenuButton(
+                      navigation,
+                      route,
+                      user,
+                      mainMenu,
+                      setMainMenu,
+                      isWeb,
+                      isSmallScreen,
+                    ),
+                  })
+                }
+              />
+            ))}
+          </Stack.Navigator>
+        </View>
+      </ImageBackground>
     </View>
   )
 }
