@@ -179,7 +179,6 @@ function ShowGigs({ navigation, route }) {
 
       if (userId) {
         route.params = null;
-        console.log("hits here..");
         setSearchFeedback("Showing gigs for user " + userId);
         // Not using getRoomsFromAPI so we can set SearchFeedback.
         get(BACKEND_ENDPOINTS.gigs + "?user_id=" + userId, [], true);
