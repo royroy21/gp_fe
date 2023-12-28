@@ -12,6 +12,7 @@ import useLastRouteStore from "../../store/lastRoute";
 import {useFocusEffect} from "@react-navigation/native";
 import {smallScreenWidth} from "../../settings";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import client from "../../APIClient";
 
 export default function EmailPassword({ action, navigation, route, children, isSignUp=false }) {
   const theme = useTheme();
@@ -43,7 +44,7 @@ export default function EmailPassword({ action, navigation, route, children, isS
   );
 
   const onSubmit = async (data) => {
-    await action(data, onSuccess);
+    await action(data, onSuccess, client.post);
   }
 
   const onSuccess = async () => {
