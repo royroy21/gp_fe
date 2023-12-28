@@ -1,6 +1,7 @@
 import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-storage";
 import {APOLOGY_PREFIX, BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../settings";
 import useJWTStore from "../store/jwt";
+import {Platform} from "react-native";
 
 const TIMEOUT_MS = 10000;
 
@@ -15,7 +16,6 @@ class APIClient {
     const headers = await this.getHeaders();
     const requestOptions = {
       method: "GET",
-      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
     }
     await this.makeRequestHandleResponse(params, requestOptions, [200]);
@@ -25,7 +25,6 @@ class APIClient {
     const headers = await this.getHeaders();
     const requestOptions = {
       method: "DELETE",
-      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
     }
     await this.makeRequestHandleResponse(
@@ -37,7 +36,6 @@ class APIClient {
     const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "POST",
-      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
       // If isMultipartFormData using FormData so no need to stringify.
       body: isMultipartFormData ? params.data : JSON.stringify(params.data),
@@ -49,7 +47,6 @@ class APIClient {
     const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "PUT",
-      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
       // If isMultipartFormData using FormData so no need to stringify.
       body: isMultipartFormData ? params.data : JSON.stringify(params.data),
@@ -61,7 +58,6 @@ class APIClient {
     const headers = await this.getHeaders(isMultipartFormData);
     const requestOptions = {
       method: "PATCH",
-      signal: AbortSignal.timeout( TIMEOUT_MS ),
       headers: headers,
       // If isMultipartFormData using FormData so no need to stringify.
       body: isMultipartFormData ? params.data : JSON.stringify(params.data),
@@ -86,7 +82,7 @@ class APIClient {
       params, requestOptions, validStatusCodes, responseWithoutJSON=false
   ) => {
     try {
-      const response = await fetch(params.resource, requestOptions);
+      const response = await this.getResponse(params.resource, requestOptions);
       if (!validStatusCodes.includes(response.status) ) {
         const json = await response.json();
 
@@ -101,19 +97,48 @@ class APIClient {
       if (responseWithoutJSON) {
         // For responses that do not contain JSON.
         // For example if deleting we get 204 response without content.
-        params.successCallback();
+        if (params.successCallback.hasOwnProperty('async') && params.successCallback.async === true) {
+          await params.successCallback();
+        } else {
+          params.successCallback();
+        }
       } else {
         const json = await response.json();
-        params.successCallback(json);
+        if (params.successCallback.hasOwnProperty('async') && params.successCallback.async === true) {
+          await params.successCallback(json);
+        } else {
+          params.successCallback(json);
+        }
       }
     } catch (error) {
-      DEBUG && console.error(`API ERROR: "${error.message}"`, params);
+      DEBUG && console.log(`API ERROR: "${error.message}"`, params);
       switch(error.message) {
         case "The user aborted a request.":
           return params.errorCallback({"unExpectedError": APOLOGY_PREFIX + "The request timed out."});
+        case "Network request failed":
+          return params.errorCallback({"unExpectedError": APOLOGY_PREFIX + "Network request failed."});
         default:
           return params.errorCallback({"unExpectedError": APOLOGY_PREFIX + DEFAULT_ERROR_MESSAGE});
       }
+    }
+  }
+
+  getResponse = async (resourceURL, requestOptions) => {
+    const isWeb = Boolean(Platform.OS === "web");
+    // Different abort signals are needed for web vs mobile.
+    // AbortSignal.timeout doesn't work with React Native.
+    if (isWeb) {
+      return await fetch(resourceURL, {
+        signal: AbortSignal.timeout( TIMEOUT_MS ), ...requestOptions,
+      });
+    } else {  // Assume is mobile.
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("The user aborted a request.")), TIMEOUT_MS)
+      );
+      return await Promise.race([
+        fetch(resourceURL, requestOptions),
+        timeoutPromise,
+      ]);
     }
   }
 
@@ -132,7 +157,7 @@ class APIClient {
     const refreshToken = JSON.parse(jwt).refresh;
     const setJWTState = useJWTStore.setState;
 
-    const onSuccess = async (json, setJWTState) => {
+    const onSuccess = async json => {
       DEBUG && console.log("Deleting old JWT.");
       await AsyncStorage.removeItem("jwt");
       const { setItem: setJWTToAsyncStorage } = useAsyncStorage("jwt");
@@ -147,7 +172,7 @@ class APIClient {
       DEBUG && console.log("Redoing original request:", params, requestOptions);
       await this.makeRequestHandleResponse(params, requestOptions, validStatusCodes, responseWithoutJSON);
     }
-    const onError = setJWTState => {
+    const onError = () => {
       setJWTState({ loading: false, error: null });
       params.errorCallback(errorMessage);
     }
@@ -155,8 +180,8 @@ class APIClient {
     const refreshTokenParams = {
       resource: BACKEND_ENDPOINTS.refreshToken,
       data: {refresh: refreshToken},
-      successCallback: json => onSuccess(json, setJWTState),
-      errorCallback: () => onError(setJWTState),
+      successCallback: json => onSuccess(json),
+      errorCallback: onError,
     }
     DEBUG && console.log("Refreshing JWT with refresh token params:", refreshTokenParams);
     await this.post(refreshTokenParams);
