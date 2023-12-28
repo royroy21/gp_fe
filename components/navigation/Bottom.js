@@ -77,7 +77,7 @@ function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
       <Pressable
         style={buttonStyle}
         key={"pig"}
-        onPress={() => navigation.push("DefaultScreen")}
+        onPress={() => navigation.navigate("DefaultScreen")}
       >
         <Icon
           key={"pig"}
@@ -88,7 +88,7 @@ function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
       <Pressable
         style={buttonStyle}
         key={"account-multiple"}
-        onPress={() => navigation.push("UsersScreen")}
+        onPress={() => navigation.navigate("UsersScreen")}
       >
         <Icon
           key={"account-multiple"}
@@ -99,7 +99,7 @@ function InnerBottomNavigation({ currentRouteName, navigationTheme, isWeb }) {
       <Pressable
         style={buttonStyle}
         key={messageIcon}
-        onPress={() => navigation.push("RoomsScreen")}
+        onPress={() => navigation.navigate("RoomsScreen")}
       >
         <Icon
           key={messageIcon}
