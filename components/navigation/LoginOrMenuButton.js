@@ -14,7 +14,7 @@ function UserNameButton({ username, navigation }) {
 }
 
 
-function LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb, isSmallScreen) {
+function LoginOrMenuButton({ user, mainMenu, setMainMenu, isWeb, isSmallScreen, navigation, route }) {
   if (route.name === "LoginScreen") {
     return null;
   }
@@ -27,7 +27,7 @@ function LoginOrMenuButton(navigation, route, user, mainMenu, setMainMenu, isWeb
         navigation={navigation}
       />
       {user && isWeb && !isSmallScreen && <UserNameButton username={user.username} navigation={navigation} />}
-      {user.id ? (
+      {user ? (
       <IconButton
         icon={<Icon name="menu" size={30} />}
         onPress={() => setMainMenu(!mainMenu)}

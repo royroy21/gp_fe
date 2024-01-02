@@ -158,15 +158,19 @@ function TopNavigation(props) {
                         isSmallScreen={isSmallScreen}
                       />
                     ),
-                    headerRight: () => LoginOrMenuButton(
-                      navigation,
-                      route,
-                      user,
-                      mainMenu,
-                      setMainMenu,
-                      isWeb,
-                      isSmallScreen,
-                    ),
+                    headerRight: () => {
+                      return (
+                        <LoginOrMenuButton
+                          user={user}
+                          mainMenu={mainMenu}
+                          setMainMenu={setMainMenu}
+                          isWeb={isWeb}
+                          isSmallScreen={isSmallScreen}
+                          navigation={navigation}
+                          route={route}
+                        />
+                      )
+                    },
                   })
                 }
               />
