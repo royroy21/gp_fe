@@ -167,22 +167,15 @@ function Rooms({ navigation, route }) {
     setAdvancedSearch(false);
   }
 
-  useEffect(() => {
-    // Get rooms when user first lands on page only.
-    // Will not get rooms on subsequent visits to page.
-    if (!rooms && !gigId) {
-      getRoomsFromAPI();
-    }
-    return () => {
-      setAdvancedSearch(advancedSearch);
-    }
-  }, []);
-
   useFocusEffect(
     React.useCallback(() => {
       let isActive = true;
       if (!isActive) {
         return
+      }
+
+      if (!rooms && !gigId) {
+        getRoomsFromAPI();
       }
 
       if (gigId) {
@@ -192,15 +185,17 @@ function Rooms({ navigation, route }) {
         get(BACKEND_ENDPOINTS.room + `?gig_id=${gigId}`, [], true);
         return
       }
+
       if (error) {
         setSearchFeedback(null);
-        return
       }
+
       return () => {
+        setAdvancedSearch(false);
         setLoadingNext(false);
         isActive = false;
       };
-    }, [gigId, error])
+    }, [rooms, gigId, error])
   );
 
   async function getNextPage() {

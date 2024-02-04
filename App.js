@@ -5,6 +5,13 @@ import Navigation from "./components/navigation";
 import {darkTheme, defaultTheme} from "@react-native-material/core/src/base/defaultTheme";
 import useUserStore from "./store/user";
 import Promise from 'bluebird';
+import { LogBox } from 'react-native';
+
+// TODO - This stops the error message that appeared after expo update 50.
+// suggest upgrading libraries later on to fix this. Bloody bastard EXPO.
+//  https://stackoverflow.com/questions/69538962/new-nativeeventemitter-was-called-with-a-non-null-argument-without-the-requir
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 // Using Bluebird to give improved stack tracks.
 // For example where in the code a promise isn't correctly handled.

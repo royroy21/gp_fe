@@ -1,6 +1,7 @@
 import {Button, Icon, IconButton, Text} from "@react-native-material/core";
 import {Pressable, StyleSheet, View} from "react-native";
 import MainMenu from "../menu/MainMenu";
+import {useState} from "react";
 
 function UserNameButton({ username, navigation }) {
   const onPress = () => {
@@ -14,7 +15,9 @@ function UserNameButton({ username, navigation }) {
 }
 
 
-function LoginOrMenuButton({ user, mainMenu, setMainMenu, isWeb, isSmallScreen, navigation, route }) {
+function LoginOrMenuButton({ user, isWeb, isSmallScreen, navigation, route }) {
+  const [mainMenu, setMainMenu] = useState(false);
+
   if (route.name === "LoginScreen") {
     return null;
   }

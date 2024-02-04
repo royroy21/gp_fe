@@ -148,16 +148,6 @@ function ShowUsers({ navigation }) {
     }
     setAdvancedSearch(false);
   }
-  useEffect(() => {
-    // Get users when user first lands on page only.
-    // Will not get users on subsequent visits to page.
-    if (!users) {
-      getUsersFromAPI();
-    }
-    return () => {
-      setAdvancedSearch(advancedSearch);
-    }
-  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -166,14 +156,21 @@ function ShowUsers({ navigation }) {
         return
       }
 
+      if (!users) {
+        getUsersFromAPI();
+        return;
+      }
+
       if (error) {
         setSearchFeedback(null);
       }
+
       return () => {
+        setAdvancedSearch(false);
         setLoadingNext(false);
         isActive = false;
       };
-    }, [error])
+    }, [users, error])
   );
 
   async function getNextPage() {

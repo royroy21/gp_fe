@@ -1,9 +1,8 @@
 import {DarkTheme, DefaultTheme, NavigationContainer} from "@react-navigation/native";
 import Routes, {screens} from "./Routes";
-import BottomNavigation from "./Bottom";
 import {useEffect, useState} from "react";
 import useUserStore from "../../store/user";
-import {Dimensions, Platform} from "react-native";
+import {Dimensions, Platform, StatusBar} from "react-native";
 import audioPlayerStore from "../../store/audioPlayer";
 import AudioPlayer from "../audio/AudioPlayer";
 import {DOMAIN_NAME_WITH_PREFIX, smallScreenWidth} from "../../settings";
@@ -11,6 +10,7 @@ import * as Linking from 'expo-linking';
 import useJWTStore from "../../store/jwt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useLastRouteStore from "../../store/lastRoute";
+import MobileNavigation from "./MobileNavigation";
 
 const prefix = Linking.createURL('/');
 
@@ -85,21 +85,23 @@ export default function Navigation() {
           "gigpig.fm",
       }}
     >
-      <Routes
-        user={user || {}}
-        BottomNavigationProps={BottomNavigationProps}
-        theme={theme}
-        isWeb={isWeb}
-        isSmallScreen={isSmallScreen}
-      />
+      {isWeb ? (
+        <Routes
+          user={user}
+          BottomNavigationProps={BottomNavigationProps}
+          theme={theme}
+          isWeb={isWeb}
+          isSmallScreen={isSmallScreen}
+        />
+      ) : (
+        <MobileNavigation
+          user={user}
+          isSmallScreen={isSmallScreen}
+        />
+      )}
+      {!isWeb && <StatusBar barStyle="white" />}
       {audioTracks ? (
         <AudioPlayer isWeb={isWeb} isSmallScreen={isSmallScreen} />
-      ) : null}
-      {!isWeb ? (
-        <BottomNavigation
-          {...BottomNavigationProps}
-          isWeb={isWeb}
-        />
       ) : null}
     </NavigationContainer>
   )

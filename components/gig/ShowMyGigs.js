@@ -160,17 +160,6 @@ function ShowMyGigs({ navigation }) {
     setAdvancedSearch(false);
   }
 
-  useEffect(() => {
-    // Get gigs when user first lands on page only.
-    // Will not get gigs on subsequent visits to page.
-    if (!gigs) {
-      getGigsFromAPI();
-    }
-    return () => {
-      setAdvancedSearch(advancedSearch);
-    }
-  }, []);
-
   useFocusEffect(
     React.useCallback(() => {
       let isActive = true;
@@ -178,14 +167,20 @@ function ShowMyGigs({ navigation }) {
         return
       }
 
+      if (!gigs) {
+        getGigsFromAPI();
+      }
+
       if (error) {
         setSearchFeedback(null);
       }
+
       return () => {
+        setAdvancedSearch(false);
         setLoadingNext(false);
         isActive = false;
       };
-    }, [error])
+    }, [gigs, error])
   );
 
   async function getNextPage() {

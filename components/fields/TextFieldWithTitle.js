@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   text: {
+    color: "white",
     fontSize: 16,
     width: "90%",
   },

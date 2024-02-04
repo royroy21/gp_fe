@@ -13,6 +13,7 @@ import {useFocusEffect} from "@react-navigation/native";
 import {smallScreenWidth} from "../../settings";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import client from "../../APIClient";
+import ClearAll from "../../store/clearAll";
 
 export default function EmailPassword({ action, navigation, route, children, isSignUp=false }) {
   const theme = useTheme();
@@ -48,8 +49,14 @@ export default function EmailPassword({ action, navigation, route, children, isS
   }
 
   const onSuccess = async () => {
+    ClearAll(["jwt", "user"]);
     await me();
     if (isSignUp) {
+      return navigation.push("DefaultScreen");
+    }
+
+    // For login. Cheating here to avoid tab navigation weirdness on mobile.
+    if (!isWeb) {
       return navigation.push("DefaultScreen");
     }
 
