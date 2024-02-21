@@ -29,6 +29,7 @@ export const BACKEND_ENDPOINTS = {
   country: BACKEND_URL + "/api/country/?code=",
   message: BACKEND_URL + "/api/message/",
   room: BACKEND_URL + "/api/room/",
+  rooms_with_unread_messages: BACKEND_URL + "/api/room/rooms_with_unread_messages/",
   searchGigs: BACKEND_URL + "/api/gig/search/",
   searchCountries: BACKEND_URL + "/search/country/suggest/?country_suggest__completion=",
   searchGenres: BACKEND_URL + "/search/genre/suggest/?genre_suggest__completion=",
