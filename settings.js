@@ -57,3 +57,4 @@ export const smallScreenWidth = 500;
 export const ALLOW_LIGHT_THEME_OPTION = false;
 export const APOLOGY_PREFIX = "Apologies from GigPig. ";
 export const DEFAULT_ERROR_MESSAGE = "An unexpected error has occurred."
+export const USE_PUSH_NOTIFICATIONS = false;
