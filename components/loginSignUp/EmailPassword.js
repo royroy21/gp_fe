@@ -10,10 +10,13 @@ import useUserStore from "../../store/user";
 import useJWTStore from "../../store/jwt";
 import useLastRouteStore from "../../store/lastRoute";
 import {useFocusEffect} from "@react-navigation/native";
-import {smallScreenWidth} from "../../settings";
+import {BACKEND_ENDPOINTS, smallScreenWidth} from "../../settings";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import client from "../../APIClient";
 import ClearAll from "../../store/clearAll";
+import useGigsStore from "../../store/gigs";
+import useUsersStore from "../../store/users";
+import useRoomsStore from "../../store/rooms";
 
 export default function EmailPassword({ action, navigation, route, children, isSignUp=false }) {
   const theme = useTheme();
@@ -29,6 +32,10 @@ export default function EmailPassword({ action, navigation, route, children, isS
   const me = useUserStore((state) => state.me);
   const loadingUser = useUserStore((state) => state.loading);
   const errorUser = useUserStore((state) => state.error);
+
+  const getGigs = useGigsStore((state) => state.get);
+  const getUsers = useUsersStore((state) => state.get);
+  const getRooms = useRoomsStore((state) => state.get);
 
   const [showPassword, setShowPassword] = useState(false);
   const { control, handleSubmit, clearErrors } = useForm({
@@ -59,6 +66,10 @@ export default function EmailPassword({ action, navigation, route, children, isS
     if (!isWeb) {
       return navigation.push("DefaultScreen");
     }
+
+    await getGigs(BACKEND_ENDPOINTS.gigs, [], true);
+    await getUsers(BACKEND_ENDPOINTS.user, [], true);
+    await getRooms(BACKEND_ENDPOINTS.room, [], true);
 
     if (lastRoute) {
       if (lastRoute.params) {
