@@ -216,6 +216,7 @@ function ShowGigs({ navigation, route }) {
           getGigsFromAPI={getGigsFromAPI}
           searchFeedback={searchFeedback}
           setSearchFeedback={setSearchFeedback}
+          resetResults={resetResults}
           theme={theme}
         />
       ) : null}

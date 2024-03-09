@@ -6,6 +6,7 @@ import {BACKEND_ENDPOINTS} from "../../settings";
 import CenteredModalWithTwoButton from "../centeredModal/CenteredModalWithTwoButtons";
 import TextInput from "../forms/TextInput";
 import TextTicker from "../Text/TextTicker";
+import LittleRedCloseButton from "../buttons/LittleRedCloseButton";
 
 function AdvancedSearchModal(props) {
   const {
@@ -79,6 +80,7 @@ function SearchUsers(props) {
     getUsersFromAPI,
     searchFeedback,
     setSearchFeedback,
+    resetResults,
     theme,
   } = props;
 
@@ -115,9 +117,12 @@ function SearchUsers(props) {
   return (
     <View>
       {searchFeedback ? (
-        <TextTicker style={{color: theme.palette.secondary.main, ...styles.feedback}}>
-          {searchFeedback}
-        </TextTicker>
+        <View style={{ flexDirection: "row" }}>
+          <TextTicker style={{color: theme.palette.secondary.main, ...styles.feedback}}>
+            {searchFeedback}
+          </TextTicker>
+          <LittleRedCloseButton action={resetResults} style={{paddingTop: 7, paddingLeft: 5}} />
+        </View>
       ) : null}
       <AdvancedSearchModal
         user={user}

@@ -228,6 +228,7 @@ function Rooms({ navigation, route }) {
           getRoomsFromAPI={getRoomsFromAPI}
           searchFeedback={searchFeedback}
           setSearchFeedback={setSearchFeedback}
+          resetResults={resetResults}
           theme={theme}
         />
       ) : null}

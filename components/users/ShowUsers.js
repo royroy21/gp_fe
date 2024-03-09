@@ -198,6 +198,7 @@ function ShowUsers({ navigation }) {
           getUsersFromAPI={getUsersFromAPI}
           searchFeedback={searchFeedback}
           setSearchFeedback={setSearchFeedback}
+          resetResults={resetResults}
           theme={theme}
         />
       ) : null}
