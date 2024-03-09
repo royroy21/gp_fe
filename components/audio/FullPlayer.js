@@ -22,17 +22,8 @@ function FullPlayer(props) {
     theme,
   } = props;
   const ButtonSize = 50;
-  const webWidth = isSmallScreen ? "100%" : "25%";
   return (
-    <View style={isWeb ? {width: webWidth, zIndex: 1000, ...styles.container}: styles.container}>
-      {isWeb ? (
-        <Icon
-          name={"close-box"}
-          color={"red"}
-          size={30}
-          onPress={clear}
-        />
-      ) : null}
+    <View style={styles.container}>
       <ScrollView style={styles.tracksContainer}>
         <ShowTracks
           tracks={tracks}

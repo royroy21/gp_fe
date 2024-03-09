@@ -30,44 +30,23 @@ function AudioPlayer({ isWeb, isSmallScreen }) {
   }, [finished])
 
   return (
-    <>
-      {isWeb ? (
-        <FullPlayer
-          tracks={tracks}
-          playingTrack={playingTrack}
-          position={position}
-          duration={duration}
-          skipBackward={skipBackward}
-          skipForward={skipForward}
-          paused={paused}
-          playFromPaused={playFromPaused}
-          pauseAudio={pauseAudio}
-          playFromPositionAsync={playFromPositionAsync}
-          clear={clear}
-          isWeb={isWeb}
-          isSmallScreen={isSmallScreen}
-          theme={theme}
-        />
-      ) : (
-        <MiniPlayer
-          tracks={tracks}
-          playAudio={playAudio}
-          playingTrack={playingTrack}
-          position={position}
-          duration={duration}
-          skipBackward={skipBackward}
-          skipForward={skipForward}
-          paused={paused}
-          playFromPaused={playFromPaused}
-          pauseAudio={pauseAudio}
-          playFromPositionAsync={playFromPositionAsync}
-          clear={clear}
-          isWeb={isWeb}
-          isSmallScreen={isSmallScreen}
-          theme={theme}
-        />
-      )}
-    </>
+    <MiniPlayer
+      tracks={tracks}
+      playAudio={playAudio}
+      playingTrack={playingTrack}
+      position={position}
+      duration={duration}
+      skipBackward={skipBackward}
+      skipForward={skipForward}
+      paused={paused}
+      playFromPaused={playFromPaused}
+      pauseAudio={pauseAudio}
+      playFromPositionAsync={playFromPositionAsync}
+      clear={clear}
+      isWeb={isWeb}
+      isSmallScreen={isSmallScreen}
+      theme={theme}
+    />
   );
 }
 
