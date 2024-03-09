@@ -2,6 +2,9 @@ import { create } from 'zustand'
 
 const unreadMessagesStore = create((set) => ({
   unreadMessages: [],
+  addList: (roomIds) => set((state) => {
+    return { unreadMessages: [...state.unreadMessages, ...roomIds] };
+  }),
   add: (roomId) => set((state) => {
     state.unreadMessages.push(roomId);
     return { unreadMessages: state.unreadMessages };
