@@ -142,7 +142,7 @@ export const screens = [
   {
     key: "Room",
     name: "Room",
-    title: "msg",
+    title: "message",
     linking: {
       path: "message/:id",
     },
@@ -151,7 +151,7 @@ export const screens = [
   {
     key: "RoomsScreen",
     name: "RoomsScreen",
-    title: "msgs",
+    title: "messages",
     linking: {
       path: "messages/",
     },
@@ -178,7 +178,7 @@ export const screens = [
   {
     key: "Settings",
     name: "Settings",
-    title: "stg",
+    title: "settings",
     linking: {
       path: "settings/",
     },

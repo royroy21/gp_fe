@@ -16,8 +16,6 @@ function TopNavigation(props) {
   } = props;
   const Stack = createNativeStackNavigator();
   const extraContainerStyle = isWeb && !isSmallScreen ? {
-    borderWidth: 2,
-    borderColor: "grey",
     marginTop: 20,
     marginBottom: 20,
     marginLeft: 150,
