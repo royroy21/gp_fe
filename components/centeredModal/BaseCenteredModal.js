@@ -26,8 +26,8 @@ const BaseCenteredModal = ({showModal, setModal, children, buttons, forceWidth50
     borderColor: "grey",
     marginTop: 20,
     marginBottom: 20,
-    marginLeft: 150,
-    marginRight: 150,
+    marginLeft: 350,
+    marginRight: 350,
    backgroundColor: "black",
  } : {backgroundColor: backgroundColor}
 

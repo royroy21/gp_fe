@@ -18,12 +18,12 @@ function TopNavigation(props) {
   const extraContainerStyle = isWeb && !isSmallScreen ? {
     marginTop: 20,
     marginBottom: 20,
-    marginLeft: 150,
-    marginRight: 150,
+    marginLeft: 350,
+    marginRight: 350,
     backgroundColor: "#000000",
   } : {}
 
-  const image = require("../../assets/background.jpg");
+  const image = require("../../assets/background_2.jpg");
   return (
     <View style={styles.outerContainer}>
       <ImageBackground source={image} resizeMode={"cover"} style={{flex: 1}}>
