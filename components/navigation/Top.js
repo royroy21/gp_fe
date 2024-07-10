@@ -23,7 +23,8 @@ function TopNavigation(props) {
     backgroundColor: "#000000",
   } : {}
 
-  const image = require("../../assets/background_2.jpg");
+  const image = require("../../assets/background_3.jpg");
+  // const image = null;
   return (
     <View style={styles.outerContainer}>
       <ImageBackground source={image} resizeMode={"cover"} style={{flex: 1}}>
@@ -85,7 +86,7 @@ export default TopNavigation;
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#deded7",
   },
   container: {
     flex: 1,
