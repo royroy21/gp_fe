@@ -19,6 +19,7 @@ import AlbumDetail from "../audio/AlbumDetail";
 import EditAlbum from "../audio/EditAlbum";
 import AddTrack from "../audio/AddTrack";
 import EditTrack from "../audio/EditTrack";
+import Clear from "../loginSignUp/Clear";
 
 const initialRouteName = "DefaultScreen";
 export const screens = [
@@ -201,6 +202,15 @@ export const screens = [
       path: "sign-up/",
     },
     component: SignupForm,
+  },
+  {
+    key: "clear",
+    name: "clear",
+    title: "clear",
+    linking: {
+      path: "clear/",
+    },
+    component: Clear,
   },
 ]
 
