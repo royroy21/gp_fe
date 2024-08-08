@@ -5,6 +5,7 @@ import BottomNavigation from "./Bottom";
 const WITH_TITLE_IMAGE = false;
 
 const titleArray = [
+  "GIGPIG",
   "ƓƖƓƤƖƓ",
   "𝙜̳̎𝙞̳̎𝙜̳̎𝙥̳̎𝙞̳̎𝙜̳̎",
 ]
