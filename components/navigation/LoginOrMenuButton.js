@@ -50,7 +50,6 @@ function LoginOrMenuButton({ user, isWeb, isSmallScreen, navigation, route }) {
         setMainMenu={setMainMenu}
         navigation={navigation}
       />
-      {/* TODO - maybe move search button/icon here? */}
       {/*{user && isWeb && !isSmallScreen && <UserNameButton username={user.username} navigation={navigation} />}*/}
       {user ? (
       <MenuButton user={user} mainMenu={mainMenu} setMainMenu={setMainMenu} />

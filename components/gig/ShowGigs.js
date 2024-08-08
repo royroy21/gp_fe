@@ -1,7 +1,7 @@
 import {Dimensions, FlatList, Platform, SafeAreaView, StyleSheet, View} from "react-native";
 import React, {useEffect, useRef, useState} from "react";
 import ShowGig from "./ShowGig";
-import {BACKEND_ENDPOINTS} from "../../settings";
+import {BACKEND_ENDPOINTS, smallScreenWidth} from "../../settings";
 import SearchGigs from "./SearchGigs";
 import AddGigButton from "./AddGigButton";
 import {Button, IconButton, Text, useTheme} from "@react-native-material/core";
@@ -109,15 +109,17 @@ function ListGigs(props) {
 }
 
 function ShowGigs({ navigation, route }) {
+  const isWeb = Boolean(Platform.OS === "web");
+  const windowWidth = Dimensions.get('window').width;
+  const isSmallScreen = windowWidth < smallScreenWidth;
+  const isLargeScreen = isWeb && !isSmallScreen;
+
   const theme = useTheme()
 
   const params = route.params || {};
   const { userId } = params;
 
   const resultsListViewRef = useRef();
-
-  const isWeb = Boolean(Platform.OS === "web");
-  const windowWidth = Dimensions.get("window").width;
 
   const [advancedSearch, setAdvancedSearch] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
@@ -220,20 +222,38 @@ function ShowGigs({ navigation, route }) {
           theme={theme}
         />
       ) : null}
-      <IconButton
-        style={{
-          ...styles.advancedSearchButton,
-          backgroundColor: theme.palette.background.main,
-        }}
-        onPress={() => setAdvancedSearch(!advancedSearch)}
-        icon={
-          <Icon
-            name={"magnify"}
-            size={30}
-            color={theme.palette.secondary.main}
-          />
-        }
-      />
+      {isLargeScreen ? (
+        <Button
+          title={"search"}
+          compact={true}
+          variant={"text"}
+          onPress={() => setAdvancedSearch(!advancedSearch)}
+          style={{ width: 100, marginLeft: "auto" }}
+          titleStyle={{ fontSize: 10 }}
+          leading={
+            <Icon
+              name={"magnify"}
+              size={15}
+              color={theme.palette.secondary.main}
+            />
+          }
+        />
+      ) : (
+        <IconButton
+          style={{
+            ...styles.advancedSearchButton,
+            backgroundColor: theme.palette.background.main,
+          }}
+          onPress={() => setAdvancedSearch(!advancedSearch)}
+          icon={
+            <Icon
+              name={"magnify"}
+              size={30}
+              color={theme.palette.secondary.main}
+            />
+          }
+        />
+      )}
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {gigs && gigs.results.length ? (
