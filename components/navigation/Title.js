@@ -12,13 +12,14 @@ const titleArray = [
 
 function Title({title, navigation, route, initialRouteName, BottomNavigationProps, isWeb, isSmallScreen}){
   const doNotShowBottomOnTheseRoutes = [
-    "LoginScreen", "SignUpScreen",
+    "LoginScreen", "SignUpScreen", "ResetPasswordRequest",
   ];
   const onPress = () => {
     if (isWeb) {
       navigation.push("DefaultScreen");
     }
   }
+  const marginLeft = (route.name === "DefaultScreen"  && !isWeb) ? 48: 0
 
   return (
     <View style={titleStyles.container}>
@@ -31,13 +32,13 @@ function Title({title, navigation, route, initialRouteName, BottomNavigationProp
               height: 30,
               borderRadius: 10,
               marginRight: 5,
-              marginLeft: route.name === "DefaultScreen" ? 48: 0,
+              marginLeft: marginLeft,
             }}
           />
         ) : (
           <View
             style={{
-              marginLeft: route.name === "DefaultScreen" ? 48: 0,
+              marginLeft: marginLeft,
             }}
           >
             {!(isWeb && isSmallScreen) ? (<Text style={titleStyles.gigPigText}>{titleArray[0]}</Text>) : null}

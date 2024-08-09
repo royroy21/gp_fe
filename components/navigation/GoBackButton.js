@@ -1,7 +1,11 @@
 import {IconButton} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-function GoBackButton({navigation, route}) {
+function GoBackButton({ navigation, route, isWeb }) {
+  if (isWeb) {
+    return null
+  }
+
   return (
     route.name !== "DefaultScreen" ? (
       <IconButton
