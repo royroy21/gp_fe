@@ -2,13 +2,13 @@ import React, {useEffect} from 'react';
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import {IconComponentProvider, ThemeProvider} from "@react-native-material/core";
 import Navigation from "./components/navigation";
-import {darkTheme, defaultTheme} from "@react-native-material/core/src/base/defaultTheme";
-import useUserStore from "./store/user";
+import { darkTheme } from "@react-native-material/core/src/base/defaultTheme";
 import Promise from 'bluebird';
 // import { LogBox } from 'react-native';
 import unreadMessagesStore from "./store/unreadMessages";
 import {BACKEND_ENDPOINTS} from "./settings";
 import client from "./APIClient";
+import useJWTStore from "./store/jwt";
 
 // TODO - This stops the error message that appeared after expo update 50.
 // suggest upgrading libraries later on to fix this. Bloody bastard EXPO.
@@ -34,9 +34,8 @@ global.onunhandledrejection = function onunhandledrejection(error) {
 const CALL_BACKEND_PERIODICALLY = 10000  // 10 seconds
 
 export default function App() {
-  const {object} = useUserStore();
-  const user = object || {};
-  const theme = user.theme === "light" ? defaultTheme : darkTheme;
+  const theme = darkTheme;
+  const jwt = useJWTStore((state) => state.object);
   const addUnReadMessage = unreadMessagesStore((state) => state.addList);
 
   useEffect(() => {
@@ -50,12 +49,14 @@ export default function App() {
         },
         errorCallback: json => console.log("ERROR calling rooms_with_unread_messages:", json),
       }
-      await client.get(params);
+      if (jwt) {
+        await client.get(params);
+      }
     };
     fetchData();  // Initial fetch.
     const intervalId = setInterval(fetchData, CALL_BACKEND_PERIODICALLY);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [jwt]);
 
   return (
     <ThemeProvider theme={theme}>
