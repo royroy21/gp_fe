@@ -20,6 +20,8 @@ import EditAlbum from "../audio/EditAlbum";
 import AddTrack from "../audio/AddTrack";
 import EditTrack from "../audio/EditTrack";
 import Clear from "../loginSignUp/Clear";
+import ResetPasswordRequest from "../loginSignUp/ResetPasswordRequest";
+import ResetPassword from "../loginSignUp/ResetPassword";
 
 const initialRouteName = "DefaultScreen";
 export const screens = [
@@ -202,6 +204,24 @@ export const screens = [
       path: "sign-up/",
     },
     component: SignupForm,
+  },
+  {
+    key: "ResetPasswordRequest",
+    name: "ResetPasswordRequest",
+    title: "passwd",
+    linking: {
+      path: "reset-password-request/",
+    },
+    component: ResetPasswordRequest,
+  },
+  {
+    key: "ResetPassword",
+    name: "ResetPassword",
+    title: "passwd",
+    linking: {
+      path: "reset-password/:token",
+    },
+    component: ResetPassword,
   },
   {
     key: "clear",

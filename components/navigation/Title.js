@@ -12,7 +12,7 @@ const titleArray = [
 
 function Title({title, navigation, route, initialRouteName, BottomNavigationProps, isWeb, isSmallScreen}){
   const doNotShowBottomOnTheseRoutes = [
-    "LoginScreen", "SignUpScreen", "ResetPasswordRequest",
+    // "LoginScreen", "SignUpScreen", "ResetPasswordRequest",
   ];
   const onPress = () => {
     if (isWeb) {

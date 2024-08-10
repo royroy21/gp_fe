@@ -2,6 +2,8 @@ import AsyncStorage, {useAsyncStorage} from "@react-native-async-storage/async-s
 import {APOLOGY_PREFIX, BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../settings";
 import useJWTStore from "../store/jwt";
 import {Platform} from "react-native";
+import clearAll from "../store/clearAll";
+import {closeAndDeleteOtherWebSockets} from "../components/message";
 
 const TIMEOUT_MS = 10000;
 
@@ -86,7 +88,10 @@ class APIClient {
       if (!validStatusCodes.includes(response.status) ) {
         const json = await response.json();
 
-        if (response.status === 401 && json.code === "token_not_valid") {
+        // Checking params.resource is not BACKEND_ENDPOINTS.refreshToken
+        // so to stop an infinite loop from happening.
+        // If this is the case the error block should hit.
+        if (response.status === 401 && json.code === "token_not_valid" && params.resource !== BACKEND_ENDPOINTS.refreshToken) {
           DEBUG && console.log("token_not_valid. Attempting to refresh JWT.");
           return await this.refreshJWT(params, requestOptions, validStatusCodes, responseWithoutJSON);
         }
@@ -173,7 +178,9 @@ class APIClient {
       await this.makeRequestHandleResponse(params, requestOptions, validStatusCodes, responseWithoutJSON);
     }
     const onError = () => {
-      setJWTState({ loading: false, error: null });
+      AsyncStorage.clear();
+      clearAll();
+      closeAndDeleteOtherWebSockets();
       params.errorCallback(errorMessage);
     }
 
@@ -181,7 +188,7 @@ class APIClient {
       resource: BACKEND_ENDPOINTS.refreshToken,
       data: {refresh: refreshToken},
       successCallback: json => onSuccess(json),
-      errorCallback: onError,
+      errorCallback: () => onError(),
     }
     DEBUG && console.log("Refreshing JWT with refresh token params:", refreshTokenParams);
     await this.post(refreshTokenParams);

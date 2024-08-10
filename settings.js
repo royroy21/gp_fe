@@ -28,6 +28,8 @@ export const BACKEND_ENDPOINTS = {
   gigs: BACKEND_URL + "/api/gig/",
   country: BACKEND_URL + "/api/country/?code=",
   message: BACKEND_URL + "/api/message/",
+  resetPassword: BACKEND_URL + "/api/reset-password/",
+  resetPasswordRequest: BACKEND_URL + "/api/reset-password-request/",
   room: BACKEND_URL + "/api/room/",
   rooms_with_unread_messages: BACKEND_URL + "/api/room/rooms_with_unread_messages/",
   searchGigs: BACKEND_URL + "/api/gig/search/",

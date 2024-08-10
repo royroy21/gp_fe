@@ -72,7 +72,10 @@ export default function EmailPassword({ action, navigation, route, children, isS
     await getRooms(BACKEND_ENDPOINTS.room, [], true);
 
     if (lastRoute) {
-      if (lastRoute.params) {
+      if (lastRoute.name === "ResetPassword") {
+        navigation.push("DefaultScreen");
+      }
+      else if (lastRoute.params) {
         navigation.push(lastRoute.name, lastRoute.params);
       } else {
         navigation.push(lastRoute.name);

@@ -12,7 +12,14 @@ export default function LoginForm({ navigation }) {
           title={"sign up"}
           uppercase={false}
           variant={"text"}
+          color={"secondary"}
           onPress={() => navigation.push("SignUpScreen")}
+        />
+        <Button
+          title={"reset password"}
+          uppercase={false}
+          variant={"text"}
+          onPress={() => navigation.push("ResetPasswordRequest")}
         />
       </EmailPassword>
     </View>
