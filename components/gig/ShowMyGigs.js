@@ -169,7 +169,7 @@ function ShowMyGigs({ navigation }) {
         return
       }
 
-      if (!gigs) {
+      if (!gigs && !error) {
         getGigsFromAPI();
       }
 

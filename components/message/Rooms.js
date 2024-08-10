@@ -177,7 +177,7 @@ function Rooms({ navigation, route }) {
         return
       }
 
-      if (!rooms && !gigId) {
+      if (!rooms && !gigId && !error) {
         getRoomsFromAPI();
       }
 

@@ -168,7 +168,7 @@ function ShowGigs({ navigation, route }) {
         return;
       }
 
-      if (!gigs && !userId) {
+      if (!gigs && !userId && !error) {
         getGigsFromAPI();
         return;
       }

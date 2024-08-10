@@ -160,7 +160,7 @@ function ShowUsers({ navigation }) {
         return
       }
 
-      if (!users) {
+      if (!users && !error) {
         getUsersFromAPI();
         return;
       }
