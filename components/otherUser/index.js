@@ -11,12 +11,13 @@ import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButto
 import FavoriteUser from "./FavoriteUser";
 import useOtherUserStore from "../../store/otherUser";
 import useUserStore from "../../store/user";
-import {useTheme} from "@react-native-material/core";
+import {Text, useTheme} from "@react-native-material/core";
 import ShowAlbums from "../audio/ShowAlbums";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
 import useRoomStore from "../../store/room";
 import {DEBUG} from "../../settings";
 import ActiveUserGigsButton from "../gig/ActiveUserGigsButton";
+import DisplayInstruments from "../gig/DisplayInstruments";
 
 function OtherUser({ navigation, route }) {
   const isFocused = useIsFocused();
@@ -159,6 +160,8 @@ function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
             theme={theme}
           />
         )}
+        {user.is_looking_for_band && <Text style={styles.lookingFor}>{"LOOKING FOR BAND"}</Text>}
+        {user.is_looking_for_musicians && <Text style={styles.lookingFor}>{"LOOKING FOR MUSICIANS"}</Text>}
         <View style={styles.imageAndGenresContainer}>
           <Image
             imageUri={user.image}
@@ -171,17 +174,37 @@ function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
           />
         </View>
         <TextFieldWithTitle
-          title={"username"}
+          title={user.is_band ? "band name" : "username"}
           text={user.username}
         />
         <TextFieldWithTitle
-          title={"bio"}
+          title={user.is_band ? "about band" : "about me"}
           text={user.bio}
         />
         <TextFieldWithTitle
           title={"last seen"}
           text={user.distance_from_user ? user.distance_from_user : "last seen unknown"}
         />
+        <TextFieldWithTitle
+          title={"location"}
+          text={user.location}
+        />
+        {user.country ? (
+          <TextFieldWithTitle
+            title={"country"}
+            text={user.country.country}
+          />
+        ) : null}
+        {user.is_musician ? (
+          <TextFieldWithTitle
+            title={"musician"}
+            trailing={
+              <DisplayInstruments
+                instruments={user.instruments}
+              />
+            }
+          />
+        ) : null}
         <ActiveUserGigsButton user={user} navigation={navigation} theme={theme} />
         <ShowAlbums
           resourceId={user.id}
@@ -195,6 +218,12 @@ function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  lookingFor: {
+    color: "grey",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: 5,
+  },
   imageAndGenresContainer: {
     flexDirection: "row"
   },

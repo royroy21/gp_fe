@@ -66,6 +66,34 @@ class ShowUser extends Component {
                 style={styles.chip}
               />
             ) : null}
+            {user.is_band ? (
+              <Chip
+                key={"is_band"}
+                label={"Band"}
+                style={styles.chip}
+              />
+            ) : null}
+            {user.is_looking_for_musicians ? (
+              <Chip
+                key={"is_looking_for_musicians"}
+                label={"Looking for musicians"}
+                style={styles.chip}
+              />
+            ) : null}
+            {user.is_musician ? (
+              <Chip
+                key={"is_musician"}
+                label={"Musician"}
+                style={styles.chip}
+              />
+            ) : null}
+            {user.is_looking_for_band ? (
+              <Chip
+                key={"is_looking_for_band"}
+                label={"Looking for band"}
+                style={styles.chip}
+              />
+            ) : null}
             {user.country ? (
               <Chip
                 key={"country"}
