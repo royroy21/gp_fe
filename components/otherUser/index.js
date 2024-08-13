@@ -161,7 +161,16 @@ function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
           />
         )}
         {user.is_looking_for_band && <Text style={styles.lookingFor}>{"LOOKING FOR BAND"}</Text>}
-        {user.is_looking_for_musicians && <Text style={styles.lookingFor}>{"LOOKING FOR MUSICIANS"}</Text>}
+        {user.instruments_needed.length ? (
+          <>
+            <TextFieldWithTitle
+              title={"musicians needed"}
+            />
+            <DisplayInstruments
+              instruments={user.instruments_needed}
+            />
+          </>
+        ) : null}
         <View style={styles.imageAndGenresContainer}>
           <Image
             imageUri={user.image}
@@ -196,14 +205,14 @@ function InnerOtherUser({ user, loadingFromOtherUser, navigation }) {
           />
         ) : null}
         {user.is_musician ? (
-          <TextFieldWithTitle
-            title={"musician"}
-            trailing={
-              <DisplayInstruments
-                instruments={user.instruments}
-              />
-            }
-          />
+          <>
+            <TextFieldWithTitle
+              title={"musician"}
+            />
+            <DisplayInstruments
+              instruments={user.instruments}
+            />
+          </>
         ) : null}
         <ActiveUserGigsButton user={user} navigation={navigation} theme={theme} />
         <ShowAlbums

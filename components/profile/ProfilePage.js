@@ -31,7 +31,16 @@ function ProfilePage({ navigation }) {
       buttonOnPress={edit}
     >
       {user.is_looking_for_band && <Text style={styles.lookingFor}>{"LOOKING FOR BAND"}</Text>}
-      {user.is_looking_for_musicians && <Text style={styles.lookingFor}>{"LOOKING FOR MUSICIANS"}</Text>}
+      {user.instruments_needed.length ? (
+        <>
+          <TextFieldWithTitle
+            title={"musicians needed"}
+          />
+          <DisplayInstruments
+            instruments={user.instruments_needed}
+          />
+        </>
+      ) : null}
       <View style={styles.imageAndGenresContainer}>
         <Image
           imageUri={user.image}
@@ -66,14 +75,14 @@ function ProfilePage({ navigation }) {
       />
       ) : null}
       {user.is_musician ? (
-        <TextFieldWithTitle
-          title={"musician"}
-          trailing={
-            <DisplayInstruments
-              instruments={user.instruments}
-            />
-          }
-        />
+        <>
+          <TextFieldWithTitle
+            title={"musician"}
+          />
+          <DisplayInstruments
+            instruments={user.instruments}
+          />
+        </>
       ) : null}
       <MyGigsButton user={user} navigation={navigation} theme={theme} />
       <ShowAlbumsWithAddMusicButton

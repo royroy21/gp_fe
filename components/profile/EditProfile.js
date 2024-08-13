@@ -67,6 +67,7 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
 
   const [numberOfGenres, setNumberOfGenres] = useState(user.genres.length);
   const [numberOfInstruments, setNumberOfInstruments] = useState(user.instruments.length);
+  const [numberOfInstrumentsNeeded, setNumberOfInstrumentsNeeded] = useState(user.instruments_needed.length);
 
   const isWeb = Boolean(Platform.OS === "web");
 
@@ -79,6 +80,7 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
       country: user.country || DEFAULT_COUNTRY,
       genres: user.genres,
       instruments: user.instruments,
+      instruments_needed: user.instruments_needed,
       is_band: user.is_band,
       is_musician: user.is_musician,
       is_looking_for_musicians: user.is_looking_for_musicians,
@@ -130,11 +132,21 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
     setNumberOfInstruments(updatedInstruments.length);
   }
 
+  const removeInstrumentNeeded = (instruments, instrumentIDToRemove) => {
+    const updatedInstruments = instruments.filter(instrument => {return instrument.id !== instrumentIDToRemove});
+    setValue("instruments_needed", updatedInstruments);
+    setNumberOfInstrumentsNeeded(updatedInstruments.length);
+  }
+
   let image = null;
   const onSubmit = async (data) => {
     data.is_band = isBand;
-    data.is_musician = isMusician;
     data.is_looking_for_musicians = lookingForMusicians;
+    if (!lookingForMusicians) {
+      data.instruments_needed = []
+    }
+
+    data.is_musician = isMusician;
     data.is_looking_for_band = lookingForBand;
 
     /*
@@ -247,6 +259,45 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
           ) : null}
         </View>
       </View>
+      {numberOfInstrumentsNeeded && lookingForMusicians ? (
+        <DisplayInstruments
+          instruments={getValues("instruments_needed")}
+          removeInstrument={removeInstrumentNeeded}
+        />
+        ) : null}
+      {lookingForMusicians ? (
+        <Controller
+          control={control}
+          rules={{
+           // required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <SelectInstruments
+              containerStyle={isBand ? {marginBottom: 20} : {}}
+              title={"Select musicians needed"}
+              onSelect={(selectedItem) => {
+                const selectedInstruments = getValues("instruments_needed");
+                if (selectedInstruments.map(instrument => instrument.id).includes(selectedItem.id)) {
+                  // Remove instrument
+                  const filteredInstruments = selectedInstruments.filter(instrument => instrument.id !== selectedItem.id);
+                  onChange(filteredInstruments);
+                  setNumberOfInstrumentsNeeded(filteredInstruments.length)
+                } else {
+                  // Add instrument
+                  selectedInstruments.push(selectedItem);
+                  onChange(selectedInstruments);
+                  setNumberOfInstrumentsNeeded(selectedInstruments.length)
+                }
+              }}
+              instrumentsForDisplayInstruments={getValues("instruments_needed")}
+              selectedInstruments={getValues("instruments_needed")}
+              theme={theme}
+            />
+          )}
+          name="instruments_needed"
+        />
+      ) : null}
+      {parsedError.instruments_needed && <Errors errorMessages={parsedError.instruments_needed} />}
       <View style={{marginBottom: 10}}>
         <Text>{"Are you a musician?"}</Text>
         <View style={{ flexDirection: "row" }}>
@@ -266,6 +317,44 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         ) : null}
         </View>
       </View>
+      {numberOfInstruments && isMusician && !isBand ? (
+        <DisplayInstruments
+          instruments={getValues("instruments")}
+          removeInstrument={removeInstrument}
+        />
+        ) : null}
+      {isMusician && !isBand ? (
+        <Controller
+          control={control}
+          rules={{
+           // required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <SelectInstruments
+              containerStyle={isMusician ? {marginBottom: 20} : {}}
+              onSelect={(selectedItem) => {
+                const selectedInstruments = getValues("instruments");
+                if (selectedInstruments.map(instrument => instrument.id).includes(selectedItem.id)) {
+                  // Remove instrument
+                  const filteredInstruments = selectedInstruments.filter(instrument => instrument.id !== selectedItem.id);
+                  onChange(filteredInstruments);
+                  setNumberOfInstruments(filteredInstruments.length)
+                } else {
+                  // Add instrument
+                  selectedInstruments.push(selectedItem);
+                  onChange(selectedInstruments);
+                  setNumberOfInstruments(selectedInstruments.length)
+                }
+              }}
+              instrumentsForDisplayInstruments={getValues("instruments")}
+              selectedInstruments={getValues("instruments")}
+              theme={theme}
+            />
+          )}
+          name="instruments"
+        />
+      ) : null}
+      {parsedError.instruments && <Errors errorMessages={parsedError.instruments} />}
       <View style={{marginBottom: 10}}>
         <Text style={ !isMusician ? { color: "grey" } : undefined }>{"Are looking for a band?"}</Text>
         <View style={{flexDirection: "row"}}>
@@ -404,44 +493,6 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         name="genres"
       />
       {parsedError.genres && <Errors errorMessages={parsedError.genres} />}
-      {!numberOfInstruments && isMusician && !isBand ? <View style={{marginTop: 10}}>{""}</View> : null}
-      {numberOfInstruments && isMusician && !isBand ? (
-        <DisplayInstruments
-          instruments={getValues("instruments")}
-          removeInstrument={removeInstrument}
-        />
-        ) : null}
-      {isMusician && !isBand ? (
-        <Controller
-          control={control}
-          rules={{
-           // required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <SelectInstruments
-              onSelect={(selectedItem) => {
-                const selectedInstruments = getValues("instruments");
-                if (selectedInstruments.map(instrument => instrument.id).includes(selectedItem.id)) {
-                  // Remove instrument
-                  const filteredInstruments = selectedInstruments.filter(instrument => instrument.id !== selectedItem.id);
-                  onChange(filteredInstruments);
-                  setNumberOfInstruments(filteredInstruments.length)
-                } else {
-                  // Add instrument
-                  selectedInstruments.push(selectedItem);
-                  onChange(selectedInstruments);
-                  setNumberOfInstruments(selectedInstruments.length)
-                }
-              }}
-              instrumentsForDisplayInstruments={getValues("instruments")}
-              selectedInstruments={getValues("instruments")}
-              theme={theme}
-            />
-          )}
-          name="instruments"
-        />
-      ) : null}
-      {parsedError.instruments && <Errors errorMessages={parsedError.instruments} />}
     </CustomScrollViewWithOneButton>
   )
 }

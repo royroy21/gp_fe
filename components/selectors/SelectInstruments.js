@@ -76,7 +76,7 @@ function SelectInstrumentsModal(props) {
   )
 }
 
-function SelectInstruments({onSelect, instrumentsForDisplayInstruments, selectedInstruments, theme}) {
+function SelectInstruments({title, onSelect, instrumentsForDisplayInstruments, selectedInstruments, theme, containerStyle={}}) {
   const [showModal, setModal] = useState(false);
 
   const instruments = useInstrumentsStore((state) => state.object);
@@ -100,9 +100,9 @@ function SelectInstruments({onSelect, instrumentsForDisplayInstruments, selected
   );
 
   return (
-    <View>
+    <View style={{...containerStyle}}>
       <ListItem
-        title={`select instruments`}
+        title={title || `select instruments`}
         onPress={() => setModal(true)}
         trailing={
           <IconButton
