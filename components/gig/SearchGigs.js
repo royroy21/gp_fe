@@ -149,10 +149,10 @@ function SearchGigs(props) {
     <View>
       {searchFeedback ? (
         <View style={{ flexDirection: "row" }}>
+          <LittleRedCloseButton action={resetResults} style={{paddingTop: 7, paddingLeft: 5}} />
           <TextTicker style={{color: theme.palette.secondary.main, ...styles.feedback}}>
             {searchFeedback}
           </TextTicker>
-          <LittleRedCloseButton action={resetResults} style={{paddingTop: 7, paddingLeft: 5}} />
         </View>
       ) : null}
       <AdvancedSearchModal
