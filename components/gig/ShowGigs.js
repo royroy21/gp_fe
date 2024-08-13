@@ -223,21 +223,40 @@ function ShowGigs({ navigation, route }) {
         />
       ) : null}
       {isLargeScreen ? (
-        <Button
-          title={"search"}
-          compact={true}
-          variant={"text"}
-          onPress={() => setAdvancedSearch(!advancedSearch)}
-          style={{ width: 100, marginLeft: "auto" }}
-          titleStyle={{ fontSize: 10 }}
-          leading={
-            <Icon
-              name={"magnify"}
-              size={15}
-              color={theme.palette.secondary.main}
+        <View style={{ flexDirection: "row" }}>
+          {user ? (
+            <Button
+              title={"add gig"}
+              compact={true}
+              variant={"text"}
+              onPress={() => navigation.push("AddGig")}
+              style={{ width: 100}}
+              titleStyle={{ fontSize: 10 }}
+              leading={
+                <Icon
+                  name={"plus"}
+                  size={15}
+                  color={theme.palette.secondary.main}
+                />
+              }
             />
-          }
-        />
+          ) : null}
+          <Button
+            title={"search"}
+            compact={true}
+            variant={"text"}
+            onPress={() => setAdvancedSearch(!advancedSearch)}
+            style={{ width: 100, marginLeft: "auto" }}
+            titleStyle={{ fontSize: 10 }}
+            leading={
+              <Icon
+                name={"magnify"}
+                size={15}
+                color={theme.palette.secondary.main}
+              />
+            }
+          />
+        </View>
       ) : (
         <IconButton
           style={{
@@ -282,7 +301,7 @@ function ShowGigs({ navigation, route }) {
       )}
       <LoadingModal isLoading={loading && !loadingNext} debugMessage={"from @ShowGigs"} />
       <Loading isLoading={loading && loadingNext} />
-      {!loading && user ? <AddGigButton navigation={navigation} theme={theme} /> : null}
+      {!loading && user && !isLargeScreen ? <AddGigButton navigation={navigation} theme={theme} /> : null}
     </>
   )
 }
