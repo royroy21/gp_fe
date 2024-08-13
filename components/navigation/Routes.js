@@ -55,7 +55,7 @@ export const screens = [
   {
     key: "AddGig",
     name: "AddGig",
-    title: "add_gig",
+    title: "add",
     linking: {
       path: "add-gig/",
     },
@@ -64,7 +64,7 @@ export const screens = [
   {
     key: "EditGig",
     name: "EditGig",
-    title: "edit_gig",
+    title: "edit",
     linking: {
       path: "edit-gig/:id",
     },
@@ -73,7 +73,7 @@ export const screens = [
   {
     key: "AddMusic",
     name: "AddMusic",
-    title: "add_music",
+    title: "add",
     linking: {
       path: "add-music/:resourceId/:type",
     },
@@ -82,7 +82,7 @@ export const screens = [
   {
     key: "AddAlbum",
     name: "AddAlbum",
-    title: "add_album",
+    title: "add",
     linking: {
       path: "add-album/:resourceId/:type",
     },
@@ -91,7 +91,7 @@ export const screens = [
   {
     key: "EditAlbum",
     name: "EditAlbum",
-    title: "edit_album",
+    title: "edit",
     linking: {
       path: "edit-album/:id",
     },
@@ -109,7 +109,7 @@ export const screens = [
   {
     key: "AddTrack",
     name: "AddTrack",
-    title: "add_track",
+    title: "add",
     linking: {
       path: "add-track/:albumId",
     },
@@ -118,7 +118,7 @@ export const screens = [
   {
     key: "EditTrack",
     name: "EditTrack",
-    title: "edit_track",
+    title: "edit",
     linking: {
       path: "edit-track/:id",
     },
@@ -172,7 +172,7 @@ export const screens = [
   {
     key: "EditProfile",
     name: "EditProfile",
-    title: "edit_profile",
+    title: "edit",
     linking: {
       path: "edit-profile/",
     },
