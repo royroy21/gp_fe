@@ -223,7 +223,7 @@ function ShowGigs({ navigation, route }) {
               leading={
                 <Icon
                   name={"plus"}
-                  size={15}
+                  size={20}
                   color={theme.palette.secondary.main}
                 />
               }

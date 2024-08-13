@@ -221,7 +221,7 @@ function ShowMyGigs({ navigation }) {
               leading={
                 <Icon
                   name={"plus"}
-                  size={15}
+                  size={20}
                   color={theme.palette.secondary.main}
                 />
               }
