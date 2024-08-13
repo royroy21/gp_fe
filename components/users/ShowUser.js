@@ -101,6 +101,13 @@ class ShowUser extends Component {
                 style={styles.chip}
               />
             ) : null}
+            {user.location ? (
+              <Chip
+                key={"location"}
+                label={user.location}
+                style={styles.chip}
+              />
+            ) : null}
             {user.distance_from_user ? (
               <Chip
                 key={"distance_from_user"}

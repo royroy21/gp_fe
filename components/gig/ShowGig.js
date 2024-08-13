@@ -91,6 +91,13 @@ class ShowGig extends Component {
               label={gig.country.country}
               style={styles.chip}
             />
+            {gig.location ? (
+              <Chip
+                key={"location"}
+                label={user.location}
+                style={styles.chip}
+              />
+            ) : null}
             {!isGigOwner && gig.user.distance_from_user ? (
               <Chip
                 key={"distance_from_user"}
