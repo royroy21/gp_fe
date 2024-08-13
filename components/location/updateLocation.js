@@ -25,7 +25,7 @@ async function updateLocation(userId) {
       `error with countryCode ${countryCode} @updateLocation`, JSON.stringify(json)
     ),
     data: {
-      location: {
+      point: {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       },
