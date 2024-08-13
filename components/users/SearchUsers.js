@@ -18,6 +18,14 @@ function AdvancedSearchModal(props) {
     setShowFavorites,
     hasActiveGigs,
     setHasActiveGigs,
+    isBand,
+    setIsBand,
+    isLookingForMusicians,
+    setIsLookingForMusicians,
+    isMusician,
+    setIsMusician,
+    isLookingForBand,
+    setIsLookingForBand,
     submitSearchRequest,
     theme,
   } = props
@@ -67,6 +75,50 @@ function AdvancedSearchModal(props) {
             }
           />
         ) : null}
+        <ListItem
+          title={<Text>{"Is a Band?"}</Text>}
+          onPress={() => setIsBand(!isBand)}
+          trailing={
+            isBand ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
+          title={<Text>{"Is looking for musicians?"}</Text>}
+          onPress={() => setIsLookingForMusicians(!isLookingForMusicians)}
+          trailing={
+            isLookingForMusicians ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
+          title={<Text>{"Is a musician?"}</Text>}
+          onPress={() => setIsMusician(!isMusician)}
+          trailing={
+            isMusician ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
+          title={<Text>{"Is looking for band?"}</Text>}
+          onPress={() => setIsLookingForBand(!isLookingForBand)}
+          trailing={
+            isLookingForBand ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
       </View>
     </CenteredModalWithTwoButton>
   )
@@ -88,6 +140,11 @@ function SearchUsers(props) {
   const [showFavorites, setShowFavorites] = useState(false);
   const [hasActiveGigs, setHasActiveGigs] = useState(false);
 
+  const [isBand, setIsBand] = useState(false);
+  const [isLookingForMusicians, setIsLookingForMusicians] = useState(false);
+  const [isMusician, setIsMusician] = useState(false);
+  const [isLookingForBand, setIsLookingForBand] = useState(false);
+
   function submitSearchRequest() {
     // If searchString is empty send query to return all results
     let searchFeedBack = "Showing results for ";
@@ -105,6 +162,22 @@ function SearchUsers(props) {
     if (showFavorites) {
       search += "&is_favorite=true"
       searchFeedBack += "my favorites, "
+    }
+    if (isBand) {
+      search += "&is_band=true";
+      searchFeedBack += "bands";
+    }
+    if (isLookingForMusicians) {
+      search += "&is_looking_for_musicians=true";
+      searchFeedBack += "bands looking for musicians";
+    }
+    if (isMusician) {
+      search += "&is_musician=true";
+      searchFeedBack += "musicians";
+    }
+    if (isLookingForBand) {
+      search += "&is_looking_for_band=true";
+      searchFeedBack += "musicians looking for bands";
     }
     getUsersFromAPI(BACKEND_ENDPOINTS.searchUsers + "?q=" + search, true);
     searchFeedBack = searchFeedBack.trim()
@@ -133,6 +206,14 @@ function SearchUsers(props) {
         hasActiveGigs={hasActiveGigs}
         setHasActiveGigs={setHasActiveGigs}
         setShowFavorites={setShowFavorites}
+        isBand={isBand}
+        setIsBand={setIsBand}
+        isLookingForMusicians={isLookingForMusicians}
+        setIsLookingForMusicians={setIsLookingForMusicians}
+        isMusician={isMusician}
+        setIsMusician={setIsMusician}
+        isLookingForBand={isLookingForBand}
+        setIsLookingForBand={setIsLookingForBand}
         submitSearchRequest={submitSearchRequest}
         theme={theme}
       />
