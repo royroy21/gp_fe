@@ -210,18 +210,6 @@ function ShowGigs({ navigation, route }) {
   const parsedError = error || {};
   return (
     <>
-      {!loading ? (
-        <SearchGigs
-          user={user}
-          advancedSearch={advancedSearch}
-          setAdvancedSearch={setAdvancedSearch}
-          getGigsFromAPI={getGigsFromAPI}
-          searchFeedback={searchFeedback}
-          setSearchFeedback={setSearchFeedback}
-          resetResults={resetResults}
-          theme={theme}
-        />
-      ) : null}
       {isLargeScreen ? (
         <View style={{ flexDirection: "row" }}>
           {user ? (
@@ -273,6 +261,18 @@ function ShowGigs({ navigation, route }) {
           }
         />
       )}
+      {!loading ? (
+        <SearchGigs
+          user={user}
+          advancedSearch={advancedSearch}
+          setAdvancedSearch={setAdvancedSearch}
+          getGigsFromAPI={getGigsFromAPI}
+          searchFeedback={searchFeedback}
+          setSearchFeedback={setSearchFeedback}
+          resetResults={resetResults}
+          theme={theme}
+        />
+      ) : null}
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {gigs && gigs.results.length ? (

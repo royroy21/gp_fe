@@ -208,33 +208,41 @@ function ShowMyGigs({ navigation }) {
   const parsedError = error || {};
   return (
     <View style={styles.outerContainer}>
-      {!loading ? (
-        <SearchMyGigs
-          advancedSearch={advancedSearch}
-          setAdvancedSearch={setAdvancedSearch}
-          getGigsFromAPI={getGigsFromAPI}
-          searchFeedback={searchFeedback}
-          setSearchFeedback={setSearchFeedback}
-          resetResults={resetResults}
-          theme={theme}
-        />
-      ) : null}
       {isLargeScreen ? (
-        <Button
-          title={"search"}
-          compact={true}
-          variant={"text"}
-          onPress={() => setAdvancedSearch(!advancedSearch)}
-          style={{ width: 100, marginLeft: "auto" }}
-          titleStyle={{ fontSize: 10 }}
-          leading={
-            <Icon
-              name={"magnify"}
-              size={15}
-              color={theme.palette.secondary.main}
+        <View style={{ flexDirection: "row" }}>
+          {user ? (
+            <Button
+              title={"add gig"}
+              compact={true}
+              variant={"text"}
+              onPress={() => navigation.push("AddGig")}
+              style={{ width: 100}}
+              titleStyle={{ fontSize: 10 }}
+              leading={
+                <Icon
+                  name={"plus"}
+                  size={15}
+                  color={theme.palette.secondary.main}
+                />
+              }
             />
-          }
-        />
+          ) : null}
+          <Button
+            title={"search"}
+            compact={true}
+            variant={"text"}
+            onPress={() => setAdvancedSearch(!advancedSearch)}
+            style={{ width: 100, marginLeft: "auto" }}
+            titleStyle={{ fontSize: 10 }}
+            leading={
+              <Icon
+                name={"magnify"}
+                size={15}
+                color={theme.palette.secondary.main}
+              />
+            }
+          />
+        </View>
       ) : (
         <IconButton
           style={{
@@ -251,6 +259,17 @@ function ShowMyGigs({ navigation }) {
           }
         />
       )}
+      {!loading ? (
+        <SearchMyGigs
+          advancedSearch={advancedSearch}
+          setAdvancedSearch={setAdvancedSearch}
+          getGigsFromAPI={getGigsFromAPI}
+          searchFeedback={searchFeedback}
+          setSearchFeedback={setSearchFeedback}
+          resetResults={resetResults}
+          theme={theme}
+        />
+      ) : null}
       {(parsedError.detail) && <Errors errorMessages={parsedError.detail} />}
       {(parsedError.unExpectedError) && <Errors errorMessages={parsedError.unExpectedError} />}
       {gigs && gigs.results.length ? (
@@ -279,7 +298,7 @@ function ShowMyGigs({ navigation }) {
       )}
       <LoadingModal isLoading={loading && !loadingNext} debugMessage={"from @ShowMyGigs"}/>
       <Loading isLoading={loading && loadingNext} />
-      {!loading ? <AddGigButton navigation={navigation} theme={theme} /> : null}
+      {!loading && !isLargeScreen ? <AddGigButton navigation={navigation} theme={theme} /> : null}
     </View>
   )
 }
