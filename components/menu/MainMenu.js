@@ -54,7 +54,7 @@ const MainMenu = ({ showMainMenu, setMainMenu, navigation }) => {
         }
       />
       <ListItem
-        title={<Text>{"Radio"}</Text>}
+        title={<Text style={{ color: "grey" }}>{"Radio"}</Text>}
         onPress={() => {}}
         trailing={
           <IconButton
