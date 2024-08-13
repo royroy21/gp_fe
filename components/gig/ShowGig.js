@@ -94,7 +94,7 @@ class ShowGig extends Component {
             {gig.location ? (
               <Chip
                 key={"location"}
-                label={user.location}
+                label={gig.location}
                 style={styles.chip}
               />
             ) : null}
