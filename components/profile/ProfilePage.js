@@ -9,6 +9,7 @@ import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton"
 import {useTheme} from "@react-native-material/core";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 import MyGigsButton from "./MyGigsButton";
+import DisplayInstruments from "../gig/DisplayInstruments";
 
 function ProfilePage({ navigation }) {
   const theme = useTheme();
@@ -52,6 +53,17 @@ function ProfilePage({ navigation }) {
         title={"bio"}
         text={user.bio}
       />
+      <TextFieldWithTitle
+        title={"location"}
+        text={user.location}
+      />
+      <TextFieldWithTitle
+        title={"country"}
+        text={user.country.country}
+      />
+      <DisplayInstruments
+        instruments={user.instruments}
+      />
       <MyGigsButton user={user} navigation={navigation} theme={theme} />
       <ShowAlbumsWithAddMusicButton
         resourceId={user.id}
@@ -71,6 +83,10 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   genres: {
+    width: "65%",
+    alignItems: "flex-end",
+  },
+  instruments: {
     width: "65%",
     alignItems: "flex-end",
   },

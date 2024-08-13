@@ -8,12 +8,16 @@ import DisplayGenres from "../gig/DisplayGenres";
 import ImagePickerMobile from "../Image/ImagePickerMobile";
 import {formatImageForForm, getDataWithOutImage} from "../Image/helpers";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
-import {Platform} from "react-native";
+import {Platform, View} from "react-native";
 import ImagePickerWeb from "../Image/ImagePickerWeb";
 import SelectGenres from "../selectors/SelectGenres";
-import {useTheme} from "@react-native-material/core";
+import {Switch, useTheme, Text} from "@react-native-material/core";
 import {useIsFocused} from "@react-navigation/native";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+import SelectInstruments from "../selectors/SelectInstruments";
+import DisplayInstruments from "../gig/DisplayInstruments";
+import SelectCountry from "../selectors/SelectCountry";
+import {DEFAULT_COUNTRY} from "../../settings";
 
 function EditProfile({ navigation }) {
   const isFocused = useIsFocused();
@@ -56,7 +60,9 @@ function EditProfile({ navigation }) {
 }
 
 function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
+  const [isMusician, setIsMusician] = useState(false);
   const [numberOfGenres, setNumberOfGenres] = useState(user.genres.length);
+  const [numberOfInstruments, setNumberOfInstruments] = useState(user.instruments.length);
   const isWeb = Boolean(Platform.OS === "web");
 
   const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
@@ -64,7 +70,10 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
       username: user.username,
       email: user.email,
       bio: user.bio,
+      location: user.location,
+      country: user.country || DEFAULT_COUNTRY,
       genres: user.genres,
+      instruments: user.instruments,
       image: user.image,
     },
   });
@@ -79,6 +88,12 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
     const updatedGenres = genres.filter(genre => {return genre.id !== genreIDToRemove});
     setValue("genres", updatedGenres);
     setNumberOfGenres(updatedGenres.length);
+  }
+
+  const removeInstrument = (instruments, instrumentIDToRemove) => {
+    const updatedInstruments = instruments.filter(instrument => {return instrument.id !== instrumentIDToRemove});
+    setValue("instruments", updatedInstruments);
+    setNumberOfInstruments(updatedInstruments.length);
   }
 
   let image = null;
@@ -206,6 +221,37 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         name="bio"
       />
       {parsedError.bio && <Errors errorMessages={parsedError.bio} />}
+      <Controller
+        control={control}
+        rules={{
+         // required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextInput
+            label={"city, town .."}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+          />
+        )}
+        name="location"
+      />
+      {parsedError.location && <Errors errorMessages={parsedError.location} />}
+      <Controller
+        control={control}
+        rules={{
+         // required: true,
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <SelectCountry
+            defaultCountry={value}
+            onSelect={onChange}
+            theme={theme}
+          />
+        )}
+        name="country"
+      />
+      {parsedError.country && <Errors errorMessages={parsedError.country} />}
       {numberOfGenres ? (
         <DisplayGenres
           genres={getValues("genres")}
@@ -241,6 +287,51 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         name="genres"
       />
       {parsedError.genres && <Errors errorMessages={parsedError.genres} />}
+      <View style={{marginTop: 10}}>
+        <Text>{"Are you a musician?"}</Text>
+        <Switch
+          value={isMusician}
+          onValueChange={() => setIsMusician(!isMusician)}
+        />
+      </View>
+      {!numberOfInstruments && isMusician ? <View style={{marginTop: 10}}>{""}</View> : null}
+      {numberOfInstruments && isMusician ? (
+        <DisplayInstruments
+          instruments={getValues("instruments")}
+          removeInstrument={removeInstrument}
+        />
+        ) : null}
+      {isMusician ? (
+        <Controller
+          control={control}
+          rules={{
+           // required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <SelectInstruments
+              onSelect={(selectedItem) => {
+                const selectedInstruments = getValues("instruments");
+                if (selectedInstruments.map(instrument => instrument.id).includes(selectedItem.id)) {
+                  // Remove instrument
+                  const filteredInstruments = selectedInstruments.filter(instrument => instrument.id !== selectedItem.id);
+                  onChange(filteredInstruments);
+                  setNumberOfInstruments(filteredInstruments.length)
+                } else {
+                  // Add instrument
+                  selectedInstruments.push(selectedItem);
+                  onChange(selectedInstruments);
+                  setNumberOfInstruments(selectedInstruments.length)
+                }
+              }}
+              instrumentsForDisplayInstruments={getValues("instruments")}
+              selectedInstruments={getValues("instruments")}
+              theme={theme}
+            />
+          )}
+          name="instruments"
+        />
+      ) : null}
+      {parsedError.instruments && <Errors errorMessages={parsedError.instruments} />}
     </CustomScrollViewWithOneButton>
   )
 }

@@ -5,6 +5,7 @@ import useCountryStore from "./country";
 import useGenresStore from "./genres";
 import useGigStore from "./gig";
 import useGigsStore from "./gigs";
+import useInstrumentsStore from "./instruments";
 import useMyGigsStore from "./myGigs";
 import useJWTStore from "./jwt";
 import useOtherUserStore from "./otherUser";
@@ -24,6 +25,7 @@ function ClearAll(doNotClearThese=[]) {
     genres: useGenresStore,
     gig: useGigStore,
     gigs: useGigsStore,
+    instruments: useInstrumentsStore,
     myGigs: useMyGigsStore,
     jwt: useJWTStore,
     otherUser: useOtherUserStore,

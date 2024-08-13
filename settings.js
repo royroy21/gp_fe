@@ -35,6 +35,7 @@ export const BACKEND_ENDPOINTS = {
   searchGigs: BACKEND_URL + "/api/gig/search/",
   searchCountries: BACKEND_URL + "/search/country/suggest/?country_suggest__completion=",
   searchGenres: BACKEND_URL + "/search/genre/suggest/?genre_suggest__completion=",
+  searchInstruments: BACKEND_URL + "/search/instrument/suggest/?instrument_suggest__completion=",
   searchRooms: BACKEND_URL + "/api/room/search/",
   searchUsers: BACKEND_URL + "/api/user/search/",
 };
