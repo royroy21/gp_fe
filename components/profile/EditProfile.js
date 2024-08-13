@@ -11,7 +11,7 @@ import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButto
 import {Platform, View} from "react-native";
 import ImagePickerWeb from "../Image/ImagePickerWeb";
 import SelectGenres from "../selectors/SelectGenres";
-import {Switch, useTheme, Text} from "@react-native-material/core";
+import {Switch, useTheme, Text, Icon} from "@react-native-material/core";
 import {useIsFocused} from "@react-navigation/native";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 import SelectInstruments from "../selectors/SelectInstruments";
@@ -60,9 +60,14 @@ function EditProfile({ navigation }) {
 }
 
 function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
-  const [isMusician, setIsMusician] = useState(false);
+  const [isBand, setIsBand] = useState(user.is_band);
+  const [isMusician, setIsMusician] = useState(user.is_musician);
+  const [lookingForMusicians, setLookingForMusicians] = useState(user.is_looking_for_musicians);
+  const [lookingForBand, setLookingForBand] = useState(user.is_looking_for_band);
+
   const [numberOfGenres, setNumberOfGenres] = useState(user.genres.length);
   const [numberOfInstruments, setNumberOfInstruments] = useState(user.instruments.length);
+
   const isWeb = Boolean(Platform.OS === "web");
 
   const { control, handleSubmit, getValues, setValue, clearErrors } = useForm({
@@ -74,6 +79,10 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
       country: user.country || DEFAULT_COUNTRY,
       genres: user.genres,
       instruments: user.instruments,
+      is_band: user.is_band,
+      is_musician: user.is_musician,
+      is_looking_for_musicians: user.is_looking_for_musicians,
+      is_looking_for_band: user.is_looking_for_band,
       image: user.image,
     },
   });
@@ -83,6 +92,31 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
       clearErrors();
     }
   }, []);
+
+  useEffect(() => {
+    if (isBand) {
+      if (isMusician) {
+        setIsMusician(false);
+      }
+      if (lookingForBand) {
+        setLookingForBand(false);
+      }
+    } else {
+      setLookingForMusicians(false);
+    }
+  }, [isBand]);
+
+  useEffect(() => {
+    if (isMusician) {
+      if (isBand) {
+        setIsBand(false);
+      }
+      if (lookingForMusicians)
+        setLookingForMusicians(false);
+    } else {
+      setLookingForBand(false);
+    }
+  }, [isMusician]);
 
   const removeGenre = (genres, genreIDToRemove) => {
     const updatedGenres = genres.filter(genre => {return genre.id !== genreIDToRemove});
@@ -98,6 +132,11 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
 
   let image = null;
   const onSubmit = async (data) => {
+    data.is_band = isBand;
+    data.is_musician = isMusician;
+    data.is_looking_for_musicians = lookingForMusicians;
+    data.is_looking_for_band = lookingForBand;
+
     /*
     NOTE! If an image is present first we upload string data using react-hook-form's
     data user then we upload image data separately afterwards using FormData.
@@ -169,6 +208,84 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         />
         )}
       {parsedError.image && <Errors errorMessages={parsedError.image} />}
+      <View style={{marginBottom: 10}}>
+        <Text>{"Are you band?"}</Text>
+        <View style={{flexDirection: "row"}}>
+          <Switch
+            value={isBand}
+            onValueChange={() => {
+              setIsBand(!isBand);
+            }}
+          />
+          {isBand ? (
+            <Icon
+              color={theme.palette.secondary.main}
+              name={"check"}
+              size={18}
+              style={{marginLeft: 5}}
+            />
+          ) : null}
+        </View>
+      </View>
+      <View style={{marginBottom: 10}}>
+        <Text style={ !isBand ? { color: "grey" } : undefined }>{"Are looking for musicians?"}</Text>
+        <View style={{flexDirection: "row"}}>
+          <Switch
+            value={lookingForMusicians}
+            disabled={!isBand}
+            onValueChange={() => {
+              setLookingForMusicians(!lookingForMusicians);
+            }}
+          />
+          {lookingForMusicians ? (
+            <Icon
+              color={theme.palette.secondary.main}
+              name={"check"}
+              size={18}
+              style={{ marginLeft: 5 }}
+            />
+          ) : null}
+        </View>
+      </View>
+      <View style={{marginBottom: 10}}>
+        <Text>{"Are you a musician?"}</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Switch
+            value={isMusician}
+            onValueChange={() => {
+              setIsMusician(!isMusician);
+            }}
+          />
+        {isMusician ? (
+          <Icon
+            color={theme.palette.secondary.main}
+            name={"check"}
+            size={18}
+            style={{ marginLeft: 5 }}
+          />
+        ) : null}
+        </View>
+      </View>
+      <View style={{marginBottom: 10}}>
+        <Text style={ !isMusician ? { color: "grey" } : undefined }>{"Are looking for a band?"}</Text>
+        <View style={{flexDirection: "row"}}>
+          <Switch
+            value={lookingForBand}
+            disabled={!isMusician}
+            onValueChange={() => {
+              setLookingForBand(!lookingForBand);
+            }}
+          />
+          {lookingForBand ? (
+            <Icon
+              color={theme.palette.secondary.main}
+              name={"check"}
+              size={18}
+              style={{ marginLeft: 5 }}
+            />
+          ) : null}
+        </View>
+      </View>
       <Controller
         control={control}
         rules={{
@@ -176,7 +293,7 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            label={"username"}
+            label={isBand ? "band name" : "username"}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -208,7 +325,7 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            label={"about you"}
+            label={isBand ? "about band" : "about you"}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
@@ -287,21 +404,14 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         name="genres"
       />
       {parsedError.genres && <Errors errorMessages={parsedError.genres} />}
-      <View style={{marginTop: 10}}>
-        <Text>{"Are you a musician?"}</Text>
-        <Switch
-          value={isMusician}
-          onValueChange={() => setIsMusician(!isMusician)}
-        />
-      </View>
-      {!numberOfInstruments && isMusician ? <View style={{marginTop: 10}}>{""}</View> : null}
-      {numberOfInstruments && isMusician ? (
+      {!numberOfInstruments && isMusician && !isBand ? <View style={{marginTop: 10}}>{""}</View> : null}
+      {numberOfInstruments && isMusician && !isBand ? (
         <DisplayInstruments
           instruments={getValues("instruments")}
           removeInstrument={removeInstrument}
         />
         ) : null}
-      {isMusician ? (
+      {isMusician && !isBand ? (
         <Controller
           control={control}
           rules={{

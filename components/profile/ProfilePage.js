@@ -6,7 +6,7 @@ import React from "react";
 import TextFieldWithTitle from "../fields/TextFieldWithTitle";
 import CustomScrollViewWithOneButton from "../views/CustomScrollViewWithOneButton";
 import ShowAlbumsWithAddMusicButton from "../audio/ShowAlbumsWithAddMusicButton";
-import {useTheme} from "@react-native-material/core";
+import {Text, useTheme} from "@react-native-material/core";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
 import MyGigsButton from "./MyGigsButton";
 import DisplayInstruments from "../gig/DisplayInstruments";
@@ -30,6 +30,8 @@ function ProfilePage({ navigation }) {
       buttonTitle={"edit"}
       buttonOnPress={edit}
     >
+      {user.is_looking_for_band && <Text style={styles.lookingFor}>{"LOOKING FOR BAND"}</Text>}
+      {user.is_looking_for_musicians && <Text style={styles.lookingFor}>{"LOOKING FOR MUSICIANS"}</Text>}
       <View style={styles.imageAndGenresContainer}>
         <Image
           imageUri={user.image}
@@ -42,7 +44,7 @@ function ProfilePage({ navigation }) {
         />
       </View>
       <TextFieldWithTitle
-        title={"username"}
+        title={user.is_band ? "band name" : "username"}
         text={user.username}
       />
       <TextFieldWithTitle
@@ -50,20 +52,29 @@ function ProfilePage({ navigation }) {
         text={user.email}
       />
       <TextFieldWithTitle
-        title={"bio"}
+        title={user.is_band ? "about band" : "about me"}
         text={user.bio}
       />
       <TextFieldWithTitle
         title={"location"}
         text={user.location}
       />
-      <TextFieldWithTitle
-        title={"country"}
-        text={user.country.country}
+      {user.country ? (
+        <TextFieldWithTitle
+          title={"country"}
+          text={user.country.country}
       />
-      <DisplayInstruments
-        instruments={user.instruments}
-      />
+      ) : null}
+      {user.is_musician ? (
+        <TextFieldWithTitle
+          title={"musician"}
+          trailing={
+            <DisplayInstruments
+              instruments={user.instruments}
+            />
+          }
+        />
+      ) : null}
       <MyGigsButton user={user} navigation={navigation} theme={theme} />
       <ShowAlbumsWithAddMusicButton
         resourceId={user.id}
@@ -76,6 +87,12 @@ function ProfilePage({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  lookingFor: {
+    color: "grey",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: 5,
+  },
   imageAndGenresContainer: {
     flexDirection: "row"
   },
