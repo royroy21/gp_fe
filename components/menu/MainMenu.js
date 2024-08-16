@@ -105,7 +105,7 @@ const MainMenu = ({ showMainMenu, setMainMenu, navigation }) => {
             onPress={() => {}}
             icon={
               <Icon
-                color={theme.palette.secondary.main}
+                color={"grey"}
                 name={"radio"}
                 size={25}
               />
