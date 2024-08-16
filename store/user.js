@@ -4,6 +4,7 @@ import {BACKEND_ENDPOINTS} from "../settings";
 import updateLocation from "../components/location/updateLocation";
 import {registerForPushNotifications} from "../components/notifications";
 
+// TODO - turning off push notifications for now.
 const setUserUpdateLocationRegisterForPushNotifications = async (set, json) => {
   set({ object: json, loading: false, error: null })
   updateLocation(json.id);
@@ -18,7 +19,7 @@ const useUserStore = create((set) => ({
     set({ loading: true });
     const params = {
       resource: BACKEND_ENDPOINTS.me,
-      successCallback: (json) => setUserUpdateLocationRegisterForPushNotifications(set, json),
+      successCallback: (json) => set({ object: json, loading: false, error: null }),
       errorCallback: (json) => set({ object: null, loading: false, error: json }),
     }
     await client.get(params);
