@@ -150,9 +150,7 @@ function SearchUsers(props) {
     let searchFeedBack = "Showing results for ";
     const getAllQuery = "";
     let search = (searchString.trim() === "") ? getAllQuery : searchString;
-    if (search === getAllQuery) {
-      searchFeedBack += `everything, `;
-    } else {
+    if (search) {
       searchFeedBack += `${search}, `;
     }
     if (hasActiveGigs) {
