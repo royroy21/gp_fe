@@ -68,6 +68,10 @@ function InnerAddGig({ user, navigation }) {
     NOTE! If an image is present first we upload string data using react-hook-form's
     data object then we upload image data separately afterward using FormData.
      */
+    data.has_spare_ticket = hasSpareTicket;
+    data.looking_for_gigpig = lookingForGigPig;
+    data.is_free_gig = isFreeGig;
+
     image = data.image;
     if (image) {
       await post(getDataWithOutImage(data), upLoadImage)
@@ -78,6 +82,8 @@ function InnerAddGig({ user, navigation }) {
 
   const [numberOfGenres, setNumberOfGenres] = useState(0);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [lookingForGigPig, setLookingForGigPig] = useState(false);
+  const [isFreeGig, setIsFreeGig] = useState(false);
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
 
   const upLoadImage = async (gig) => {
@@ -104,6 +110,8 @@ function InnerAddGig({ user, navigation }) {
     return () => {
       setNumberOfGenres(0);
       setShowDatePicker(false);
+      setLookingForGigPig(false);
+      setIsFreeGig(false);
       setHasSpareTicket(false);
       image = null;
     };
@@ -126,6 +134,10 @@ function InnerAddGig({ user, navigation }) {
       setNumberOfGenres={setNumberOfGenres}
       showDatePicker={showDatePicker}
       setShowDatePicker={setShowDatePicker}
+      lookingForGigPig={lookingForGigPig}
+      setLookingForGigPig={setLookingForGigPig}
+      isFreeGig={isFreeGig}
+      setIsFreeGig={setIsFreeGig}
       hasSpareTicket={hasSpareTicket}
       setHasSpareTicket={setHasSpareTicket}
       onSubmit={onSubmit}

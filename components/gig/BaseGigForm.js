@@ -29,6 +29,10 @@ function BaseGigForm(props) {
     setNumberOfGenres,
     showDatePicker,
     setShowDatePicker,
+    lookingForGigPig,
+    setLookingForGigPig,
+    isFreeGig,
+    setIsFreeGig,
     hasSpareTicket,
     setHasSpareTicket,
     onSubmit,
@@ -230,13 +234,9 @@ function BaseGigForm(props) {
               </Text>
             </View>
           }
-          onPress={() => {
-            const newValue = !hasSpareTicket;
-            setHasSpareTicket(newValue);
-            setValue("looking_for_gigpig", newValue);
-          }}
+          onPress={() => setLookingForGigPig(!lookingForGigPig)}
           trailing={
-            getValues("looking_for_gigpig") ? (
+            lookingForGigPig ? (
               <Icon
                 name="thumb-up-outline"
                 size={25}
@@ -259,13 +259,9 @@ function BaseGigForm(props) {
               {"is a free gig?"}
             </Text>
           }
-          onPress={() => {
-            const newValue = !hasSpareTicket;
-            setHasSpareTicket(newValue);
-            setValue("is_free_gig", newValue);
-          }}
+          onPress={() => setIsFreeGig(!isFreeGig)}
           trailing={
-            getValues("is_free_gig") ? (
+            isFreeGig ? (
               <Icon
                 name="thumb-up-outline"
                 size={25}
@@ -288,13 +284,9 @@ function BaseGigForm(props) {
               {"have a spare ticket?"}
             </Text>
           }
-          onPress={() => {
-            const newValue = !hasSpareTicket;
-            setHasSpareTicket(newValue);
-            setValue("has_spare_ticket", newValue);
-          }}
+          onPress={() => setHasSpareTicket(!hasSpareTicket)}
           trailing={
-            getValues("has_spare_ticket") ? (
+            hasSpareTicket ? (
               <Icon
                 name="thumb-up-outline"
                 size={25}
