@@ -24,7 +24,7 @@ function ActiveUserGigsButton({ user, navigation, theme }) {
           </Text>
         </View>
         <Icon
-          style={{paddingTop: 5}}
+          style={{paddingTop: 5, paddingRight: 5}}
           name="music"
           size={25}
           color={theme.palette.secondary.main}
@@ -45,11 +45,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingTop: 5,
     paddingLeft: 12,
-    paddingRight: 12,
+    paddingRight: 5,
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 15,
-    width: "98%",
     borderRadius: 15,
   },
   title: {

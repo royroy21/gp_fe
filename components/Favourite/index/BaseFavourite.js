@@ -16,7 +16,7 @@ function BaseFavourite({ onPress, isFavorite, theme }) {
           <Text style={styles.title}>{isFavorite ? "un-favorite" : "favorite"}</Text>
         </View>
         <Icon
-          style={{paddingTop: 5}}
+          style={{paddingTop: 5, paddingRight: 5}}
           name="star"
           size={25}
           color={isFavorite ? "orange" : "grey"}
@@ -36,11 +36,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingTop: 5,
     paddingLeft: 12,
-    paddingRight: 12,
+    paddingRight: 5,
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 15,
-    width: "98%",
     borderRadius: 15,
   },
   title: {
