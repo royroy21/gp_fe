@@ -127,18 +127,18 @@ export const screens = [
   {
     key: "UsersScreen",
     name: "UsersScreen",
-    title: "users",
+    title: "profiles",
     linking: {
-      path: "users/",
+      path: "profiles/",
     },
     component: ShowUsers,
   },
   {
     key: "OtherUser",
     name: "OtherUser",
-    title: "user",
+    title: "profile",
     linking: {
-      path: "user/:id",
+      path: "profile/:id",
     },
     component: OtherUser,
   },
