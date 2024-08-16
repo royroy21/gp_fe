@@ -155,7 +155,7 @@ function SearchMyGigs(props) {
     }
     if (lookingForGigPig) {
       search += "&looking_for_gigpig=true"
-      searchFeedBack += "looking for gigpig, "
+      searchFeedBack += "looking for a gigpig, "
     }
     if (isFreeGig) {
       search += "&is_free_gig=true"
