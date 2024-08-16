@@ -117,7 +117,8 @@ function ShowGigs({ navigation, route }) {
   const theme = useTheme()
 
   const params = route.params || {};
-  const { userId } = params;
+  const { userId, userName } = params;
+  console.log("userId, userName", userId, userName);
 
   const resultsListViewRef = useRef();
 
@@ -175,7 +176,7 @@ function ShowGigs({ navigation, route }) {
 
       if (userId) {
         route.params = null;
-        setSearchFeedback("Showing gigs for user " + userId);
+        setSearchFeedback("Showing gigs for profile " + userName);
         // Not using getRoomsFromAPI so we can set SearchFeedback.
         get(BACKEND_ENDPOINTS.gigs + "?user_id=" + userId, [], true);
         return;

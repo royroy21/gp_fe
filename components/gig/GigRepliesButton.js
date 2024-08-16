@@ -5,7 +5,7 @@ import React from "react";
 
 function GigRepliesButton({gig, navigation, theme, containerStyle={}}) {
   const onPress = () => {
-    navigation.push("RoomsScreen", {"gigId": gig.id})
+    navigation.push("RoomsScreen", {"gigId": gig.id, "gigTitle": gig.title})
   }
 
   return (

@@ -7,7 +7,7 @@ function ActiveUserGigsButton({ user, navigation, theme }) {
     return null;
   }
   const onPress = () => {
-    navigation.push("DefaultScreen", {userId: user.id});
+    navigation.push("DefaultScreen", {userId: user.id, userName: user.username});
   }
   return (
     <View style={styles.outerContainer}>

@@ -128,7 +128,9 @@ function Rooms({ navigation, route }) {
   const isLargeScreen = isWeb && !isSmallScreen;
 
   const theme = useTheme()
-  const gigId = route.params ? route.params.gigId : null;
+  const params = route.params || {};
+  const { gigId, gigTitle } = params;
+
   const resultsListViewRef = useRef();
 
   const [advancedSearch, setAdvancedSearch] = useState(false);
@@ -183,7 +185,7 @@ function Rooms({ navigation, route }) {
 
       if (gigId) {
         route.params = null;
-        setSearchFeedback("Showing messages for gig " + gigId);
+        setSearchFeedback("Showing messages for gig " + gigTitle);
         // Not using getRoomsFromAPI so we can set SearchFeedback.
         get(BACKEND_ENDPOINTS.room + `?gig_id=${gigId}`, [], true);
         return
