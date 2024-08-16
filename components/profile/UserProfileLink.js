@@ -52,11 +52,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingTop: 5,
     paddingLeft: 12,
-    paddingRight: 12,
+    paddingRight: 5,
     paddingBottom: 5,
     marginLeft: 5,
     marginRight: 5,
-    width: "98%",
     borderRadius: 15,
   },
   title: {
@@ -75,6 +74,7 @@ const styles = StyleSheet.create({
   },
   trailingImage: {
     marginLeft: "auto",
+    marginRight: 5,
   },
   thumbnailStyle: {
     width: 50,

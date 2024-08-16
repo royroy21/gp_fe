@@ -20,7 +20,7 @@ function GigRepliesButton({gig, navigation, theme, containerStyle={}}) {
       >
         <View style={styles.textContainer}>
           <Text style={styles.title}>{"replies"}</Text>
-          <Text style={styles.numberOfReplies}>{gig.replies}</Text>
+          <Text style={{...styles.numberOfReplies, color: theme.palette.secondary.main}}>{gig.replies}</Text>
         </View>
         <Icon
           onPress={onPress}
@@ -43,11 +43,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingTop: 5,
     paddingLeft: 12,
-    paddingRight: 12,
+    paddingRight: 5,
     paddingBottom: 5,
     marginLeft: 5,
     marginRight: 5,
-    width: "98%",
     borderRadius: 15,
   },
   title: {
@@ -66,6 +65,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingTop: 7,
+    marginRight: 5,
   },
 })
 

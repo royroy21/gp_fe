@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 15,
-    width: "98%",
     borderRadius: 15,
   },
   title: {
