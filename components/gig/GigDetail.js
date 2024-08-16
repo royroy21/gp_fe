@@ -1,5 +1,5 @@
 import {StyleSheet, View} from "react-native";
-import {useTheme} from "@react-native-material/core";
+import {Icon, useTheme} from "@react-native-material/core";
 import DisplayGenres from "./DisplayGenres";
 import dateFormat from "dateformat";
 import useUserStore from "../../store/user";
@@ -288,19 +288,37 @@ function Detail({ user, isGigOwner, gig, navigation }) {
       {gig.looking_for_gigpig ? (
         <TextFieldWithTitle
           title={"looking for a gigpig"}
-          text={"yes"}
+          trailing={
+            <Icon
+              name="thumb-up-outline"
+              size={25}
+              color={theme.palette.secondary.main}
+            />
+          }
         />
       ) : null}
       {gig.is_free_gig ? (
         <TextFieldWithTitle
           title={"is free gig"}
-          text={"yes"}
+          trailing={
+            <Icon
+              name="thumb-up-outline"
+              size={25}
+              color={theme.palette.secondary.main}
+            />
+          }
         />
       ) : null}
       {gig.has_spare_ticket ? (
         <TextFieldWithTitle
           title={"has spare ticket"}
-          text={"yes"}
+          trailing={
+            <Icon
+              name="thumb-up-outline"
+              size={25}
+              color={theme.palette.secondary.main}
+            />
+          }
         />
       ) : null}
       {gig.is_past_gig ? (
