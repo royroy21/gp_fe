@@ -49,6 +49,8 @@ function InnerAddGig({ user, navigation }) {
       "genres": [],
       "start_date": null,
       "has_spare_ticket": false,
+      "looking_for_gigpig": false,
+      "is_free_gig": false,
       "image": null,
     },
   });

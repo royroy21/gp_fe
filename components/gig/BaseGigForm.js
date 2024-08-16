@@ -221,6 +221,69 @@ function BaseGigForm(props) {
         <View style={{marginTop: 2}}/>
         <ListItem
           title={
+            <View>
+              <Text>
+                {"looking for a GigPig?"}
+              </Text>
+              <Text style={{fontSize: 12, color: "grey"}}>
+                {"*someone to gig with"}
+              </Text>
+            </View>
+          }
+          onPress={() => {
+            const newValue = !hasSpareTicket;
+            setHasSpareTicket(newValue);
+            setValue("looking_for_gigpig", newValue);
+          }}
+          trailing={
+            getValues("looking_for_gigpig") ? (
+              <Icon
+                name="thumb-up-outline"
+                size={25}
+                color={theme.palette.secondary.main}
+              />
+            ) : (
+              <Icon
+                name="thumb-down-outline"
+                size={25}
+                color={"grey"}
+              />
+            )
+          }
+        />
+        {parsedError.looking_for_gigpig && <Errors errorMessages={parsedError.looking_for_gigpig} />}
+        <View style={{marginTop: 2}}/>
+        <ListItem
+          title={
+            <Text>
+              {"is a free gig?"}
+            </Text>
+          }
+          onPress={() => {
+            const newValue = !hasSpareTicket;
+            setHasSpareTicket(newValue);
+            setValue("is_free_gig", newValue);
+          }}
+          trailing={
+            getValues("is_free_gig") ? (
+              <Icon
+                name="thumb-up-outline"
+                size={25}
+                color={theme.palette.secondary.main}
+              />
+            ) : (
+              <Icon
+                name="thumb-down-outline"
+                size={25}
+                color={"grey"}
+              />
+            )
+          }
+        />
+        {parsedError.is_free_gig && <Errors errorMessages={parsedError.is_free_gig} />}
+        <View style={{marginTop: 2}}/>
+        <ListItem
+          title={
             <Text>
               {"have a spare ticket?"}
             </Text>

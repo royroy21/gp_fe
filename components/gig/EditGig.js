@@ -109,6 +109,8 @@ function InnerEditGig({ gig, get, store, loading, error, patch, navigation }) {
       "genres": gig.genres,
       "start_date": gig.start_date,
       "has_spare_ticket": gig.has_spare_ticket,
+      "looking_for_gigpig": gig.looking_for_gigpig,
+      "is_free_gig": gig.is_free_gig,
       "image": gig.image,
     },
   });

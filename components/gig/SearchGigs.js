@@ -19,6 +19,10 @@ function AdvancedSearchModal(props) {
     showFavorites,
     setShowFavorites,
     hasSpareTicket,
+    lookingForGigPig,
+    setLookingForGigPig,
+    isFreeGig,
+    setIsFreeGig,
     setHasSpareTicket,
     startDate,
     setStartDate,
@@ -70,6 +74,28 @@ function AdvancedSearchModal(props) {
           />
         ) : null}
         <ListItem
+          title={<Text>{"Looking for a GigPig?"}</Text>}
+          onPress={() => setLookingForGigPig(!lookingForGigPig)}
+          trailing={
+            lookingForGigPig ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
+          title={<Text>{"Is a free Gig?"}</Text>}
+          onPress={() => setIsFreeGig(!isFreeGig)}
+          trailing={
+            isFreeGig ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
           title={<Text>{"Has spare ticket?"}</Text>}
           onPress={() => setHasSpareTicket(!hasSpareTicket)}
           trailing={
@@ -109,6 +135,8 @@ function SearchGigs(props) {
 
   const [searchString, setSearchString] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
+  const [lookingForGigPig, setLookingForGigPig] = useState(false);
+  const [isFreeGig, setIsFreeGig] = useState(false);
   const [hasSpareTicket, setHasSpareTicket] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -126,6 +154,14 @@ function SearchGigs(props) {
     if (showFavorites) {
       search += "&is_favorite=true"
       searchFeedBack += "my favorites, "
+    }
+    if (lookingForGigPig) {
+      search += "&looking_for_gigpig=true"
+      searchFeedBack += "looking for gigpig, "
+    }
+    if (isFreeGig) {
+      search += "&is_free_gig=true"
+      searchFeedBack += "is free gig, "
     }
     if (hasSpareTicket) {
       search += "&has_spare_ticket=true"
@@ -162,6 +198,10 @@ function SearchGigs(props) {
         setAdvancedSearch={setAdvancedSearch}
         showFavorites={showFavorites}
         setShowFavorites={setShowFavorites}
+        lookingForGigPig={lookingForGigPig}
+        setLookingForGigPig={setLookingForGigPig}
+        isFreeGig={isFreeGig}
+        setIsFreeGig={setIsFreeGig}
         hasSpareTicket={hasSpareTicket}
         setHasSpareTicket={setHasSpareTicket}
         startDate={startDate}

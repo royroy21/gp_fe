@@ -285,6 +285,18 @@ function Detail({ user, isGigOwner, gig, navigation }) {
         title={"country"}
         text={gig.country.country}
       />
+      {gig.looking_for_gigpig ? (
+        <TextFieldWithTitle
+          title={"looking for a gigpig"}
+          text={"yes"}
+        />
+      ) : null}
+      {gig.is_free_gig ? (
+        <TextFieldWithTitle
+          title={"is free gig"}
+          text={"yes"}
+        />
+      ) : null}
       {gig.has_spare_ticket ? (
         <TextFieldWithTitle
           title={"has spare ticket"}

@@ -19,6 +19,10 @@ function AdvancedSearchModal(props) {
     setWithReplies,
     showPastGigs,
     setShowPastGigs,
+    lookingForGigPig,
+    setLookingForGigPig,
+    isFreeGig,
+    setIsFreeGig,
     startDate,
     setStartDate,
     setShowDatePicker,
@@ -78,6 +82,28 @@ function AdvancedSearchModal(props) {
           }
         />
         <ListItem
+          title={<Text>{"Looking for a GigPig?"}</Text>}
+          onPress={() => setLookingForGigPig(!lookingForGigPig)}
+          trailing={
+            lookingForGigPig ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
+          title={<Text>{"Is a free Gig?"}</Text>}
+          onPress={() => setIsFreeGig(!isFreeGig)}
+          trailing={
+            isFreeGig ? (
+              <Icon name="thumb-up-outline" size={20} color={theme.palette.secondary.main}/>
+            ) : (
+              <Icon name="thumb-down-outline" size={20} color={"grey"}/>
+            )
+          }
+        />
+        <ListItem
           title={<Text>{startDate ? dateFormat(startDate, "fullDate") : "Gig start date?"}</Text>}
           onPress={() => setShowDatePicker(!showDatePicker)}
           trailing={
@@ -106,6 +132,8 @@ function SearchMyGigs(props) {
   const [searchString, setSearchString] = useState("");
   const [withReplies, setWithReplies] = useState(false);
   const [showPastGigs, setShowPastGigs] = useState(false);
+  const [lookingForGigPig, setLookingForGigPig] = useState(false);
+  const [isFreeGig, setIsFreeGig] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -126,6 +154,14 @@ function SearchMyGigs(props) {
     if (showPastGigs) {
       search += "&past_gigs=true"
       searchFeedBack += "show past gigs, "
+    }
+    if (lookingForGigPig) {
+      search += "&looking_for_gigpig=true"
+      searchFeedBack += "looking for gigpig, "
+    }
+    if (isFreeGig) {
+      search += "&is_free_gig=true"
+      searchFeedBack += "is free gig, "
     }
     if (startDate) {
       const formattedDate = dateFormat(startDate, "isoDate");
@@ -159,6 +195,10 @@ function SearchMyGigs(props) {
         setWithReplies={setWithReplies}
         showPastGigs={showPastGigs}
         setShowPastGigs={setShowPastGigs}
+        lookingForGigPig={lookingForGigPig}
+        setLookingForGigPig={setLookingForGigPig}
+        isFreeGig={isFreeGig}
+        setIsFreeGig={setIsFreeGig}
         startDate={startDate}
         setStartDate={setStartDate}
         setShowDatePicker={setShowDatePicker}

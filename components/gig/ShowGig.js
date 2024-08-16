@@ -122,6 +122,20 @@ class ShowGig extends Component {
                 style={styles.chip}
               />
             )}
+            {gig.looking_for_gigpig ? (
+              <Chip
+                key={"looking_for_gigpig"}
+                label={"Looking for a GigPig"}
+                style={styles.chip}
+              />
+            ) : null}
+            {gig.is_free_gig ? (
+              <Chip
+                key={"is_free_gig"}
+                label={"Is free Gig"}
+                style={styles.chip}
+              />
+            ) : null}
             {gig.has_spare_ticket ? (
               <Chip
                 key={"has_spare_ticket"}
