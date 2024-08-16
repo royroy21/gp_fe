@@ -117,8 +117,7 @@ function ShowGigs({ navigation, route }) {
   const theme = useTheme()
 
   const params = route.params || {};
-  const { userId, userName } = params;
-  console.log("userId, userName", userId, userName);
+  const { userId, userName, favorites } = params;
 
   const resultsListViewRef = useRef();
 
@@ -169,7 +168,7 @@ function ShowGigs({ navigation, route }) {
         return;
       }
 
-      if (!gigs && !userId && !error) {
+      if (!gigs && !userId && !favorites && !error) {
         getGigsFromAPI();
         return;
       }
@@ -179,6 +178,14 @@ function ShowGigs({ navigation, route }) {
         setSearchFeedback("Showing gigs for profile " + userName);
         // Not using getRoomsFromAPI so we can set SearchFeedback.
         get(BACKEND_ENDPOINTS.gigs + "?user_id=" + userId, [], true);
+        return;
+      }
+
+      if (favorites) {
+        route.params = null;
+        setSearchFeedback("Showing results for my favorites");
+        // Not using getRoomsFromAPI so we can set SearchFeedback.
+        get(BACKEND_ENDPOINTS.searchGigs + "?q=&is_favorite=true", [], true);
         return;
       }
 

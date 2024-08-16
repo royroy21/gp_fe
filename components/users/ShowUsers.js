@@ -103,8 +103,11 @@ function ListUsers(props) {
   )
 }
 
-function ShowUsers({ navigation }) {
-  const theme = useTheme()
+function ShowUsers({ navigation, route }) {
+  const theme = useTheme();
+
+  const params = route.params || {};
+  const { favorites } = params;
 
   const isWeb = Boolean(Platform.OS === "web");
   const windowWidth = Dimensions.get('window').width;
@@ -160,8 +163,16 @@ function ShowUsers({ navigation }) {
         return
       }
 
-      if (!users && !error) {
+      if (!users && !favorites && !error) {
         getUsersFromAPI();
+        return;
+      }
+
+      if (favorites) {
+        route.params = null;
+        setSearchFeedback("Showing results for my favorites");
+        // Not using getRoomsFromAPI so we can set SearchFeedback.
+        get(BACKEND_ENDPOINTS.searchUsers + "?q=&is_favorite=true", [], true);
         return;
       }
 

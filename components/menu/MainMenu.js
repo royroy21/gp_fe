@@ -54,6 +54,50 @@ const MainMenu = ({ showMainMenu, setMainMenu, navigation }) => {
         }
       />
       <ListItem
+        title={<Text>{"Favourite Gigs"}</Text>}
+        onPress={() => {
+          navigation.push("DefaultScreen", {favorites: true});
+          setMainMenu(!showMainMenu);
+        }}
+        trailing={
+          <IconButton
+            onPress={() => {
+              navigation.push("DefaultScreen", {favorites: true});
+              setMainMenu(!showMainMenu);
+            }}
+            icon={
+              <Icon
+                color={theme.palette.secondary.main}
+                name={"bookmark-music-outline"}
+                size={30}
+              />
+            }
+          />
+        }
+      />
+      <ListItem
+        title={<Text>{"Favourite Profiles"}</Text>}
+        onPress={() => {
+          navigation.push("UsersScreen", {favorites: true});
+          setMainMenu(!showMainMenu);
+        }}
+        trailing={
+          <IconButton
+            onPress={() => {
+              navigation.push("UsersScreen", {favorites: true});
+              setMainMenu(!showMainMenu);
+            }}
+            icon={
+              <Icon
+                color={theme.palette.secondary.main}
+                name={"account-multiple"}
+                size={25}
+              />
+            }
+          />
+        }
+      />
+      <ListItem
         title={<Text style={{ color: "grey" }}>{"Radio"}</Text>}
         onPress={() => {}}
         trailing={
