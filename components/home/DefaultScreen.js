@@ -1,8 +1,8 @@
 import React from "react";
 import {Platform, StyleSheet, View} from "react-native";
 import ShowGigs from "../gig/ShowGigs";
-import RegisterNotifications from "../notifications";
-import {USE_PUSH_NOTIFICATIONS} from "../../settings";
+// import RegisterNotifications from "../notifications";
+// import {USE_PUSH_NOTIFICATIONS} from "../../settings";
 
 export default function DefaultScreen({ navigation, route }) {
   const isWeb = Boolean(Platform.OS === "web");
@@ -21,11 +21,11 @@ export default function DefaultScreen({ navigation, route }) {
   return (
     <View style={styles.container}>
       {/* RegisterNotifications is fine to live here at the moment as notifications are only for mobile */}
-      {USE_PUSH_NOTIFICATIONS && <RegisterNotifications navigation={navigation} />}
-        <ShowGigs
-          navigation={navigation}
-          route={route}
-        />
+      {/*{USE_PUSH_NOTIFICATIONS && <RegisterNotifications navigation={navigation} />}*/}
+      <ShowGigs
+        navigation={navigation}
+        route={route}
+      />
     </View>
   );
 }
