@@ -38,7 +38,7 @@ function AddAlbum({ navigation, route }) {
         if (resourceId !== formattedGig.id) {
           getGig(resourceId, setResource);
         } else {
-          setResource(resource);
+          setResource(gig);
         }
       } else {
         // Assume resource is user profile.
