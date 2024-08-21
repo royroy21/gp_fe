@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "web-build": "npx expo export:web",
+    "serve": "serve web-build",
     "eject": "expo eject"
   },
   "dependencies": {
@@ -49,6 +50,7 @@
     "react-native-select-dropdown": "^3.3.0",
     "react-native-text-ticker": "^1.14.0",
     "react-native-web": "~0.19.6",
+    "serve": "^14.2.3",
     "stream-browserify": "^3.0.0",
     "util": "^0.12.5",
     "vm-browserify": "^1.1.2",
