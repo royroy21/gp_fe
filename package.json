@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "web-build": "npx expo export:web",
-    "serve": "serve web-build",
+    "serve": "serve web-build --single",
     "eject": "expo eject"
   },
   "dependencies": {
