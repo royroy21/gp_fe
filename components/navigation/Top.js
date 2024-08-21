@@ -23,7 +23,7 @@ function TopNavigation(props) {
     backgroundColor: "#000000",
   } : {}
 
-  const image = require("../../assets/background_3.jpg");
+  const image = require("../../assets/background.jpg");
   // const image = null;
   return (
     <View style={styles.outerContainer}>

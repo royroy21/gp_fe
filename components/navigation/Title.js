@@ -2,8 +2,6 @@ import {Image, Pressable, StyleSheet, View} from "react-native";
 import {Text} from "@react-native-material/core";
 import BottomNavigation from "./Bottom";
 
-const WITH_TITLE_IMAGE = false;
-
 const titleArray = [
   "GIGPIG",
   "ƓƖƓƤƖƓ",
@@ -24,26 +22,9 @@ function Title({title, navigation, route, initialRouteName, BottomNavigationProp
   return (
     <View style={titleStyles.container}>
       <Pressable onPress={onPress} style={titleStyles.textContainer}>
-        {WITH_TITLE_IMAGE && !isSmallScreen ? (
-          <Image
-            source={require("../../assets/default_gigpig.jpeg")} // or use an external URL
-            style={{
-              width: 65,
-              height: 30,
-              borderRadius: 10,
-              marginRight: 5,
-              marginLeft: marginLeft,
-            }}
-          />
-        ) : (
-          <View
-            style={{
-              marginLeft: marginLeft,
-            }}
-          >
-            {!(isWeb && isSmallScreen) ? (<Text style={titleStyles.gigPigText}>{titleArray[0]}</Text>) : null}
-          </View>
-        )}
+        <View style={{ marginLeft: marginLeft }} >
+          {!(isWeb && isSmallScreen) ? (<Text style={titleStyles.gigPigText}>{titleArray[0]}</Text>) : null}
+        </View>
       </Pressable>
       {isWeb && !doNotShowBottomOnTheseRoutes.includes(route.name) && (
         <BottomNavigation
