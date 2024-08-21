@@ -1,5 +1,5 @@
 // Add a local_settings.js file to import settings used locally not saved to GIT.
-const LOCAL_DEVELOPMENT = true;
+const LOCAL_DEVELOPMENT = false;
 
 let BACKEND_DOMAIN;
 let LOCAL_BACKEND_URL;
