@@ -1,17 +1,33 @@
 // Add a local_settings.js file to import settings used locally not saved to GIT.
-import {BACKEND_URL as LOCAL_BACKEND_URL} from "./local_settings";
-import {BACKEND_SOCKET_URL as LOCAL_BACKEND_SOCKET_URL} from "./local_settings";
-import {EXPO_PROJECT_ID as LOCAL_EXPO_PROJECT_ID} from "./local_settings";
+const LOCAL_DEVELOPMENT = true;
 
-// DEBUG - displays extra debug messages at console.
-export const DEBUG = true;
+let BACKEND_DOMAIN;
+let LOCAL_BACKEND_URL;
+let LOCAL_BACKEND_SOCKET_URL;
+let DEBUG;
+
+if (LOCAL_DEVELOPMENT) {
+  // LOCAL SETTINGS.
+  BACKEND_DOMAIN = "192.168.0.88:8000";
+  LOCAL_BACKEND_URL = `http://${BACKEND_DOMAIN}`;
+  LOCAL_BACKEND_SOCKET_URL = `ws://${BACKEND_DOMAIN}`;
+  DEBUG = true;
+} else {
+  // DEVELOPMENT SETTINGS
+  BACKEND_DOMAIN = "backend.gigpig.fm";
+  LOCAL_BACKEND_URL = `https://${BACKEND_DOMAIN}`;
+  LOCAL_BACKEND_SOCKET_URL = `wss://${BACKEND_DOMAIN}`;
+  DEBUG = false;
+}
+
+export { BACKEND_DOMAIN, LOCAL_BACKEND_URL, LOCAL_BACKEND_SOCKET_URL, DEBUG }
 
 // Domain
 export const DOMAIN_NAME = 'gigpig.fm'
 export const DOMAIN_NAME_WITH_PREFIX = `https://${DOMAIN_NAME}`
 
 // Keys, Ids, access_codes.
-export const EXPO_PROJECT_ID = LOCAL_EXPO_PROJECT_ID;
+// export const EXPO_PROJECT_ID = LOCAL_EXPO_PROJECT_ID;
 
 // GENERAL
 export const LOGIN_REQUIRED = false;
