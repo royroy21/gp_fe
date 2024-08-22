@@ -236,6 +236,25 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         </View>
       </View>
       <View style={{marginBottom: 10}}>
+        <Text>{"Are you a musician?"}</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Switch
+            value={isMusician}
+            onValueChange={() => {
+              setIsMusician(!isMusician);
+            }}
+          />
+        {isMusician ? (
+          <Icon
+            color={theme.palette.secondary.main}
+            name={"check"}
+            size={18}
+            style={{ marginLeft: 5 }}
+          />
+        ) : null}
+        </View>
+      </View>
+      <View style={{marginBottom: 10}}>
         <Text>{"Are looking for musicians?"}</Text>
         <View style={{flexDirection: "row"}}>
           <Switch
@@ -254,6 +273,65 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
           ) : null}
         </View>
       </View>
+      <View style={{marginBottom: 10}}>
+        <Text style={ !isMusician ? { color: "grey" } : undefined }>{"Are looking for a band?"}</Text>
+        <View style={{flexDirection: "row"}}>
+          <Switch
+            value={lookingForBand}
+            disabled={!isMusician}
+            onValueChange={() => {
+              setLookingForBand(!lookingForBand);
+            }}
+          />
+          {lookingForBand ? (
+            <Icon
+              color={theme.palette.secondary.main}
+              name={"check"}
+              size={18}
+              style={{ marginLeft: 5 }}
+            />
+          ) : null}
+        </View>
+      </View>
+      {numberOfInstruments && isMusician && !isBand ? (
+        <DisplayInstruments
+          instruments={getValues("instruments")}
+          removeInstrument={removeInstrument}
+        />
+        ) : null}
+      {isMusician && !isBand ? (
+        <Controller
+          control={control}
+          rules={{
+           // required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <SelectInstruments
+              containerStyle={isMusician ? {marginBottom: 10} : {}}
+              title={"Select instruments you play"}
+              onSelect={(selectedItem) => {
+                const selectedInstruments = getValues("instruments");
+                if (selectedInstruments.map(instrument => instrument.id).includes(selectedItem.id)) {
+                  // Remove instrument
+                  const filteredInstruments = selectedInstruments.filter(instrument => instrument.id !== selectedItem.id);
+                  onChange(filteredInstruments);
+                  setNumberOfInstruments(filteredInstruments.length)
+                } else {
+                  // Add instrument
+                  selectedInstruments.push(selectedItem);
+                  onChange(selectedInstruments);
+                  setNumberOfInstruments(selectedInstruments.length)
+                }
+              }}
+              instrumentsForDisplayInstruments={getValues("instruments")}
+              selectedInstruments={getValues("instruments")}
+              theme={theme}
+            />
+          )}
+          name="instruments"
+        />
+      ) : null}
+      {parsedError.instruments && <Errors errorMessages={parsedError.instruments} />}
       {numberOfInstrumentsNeeded && lookingForMusicians ? (
         <DisplayInstruments
           instruments={getValues("instruments_needed")}
@@ -268,7 +346,7 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <SelectInstruments
-              containerStyle={isBand ? {marginBottom: 20} : {}}
+              containerStyle={lookingForMusicians ? {marginBottom: 10} : {}}
               title={"Select musicians needed"}
               onSelect={(selectedItem) => {
                 const selectedInstruments = getValues("instruments_needed");
@@ -293,83 +371,6 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         />
       ) : null}
       {parsedError.instruments_needed && <Errors errorMessages={parsedError.instruments_needed} />}
-      <View style={{marginBottom: 10}}>
-        <Text>{"Are you a musician?"}</Text>
-        <View style={{ flexDirection: "row" }}>
-          <Switch
-            value={isMusician}
-            onValueChange={() => {
-              setIsMusician(!isMusician);
-            }}
-          />
-        {isMusician ? (
-          <Icon
-            color={theme.palette.secondary.main}
-            name={"check"}
-            size={18}
-            style={{ marginLeft: 5 }}
-          />
-        ) : null}
-        </View>
-      </View>
-      {numberOfInstruments && isMusician && !isBand ? (
-        <DisplayInstruments
-          instruments={getValues("instruments")}
-          removeInstrument={removeInstrument}
-        />
-        ) : null}
-      {isMusician && !isBand ? (
-        <Controller
-          control={control}
-          rules={{
-           // required: true,
-          }}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <SelectInstruments
-              containerStyle={isMusician ? {marginBottom: 20} : {}}
-              onSelect={(selectedItem) => {
-                const selectedInstruments = getValues("instruments");
-                if (selectedInstruments.map(instrument => instrument.id).includes(selectedItem.id)) {
-                  // Remove instrument
-                  const filteredInstruments = selectedInstruments.filter(instrument => instrument.id !== selectedItem.id);
-                  onChange(filteredInstruments);
-                  setNumberOfInstruments(filteredInstruments.length)
-                } else {
-                  // Add instrument
-                  selectedInstruments.push(selectedItem);
-                  onChange(selectedInstruments);
-                  setNumberOfInstruments(selectedInstruments.length)
-                }
-              }}
-              instrumentsForDisplayInstruments={getValues("instruments")}
-              selectedInstruments={getValues("instruments")}
-              theme={theme}
-            />
-          )}
-          name="instruments"
-        />
-      ) : null}
-      {parsedError.instruments && <Errors errorMessages={parsedError.instruments} />}
-      <View style={{marginBottom: 10}}>
-        <Text style={ !isMusician ? { color: "grey" } : undefined }>{"Are looking for a band?"}</Text>
-        <View style={{flexDirection: "row"}}>
-          <Switch
-            value={lookingForBand}
-            disabled={!isMusician}
-            onValueChange={() => {
-              setLookingForBand(!lookingForBand);
-            }}
-          />
-          {lookingForBand ? (
-            <Icon
-              color={theme.palette.secondary.main}
-              name={"check"}
-              size={18}
-              style={{ marginLeft: 5 }}
-            />
-          ) : null}
-        </View>
-      </View>
       <Controller
         control={control}
         rules={{

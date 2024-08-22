@@ -30,7 +30,7 @@ function ProfilePage({ navigation }) {
       buttonTitle={"edit"}
       buttonOnPress={edit}
     >
-      {user.is_looking_for_band && <Text style={styles.lookingFor}>{"LOOKING FOR BAND"}</Text>}
+      {user.is_looking_for_band && <TextFieldWithTitle title={"looking for a band"} />}
       {user.instruments_needed.length ? (
         <>
           <TextFieldWithTitle
@@ -96,12 +96,6 @@ function ProfilePage({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  lookingFor: {
-    color: "grey",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginBottom: 5,
-  },
   imageAndGenresContainer: {
     flexDirection: "row"
   },
