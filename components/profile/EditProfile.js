@@ -103,8 +103,6 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
       if (lookingForBand) {
         setLookingForBand(false);
       }
-    } else {
-      setLookingForMusicians(false);
     }
   }, [isBand]);
 
@@ -113,8 +111,6 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
       if (isBand) {
         setIsBand(false);
       }
-      if (lookingForMusicians)
-        setLookingForMusicians(false);
     } else {
       setLookingForBand(false);
     }
@@ -240,11 +236,10 @@ function InnerEditProfile({ user, patch, loading, error, theme, navigation }) {
         </View>
       </View>
       <View style={{marginBottom: 10}}>
-        <Text style={ !isBand ? { color: "grey" } : undefined }>{"Are looking for musicians?"}</Text>
+        <Text>{"Are looking for musicians?"}</Text>
         <View style={{flexDirection: "row"}}>
           <Switch
             value={lookingForMusicians}
-            disabled={!isBand}
             onValueChange={() => {
               setLookingForMusicians(!lookingForMusicians);
             }}
