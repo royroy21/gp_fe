@@ -3,10 +3,10 @@ import {Text} from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import React from "react";
 
-function PleaseLoginMessage({ theme }) {
+function PleaseLoginMessage({ message, theme }) {
   return (
     <View style={styles.container}>
-      <Text>{"please log in "}</Text>
+      <Text>{message || "please log in "}</Text>
       <Icon
         name={"pig"}
         size={25}
