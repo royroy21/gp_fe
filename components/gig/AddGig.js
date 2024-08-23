@@ -16,7 +16,7 @@ function AddGig({ navigation }) {
   const user = useUserStore((state) => state.object);
   if (!user) {
     return (
-      <PleaseLoginMessage theme={theme} />
+      <PleaseLoginMessage message={"Log in to add gig"} theme={theme} />
     )
   }
 

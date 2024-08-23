@@ -220,23 +220,21 @@ function ShowGigs({ navigation, route }) {
     <>
       {isLargeScreen ? (
         <View style={{ flexDirection: "row" }}>
-          {user ? (
-            <Button
-              title={"add gig"}
-              compact={true}
-              variant={"text"}
-              onPress={() => navigation.push("AddGig")}
-              style={{ width: 100}}
-              titleStyle={{ fontSize: 10 }}
-              leading={
-                <Icon
-                  name={"plus"}
-                  size={20}
-                  color={theme.palette.secondary.main}
-                />
-              }
-            />
-          ) : null}
+          <Button
+            title={"add gig"}
+            compact={true}
+            variant={"text"}
+            onPress={() => navigation.push("AddGig")}
+            style={{ width: 100}}
+            titleStyle={{ fontSize: 10 }}
+            leading={
+              <Icon
+                name={"plus"}
+                size={20}
+                color={theme.palette.secondary.main}
+              />
+            }
+          />
           <Button
             title={"search"}
             compact={true}
@@ -309,7 +307,7 @@ function ShowGigs({ navigation, route }) {
       )}
       <LoadingModal isLoading={loading && !loadingNext} debugMessage={"from @ShowGigs"} />
       <Loading isLoading={loading && loadingNext} />
-      {!loading && user && !isLargeScreen ? <AddGigButton navigation={navigation} theme={theme} /> : null}
+      {!loading && !isLargeScreen ? <AddGigButton navigation={navigation} theme={theme} /> : null}
     </>
   )
 }
