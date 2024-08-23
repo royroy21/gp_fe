@@ -1,4 +1,3 @@
-// Add a local_settings.js file to import settings used locally not saved to GIT.
 import { REACT_APP_IS_LOCAL_DEVELOPMENT } from '@env';
 
 let BACKEND_DOMAIN;
