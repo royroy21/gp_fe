@@ -1,19 +1,19 @@
 // Add a local_settings.js file to import settings used locally not saved to GIT.
-const LOCAL_DEVELOPMENT = false;
+import { REACT_APP_IS_LOCAL_DEVELOPMENT } from '@env';
 
 let BACKEND_DOMAIN;
 let LOCAL_BACKEND_URL;
 let LOCAL_BACKEND_SOCKET_URL;
 let DEBUG;
 
-if (LOCAL_DEVELOPMENT) {
+if (REACT_APP_IS_LOCAL_DEVELOPMENT === "true") {
   // LOCAL SETTINGS.
   BACKEND_DOMAIN = "192.168.0.88:8000";
   LOCAL_BACKEND_URL = `http://${BACKEND_DOMAIN}`;
   LOCAL_BACKEND_SOCKET_URL = `ws://${BACKEND_DOMAIN}`;
   DEBUG = true;
 } else {
-  // DEVELOPMENT SETTINGS
+  // PRODUCTION SETTINGS
   BACKEND_DOMAIN = "backend.gigpig.fm";
   LOCAL_BACKEND_URL = `https://${BACKEND_DOMAIN}`;
   LOCAL_BACKEND_SOCKET_URL = `wss://${BACKEND_DOMAIN}`;
