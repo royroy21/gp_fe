@@ -22,7 +22,7 @@ if (REACT_APP_IS_LOCAL_DEVELOPMENT === "true") {
 export { BACKEND_DOMAIN, LOCAL_BACKEND_URL, LOCAL_BACKEND_SOCKET_URL, DEBUG }
 
 // Domain
-export const DOMAIN_NAME = 'gigpig.fm'
+export const DOMAIN_NAME = 'app.gigpig.fm'
 export const DOMAIN_NAME_WITH_PREFIX = `https://${DOMAIN_NAME}`
 
 // Keys, Ids, access_codes.
