@@ -7,7 +7,8 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import LoadingModal from "../loading/LoadingModal";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import usePreviousMessagesStore from "../../store/previousMessages";
-import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../../settings";
+import {BACKEND_ENDPOINTS, DEFAULT_ERROR_MESSAGE} from "../../settings";
+// import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../../settings";
 import useJWTStore from "../../store/jwt";
 import Errors from "../forms/Errors";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
@@ -18,6 +19,8 @@ import unreadMessagesStore from "../../store/unreadMessages";
 import {ScrollView} from "react-native-web";
 import useRoomStore from "../../store/room";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+
+const DEBUG = true;
 
 function ListMessages(props) {
   const messagesContentRef = useRef(null);
@@ -248,6 +251,8 @@ function Room({ route }) {
     const formattedRoom = roomInState || {id: null};
     return formattedRoom.id === id;
   }
+
+  console.log("webSocket", webSocket ? readyStates[webSocket.readyState] !== "OPEN" : "none");
 
   useEffect(() => {
     /*
