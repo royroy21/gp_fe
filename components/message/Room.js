@@ -7,11 +7,7 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import LoadingModal from "../loading/LoadingModal";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import usePreviousMessagesStore from "../../store/previousMessages";
-
-// TODO - reset DEBUG here.
-// import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../../settings";
-import {BACKEND_ENDPOINTS, DEFAULT_ERROR_MESSAGE} from "../../settings";
-
+import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../../settings";
 import useJWTStore from "../../store/jwt";
 import Errors from "../forms/Errors";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
@@ -22,9 +18,6 @@ import unreadMessagesStore from "../../store/unreadMessages";
 import {ScrollView} from "react-native-web";
 import useRoomStore from "../../store/room";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
-
-// TODO - remove this DEBUG
-const DEBUG = true;
 
 function ListMessages(props) {
   const messagesContentRef = useRef(null);
@@ -183,6 +176,7 @@ function Room({ route }) {
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState(null);
   const [showOptions, setOptions] = useState(false);
+  const [seconds, setSeconds] = useState(0);
 
   const getPreviousMessages = async () => {
     clear();
@@ -254,6 +248,35 @@ function Room({ route }) {
     const formattedRoom = roomInState || {id: null};
     return formattedRoom.id === id;
   }
+
+  useEffect(() => {
+    /*
+    This resets the webSocket after a few seconds
+    if the webSocket is not in an open state.
+     */
+    let interval;
+
+    if (!webSocket || readyStates[webSocket.readyState] !== "OPEN") {
+      interval = setInterval(() => {
+        setSeconds(prevSeconds => prevSeconds + 1);
+      }, 1000);
+    }
+
+    if (seconds > 3 && (!webSocket || readyStates[webSocket.readyState] !== "OPEN")) {
+      // TODO - change this to console log to show on DEBUG
+      console.log("RESETTING WEB SOCKET");
+      setSeconds(0);
+      setMessage("");
+      setMessages([]);
+      setError(null);
+      setWebSocket(null);
+      setAlert(null);
+      setOptions(false);
+      setUpWebSocket(getPreviousMessages);
+    }
+
+    return () => clearInterval(interval);
+  }, [seconds, webSocket]);
 
   useFocusEffect(
     useCallback(() => {
