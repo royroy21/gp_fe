@@ -7,7 +7,8 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import LoadingModal from "../loading/LoadingModal";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import usePreviousMessagesStore from "../../store/previousMessages";
-import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../../settings";
+// import {BACKEND_ENDPOINTS, DEBUG, DEFAULT_ERROR_MESSAGE} from "../../settings";
+import {BACKEND_ENDPOINTS, DEFAULT_ERROR_MESSAGE} from "../../settings";
 import useJWTStore from "../../store/jwt";
 import Errors from "../forms/Errors";
 import {useFocusEffect, useIsFocused} from "@react-navigation/native";
@@ -18,6 +19,8 @@ import unreadMessagesStore from "../../store/unreadMessages";
 import {ScrollView} from "react-native-web";
 import useRoomStore from "../../store/room";
 import PleaseLoginMessage from "../loginSignUp/PleaseLoginMessage";
+
+const DEBUG = true;
 
 function ListMessages(props) {
   const messagesContentRef = useRef(null);
@@ -176,7 +179,10 @@ function Room({ route }) {
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState(null);
   const [showOptions, setOptions] = useState(false);
+  const [socketReadyState, setSocketReadyState] = useState(null);
   const [seconds, setSeconds] = useState(0);
+
+  DEBUG && console.log("socketReadyState", socketReadyState);
 
   const getPreviousMessages = async () => {
     clear();
@@ -200,28 +206,26 @@ function Room({ route }) {
     }
     const ws = getWebSocket(webSocketParams);
     ws.onopen = () => {
+      setSocketReadyState("OPEN");
     }
     ws.onerror = () => {
       setError({detail: DEFAULT_ERROR_MESSAGE});
       ws.close();
+      setSocketReadyState(null);
     }
     ws.onmessage = (e) => {
       executeMessageReceivedBehavior(e);
+    }
+    ws.onclose = (event) => {
+      DEBUG && console.log('====> WEBSOCKET CLOSED. WebSocket connection closed');
+      DEBUG && console.log('====> WEBSOCKET CLOSED. Code:', event.code);
+      DEBUG && console.log('====> WEBSOCKET CLOSED. Reason:', event.reason);
+      setSocketReadyState(null);
     }
     setWebSocket(ws);
     removeRoomFromUnReadMessages(roomInState.id);
     callback();
     setAlert(null);
-  }
-
-  if (DEBUG && user && roomInState) {
-    // because sockets are flaky..
-    console.log("\n\n==> starting room.", roomInState.id);
-    console.log("==> ready state of socket client: ", webSocket ? readyStates[webSocket.readyState] : "no socket found");
-    console.log("==> messages length: ", messages.results ? messages.results.length : "no messages");
-    console.log("==> loading from usePreviousMessagesStore (on first page load): ", loading);
-    console.log("==> loadingPreviousPage (when scrolling up): ", loadingPreviousPage);
-    console.log("\n\n");
   }
 
   function executeMessageReceivedBehavior(event) {
@@ -249,28 +253,25 @@ function Room({ route }) {
     return formattedRoom.id === id;
   }
 
-  console.log("webSocket", webSocket ? readyStates[webSocket.readyState] : "None");
-
-  useEffect(() => {
-    /*
-    This resets the webSocket after a few seconds
-    if the webSocket is not in an open state.
-     */
-    if (isFocused) {
-      return
-    }
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      if (!isActive) {
+        return
+      }
 
     let interval;
 
-    if (!webSocket || readyStates[webSocket.readyState] !== "OPEN") {
+    DEBUG && console.log("@RESET: socketReadyState", socketReadyState);
+
+    if (socketReadyState !== "OPEN") {
       interval = setInterval(() => {
         setSeconds(prevSeconds => prevSeconds + 1);
       }, 1000);
     }
 
-    if (seconds > 3 && (!webSocket || readyStates[webSocket.readyState] !== "OPEN")) {
-      // TODO - change this to console log to show on DEBUG
-      console.log("RESETTING WEB SOCKET");
+    if (seconds > 3 && (socketReadyState !== "OPEN")) {
+      DEBUG && console.log("@RESET: RESETTING WEB SOCKET");
       setSeconds(0);
       setMessage("");
       setMessages([]);
@@ -281,8 +282,9 @@ function Room({ route }) {
       setUpWebSocket(getPreviousMessages);
     }
 
-    return () => clearInterval(interval);
-  }, [seconds, webSocket]);
+      return () => clearInterval(interval);
+    }, [seconds, socketReadyState])
+  );
 
   useFocusEffect(
     useCallback(() => {
