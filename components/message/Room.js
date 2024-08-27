@@ -209,7 +209,7 @@ function Room({ route }) {
       setSocketReadyState("OPEN");
     }
     ws.onerror = () => {
-      setError({detail: DEFAULT_ERROR_MESSAGE});
+      setError({detail: "Disconnected from Room. Attempting to reconnect."});
       ws.close();
       setSocketReadyState(null);
     }
